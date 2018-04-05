@@ -2,10 +2,10 @@ body {
     margin: 60px auto;
     width: 70%;
     background-image: url("awesome-llama.github.io/IMG_20170120_173001.jpg");
-    background-color: #cccccc;
+    background-color: #eeeeee;
 }
 nav ul, footer ul {
-    font-family:'Helvetica', 'Arial', 'Sans-Serif';
+    font-family:'Roboto', 'Arial', 'Sans-Serif';
     padding: 0px;
     list-style: none;
     font-weight: bold;
