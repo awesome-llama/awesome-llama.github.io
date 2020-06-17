@@ -1,6 +1,8 @@
 # awesome-llama.github.io
-This is my website. I plan on slowly developing it.
+This is my website.
 
-Created 24 February, 2018
+Created 24th February, 2018
 
-For now, you can go and check out my YT channel: https://www.youtube.com/channel/UCvoZjXD8XF5LkzHYtGGv0Zw/
+https://scratch.mit.edu/users/awesome-llama/
+
+Go and check out my YT channel: https://www.youtube.com/channel/UCvoZjXD8XF5LkzHYtGGv0Zw/O
