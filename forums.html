@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<title>awesome-llama</title>
+<style>
+body {font-family: "Lato", sans-serif} 
+</style>
+<body>
+
+<!-- Page content -->
+<h1>Example responses for the <a href="https://scratch.mit.edu/discuss/">Scratch Forums</a></h1>
+<p><i>Use Ctrl+F to find things!</i></p>
+<hr>
+
+<h3>Using days since 2000 to calculate the date</h3>
+<p>
+It's a lot more complicated than just taking the time from the other blocks, but still doable.
+<br>
+Firstly, this is days since 2000, so the value given is just that, however fractions are included. 
+<br>
+I have never done this before, so I am trying to solve it in a way that makes sense to me. I think that one way is to find important dates, so knowing how many days between 2000 and 2020 means you can subtract it from the entire amount and know the days since the start of the year (Jan 1st, 2020). With that, you can work to find the current month based on the lengths of the months before. It is currently the 1st of December, but for an example, assume it is the 12th. You can find the days between the start of the year and start of the month and also subtract it away to reach the current day of the month. 
+<br>
+The complexity comes in how not all years and months are the same lengths. Every 4 years is a leap year, where Feburary gets a 29th day. You have to account for this. The leap years currently include 2000, 2004, 2008, 2012, 2016, and 2020. That's 6 extra days.
+<br>
+Knowing exactly how many days since the start of the month now makes it really easy to get the time, as it is much more predictable. Take the decimal part of it as that is the fraction of the current day (e.g. the 0.04338 part of 12.04338). Then, you can get the time through some multiplication. Multiply the fraction by 24 and you get how many hours. Take the fracton part of that again, and multiply by 60 to get minutes, and do it again to get seconds. 
+</p>
+
+<hr>
+
+<h3>Moving sprites far off screen</h3>
+<p>
+No sprite is allowed to move off screen far enough that it cannot be seen. The edge of its costume will always be seen if you were to attempt it. The limit therefore depends on the visual size of the sprite. That includes the size set with the size blocks and the size of the costume. A large costume means that the sprite can more further, however like I just said before, you cannot move it completely off screen, so the edge of that large costume will still be visible. 
+<br>
+If you want to move a sprite completely off screen, a different method is required. First, set the sprite to be visually large, either with a really large costume or the set size blocks. Now, move the sprite to the desired off screen position, and switch the costume back to the one you actually want to see. Now, as the sprite is a smaller costume, it cannot be seen. Note that you have to do this any time you want to move the sprite because if it is off the screen completely and you move it, the sprite will teleport closer so it can be seen.
+</p>
+
+<hr>
+
+<h3>Point towards x, y</h3>
+<p>
+The Scratch Wiki Page ( https://en.scratch-wiki.info/wiki/List_of_Block_Workarounds ) has it included down near the bottom.
+<br>
+Use this:
+<br>
+[scratchblocks]
+point in direction (([atan v] of (((X) - (x position)) / ((Y) - (y position)))) + (<(y position) > (Y)> * (180)))
+[/scratchblocks]
+
+</p>
+
+<hr>
+
+<h3>Clones are triggering / Clones using broadcasts / Multiple clones being created</h3>
+<p>
+When a broadcast is sent, it can be received by anything, including clones. The clones are able to react to the spawn broadcast and they will clone themselves too. If you have multiple clones already spawned, then a single broadcast may get you multiple clones spawned at once. 
+</br>
+The best way to prevent this is to just make sure the broadcast receive hat also checks if it is a clone or not. Two common ways involve costume detection and local variables.
+</br>
+You could store whether it is a clone or not in a local variable (the ones that are unique to each clone, don't be confused by the default global variable). The original sprite may be set to 0, the clones when created are set to 1. Check if it is 0 and if so, the sprite is original and it can clone itself.
+</br>
+The costume way involves a costume that the original sprite will always be set to and a costume that the clones will always use. When a clone is created, set to the clone costume. When a broadcast is received, check which costume the sprite/clone is. If it is set to the original costume, it is the original sprite and it will clone itself.
+</p>
+
+<hr>
+
+<h3>Project/stage/screen resolution</h3>
+<p>
+The resolution actually has two answers. If going by the pixels that the blocks use, then the project is 480 pixels across by 360 pixels high. This is an aspect ratio of 4:3.
+</br>
+However, images can be higher resolution. Projects can actually handle resolutions twice the dimensions, at 960*720. This is the highest resolution supported. If you upload an image at 960*720, that is what you will get, without loss in quality. The image will be shrunken down to fit the screen, where the width of two pixels of that image is equivalent to the width of one pixel of what Scratch reports. This is where the idea of a “half pixel” comes from, if you have heard of it around Scratch. The “half pixel” being the smaller pixel used for images of 960*720.
+</p>
+
+<hr>
+
+<h3>Data compression (cloud variables)</h3>
+<p>
+https://scratch.mit.edu/discuss/topic/460796/?page=1#post-4632488
+</p>
+
+<hr>
+
+<h3>Embedding projects on other external websites</h3>
+<p>
+To add a project in to a website, you can embed it. There is a blue button called "copy link" below the project's notes and credits. Click it and you can take the iframe embed code and paste it into the code of your website. 
+<br>
+[img]https://u.cubeupload.com/unyxium/embed2.png[/img]
+<br>
+Here is an example code from one of my projects: 
+[code=html]&lt;iframe src="https://scratch.mit.edu/projects/443522259/embed" allowtransparency="true" width="485" height="402" frameborder="0" scrolling="no" allowfullscreen&gt;&lt;/iframe&gt;[/code]
+</p>
+
+<hr>
+
+<h3>Saving / save codes in projects</h3>
+<p>
+There are 2 main ways of saving:
+<br>
+1. Save codes -<br>
+When the user wants to save, all the variables and data are combined into a single string via the join block. This code can be copied by the user and saved onto their computer in a text document, or commented under the project. When they want to load the game, they paste the string into an input, and the program pulls the string apart and sets the variables.
+<br>
+2. Cloud lists -<br>
+This is a more complicated, and an extension to 1. Instead of the user saving their code to the computer, your project saves all the data and username to a cloud list and saved into a cloud variable. When the user comes back, their username is the key, which finds the correct data to load.
+<br><br>
+Another way exists, but I only recommend it if you are managing huge amounts of list data, or you can compile everything into lists, and you don't mind having users have to click see inside for the project to be able to access this function. It is also not compatible with cloud data projects as the moment a user sees the inside, they are now unable to edit cloud data and would have to refresh the page to fix.
+<br>
+3. Importing/exporting list data -<br>
+Right-clicking a list in the editor allows you to import and export the data in the list into a file, that can be stored on your computer. You can store all the data including variables in the list when ready for saving. The user can be instructed to export it and download, or to import it when they want to load the data again.
+</p>
+
+<hr>
+
+<h3>How to become popular?</h3>
+<p>
+The way I see it is you need to offer something (usually projects that are desired) to the community, and with this, you will get popular in return. It's kind of like a trade. <br>
+Think of some famous Scratchers. Go and look at their profiles, and what they offer. Let's look at Griffpatch first. He makes advanced projects that show Scratch used in different ways. He shows what can be done, and a major part of the popularity comes in showing that other games can be ported to Scratch. Minecraft and Terraria are both hugely famous games. By taking those already popular things and making relevant projects, the popularity naturally comes with ease. 
+<br>
+The same thing goes with other trends. Among Us is currently very popular, and of course, recreations of the games are right now pulling in thousands of views within days. It doesn't have to be just games, though. I remember when fidget spinners were a thing. Thousands of view there, although you probably wouldn't want to just jump in to some random trend that becomes dated and uninteresting within weeks.
+Platformers are very popular on Scratch, too. Make some of those, and you might get some views, but I don't know as I don't make platformers anymore.<br>
+<br>
+Back to Griffpatch, he doesn't only take projects for popular trends. Complex projects like physics simulations and multiplayer are found there too. These things take a lot of effort to get right, and because of that, they do very well. I don't know why it does. Maybe there are not enough projects in these subjects to make it hard to find. Maybe there really is a huge amount of demand for them. Either way, these projects do get a lot of views when done right.
+<br>
+So, for creating projects, you need to figure out what you want to make that also is something that people want to play. That's really the core principle. That is the trade I mentioned earlier, where you offer something and the users give in return, the popularity.
+<br>
+<br>
+For me personally, the things I offer are in the realm of physics. My most popular projects are my flight simulator series. It is something that I enjoy to create and is actually in pretty high demand (I didn't expect this), whilst also being somewhat difficult to create well. Because of this, I was able to climb up the search results to get my projects within the first few at the top. I think in this case, the success was thanks to other successful flight simulators, which loops back to following trends as I mentioned.<br>
+Also, it does take time. I have been on Scratch for over 5 years now. In that time, I have made many flight simulators, each one improving over the last. 
+<br>
+Now, having a good project does not guarantee popularity, but it gives you a good chance. To really get up there, it is a mix of a few other factors.<br>
+Firstly, there needs to be a way to initially get interest in your stuff. An already established popular account will pull in more views than a month old, 10 follower account, even if an identical project was shared on both of them. This is hard to start, and so you will find that for now, it will still take a bit of time before your popularity starts improving, after something that works. I think one major impact on this is interacting with the community. Join studios, post lots on the forums (what I am doing), etc. Get your name out there. If posting on the forums, try ads in the show and tell forum. Also get a signature to advertise your best projects. Even just commenting on projects means that you now have a link from there. Maybe 100 see your comment, and maybe a couple actually go and view your profile (more likely on sort of known projects with not too many views). A few views is better than none.<br>
+Like/favourite/comment on other projects. Users will have a chance of checking your account out. Being able to get views to any of your things gives a good chance of gaining popularity.
+<br>
+<br>
+The next things are easy to change and should be ensured.
+<br>
+A project needs to be presentable. Make sure that thumbnails are something that users want to look at in the first place. If not, they probably don't think you offer anything good enough. Go for something aesthetic, easy to see what it is, and not too messy or of poor quality. Again, look at the famous scratcher's profiles. Notice the design of thumnails. Straight away you should understand they look like something a user want to click on. The projects appear to be good. As much as people want to throw around that saying about judging a book by it's cover, it hardly holds up in gaining popularity. Trust me here.
+<br>
+Make sure that projects are titled properly. Put effort into how they are presented. Add key words. When users search for anything, usually they go for a key word. “Physics”, “simulator”, “platformer”, etc. is going to get way more searches, so take this opportunity to make your projects contain the correct terms. A physics project for example needs that word or something related to appear in searches.<br>
+Spelling is key too! Search up “tower defense” and “tower defence”. The first is the US spelling, the other is not. The search results are entirely different. One will get more searches than the other. It's a case-by-case basis so you have to check with each word like this.
+<br>
+Add the projects to studios. As many as you can. Try asking for them to be added in many. 
+<br>
+<br>
+That's all I can think of for now. It's lengthy because there is a lot that can be done. It takes a lot of analysis of the community and how it functions. 
+Good luck!
+</p>
+
+<hr>
+
+<!-- Footer -->
+<footer class="w3-container w3-padding-64 w3-center w3-opacity w3-light-grey w3-xlarge">  
+  <a href="https://github.com/awesome-llama">github.com/awesome-llama</a>  
+  <p class="w3-medium">Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
+</footer>
+
+  
+</body>
+</html>
