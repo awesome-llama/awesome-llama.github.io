@@ -31,7 +31,19 @@ Knowing exactly how many days since the start of the month now makes it really e
 No sprite is allowed to move off screen far enough that it cannot be seen. The edge of its costume will always be seen if you were to attempt it. The limit therefore depends on the visual size of the sprite. That includes the size set with the size blocks and the size of the costume. A large costume means that the sprite can more further, however like I just said before, you cannot move it completely off screen, so the edge of that large costume will still be visible. 
 <br>
 If you want to move a sprite completely off screen, a different method is required. First, set the sprite to be visually large, either with a really large costume or the set size blocks. Now, move the sprite to the desired off screen position, and switch the costume back to the one you actually want to see. Now, as the sprite is a smaller costume, it cannot be seen. Note that you have to do this any time you want to move the sprite because if it is off the screen completely and you move it, the sprite will teleport closer so it can be seen.
-</p>
+<br>
+  The code to move a sprite might look like:
+<br>
+[scratchblocks]
+switch costume to [tiny 1x1 costume v]
+set size to (10000) %
+switch costume to [huge 480x360 costume v]
+go to x: (2000) y: (0) // the sprite is visually large so it can move this far
+set size to (100) % // go back to the size you want to display
+switch costume to [desired display costume v] // the costume you want to display
+[/scratchblocks]
+  
+  </p>
 
 <hr>
 
