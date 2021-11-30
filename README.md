@@ -1,8 +1,6 @@
 # awesome-llama.github.io
-This is my website.
+This is my experimental website. Don't expect that it will remain up-to-date and don't expect all features to always work.
 
 Created 24th February, 2018
 
-https://scratch.mit.edu/users/awesome-llama
-
-Go and check out my YT channel: https://www.youtube.com/channel/UCvoZjXD8XF5LkzHYtGGv0Zw
+Scratch: https://scratch.mit.edu/users/awesome-llama
