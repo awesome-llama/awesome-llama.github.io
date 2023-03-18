@@ -30,7 +30,7 @@ body {
 }
 
 a {
-    color: #535353;
+    color: #555;
 }
 
 a:hover {
@@ -50,4 +50,8 @@ p {
 footer {
     border-top: 1px solid #ebebeb;
     font-size: .8em;
+}
+
+ul {
+    font-size: 1.2em;
 }
