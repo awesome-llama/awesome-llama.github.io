@@ -1,50 +1,53 @@
 body {
+    margin: 0;
+    background-color: #fbfbfb;
+    font-family: "Lato", sans-serif
+}
+
+.navbar {
+    background-color: #1d1d1d;
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    top:0;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16);
+}
+
+.navbtn {
+    margin: 20px;
+    float: left;
+    display: block;
+    color: #ffffff;
+    font-size: 1.2em;
+    text-decoration: none;
+}
+
+.content  {
+    margin-top: 30px;
+    padding-top: 30px;
     margin: 60px auto;
     width: 70%;
-    background-image: url("awesome-llama.github.io/IMG_20170120_173001.jpg");
-    background-color: #eeeeee;
 }
-nav ul, footer ul {
-    font-family:'Roboto', 'Arial', 'Sans-Serif';
-    padding: 0px;
-    list-style: none;
-    font-weight: bold;
-}
-nav ul li, footer ul li {
-    display: inline;
-    margin-right: 20px;
-}
+
 a {
-    text-decoration: none;
-    color: #999;
+    color: #535353;
 }
+
 a:hover {
-    text-decoration: underline;
+    color: #ff3300;
 }
+
 h1 {
     font-size: 3em;
-    font-family:'Helvetica', 'Arial', 'Sans-Serif';
 }
-h3 {
-    font-size: 3em;
-    font-family:'Helvetica', 'Arial', 'Sans-Serif';
-}
+
 p {
-    font-size: 1.5em;
-    font-family:'Tahoma', 'Geneva', 'sans-serif';
+    font-size: 1.2em;
     line-height: 1.4em;
     color: #333;
 }
+
 footer {
-    border-top: 1px solid #d5d5d5;
+    border-top: 1px solid #ebebeb;
     font-size: .8em;
-}
-
-ul.posts { 
-    margin: 20px auto 40px; 
-    font-size: 1.5em;
-}
-
-ul.posts li {
-    list-style: none;
 }
