@@ -32,6 +32,7 @@
     <h2>General technical details</h2>
     <ul>
       <li>Z-up orientation, identical to Blender. Camera faces -Z (directly down) and up/down is around the x axis as well. Camera roll is not supported as it's not needed and just a waste of performance in this use case.</li>
+      <li>Everything is Metric/SI.</li>
       <li>Rendering uses a textured tri filler created by <a href="https://scratch.mit.edu/projects/826059940/">Bambozzle</a>. This filler uses a depth buffer. No sorting is used.</li>
       <li>A stripped-down version of the project exists as <a href="https://scratch.mit.edu/projects/861549676/">Nuclear Power Plant [3D]</a>. It is recommended you look at that first if you want to learn more or even develop your own games with it.</li>
     </ul>
@@ -64,7 +65,14 @@
     <p>Regions are split into rooms for improved performance. Rooms are separate objects. The default main room which is always visible will not have a subname, it will just be <span class="code">[region name]_VZ</span>. Any other room must be accompanied by a bounding box to be visible. The bounding box is calculated by the bounds of the tris of the object and can be of whatever you want. I use rectangular prisms to make visualisation easier. 
       Dynamic geometry does not need a bounding box, it will always be visible. A bounding box of size infinity is created automatically for the main room and dynamic geometry.
       </p>
-
+    
+      <h2>Player movement</h2>
+      <p>This game uses a fixed update rate of 120Hz for player movement. This is to ensure that collisions occur correctly and are deterministic (good for speedruns). 
+        Each game frame, a discrete number of movement ticks are run. At 60 FPS, that would be twice. 
+        Limitations are in place just in case unexpected data is found, at most 20 ticks can occur each frame (equivalent to 6 FPS) and past that the player will move slower.
+      </p>
+      <p>The player is the camera. There is no differentiation.</p>
+      <p>Movement occurs along the XY plane and Z axis separately. The player moves horizontally as needed and collisions occur in 2D on line segments. If the player is above a floor triangle, the camera will be set so it is exactly 1.65m above it (the eye height of the player).</p>
   </div>
 
 
