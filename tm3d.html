@@ -49,7 +49,7 @@
     <p>A compressed texture by itself is pretty useless, it's just a stream of pixel colours. To make it usable, "metadata" is included and this is handled in the above diagram too. The format for the actual string accepted by the project is (spaces separate values):</p>
     <p class="code">[texture_name] [number_of_pixels_total] [texture_width] [texture_height] [checksum] [compresed_data]</p>
     <p>This repeats for every texture needed.</p>
-    <p>The checksum is used to ensure texture data is intact. It is just a sum of the compressed data stream with each character being counted using its index in a list (matches ASCII).</p>
+    <p>The checksum is used to ensure texture data is intact. It is just a sum of the compressed data stream with each character being counted using its index in a list (matches the ordering of ASCII except with different indices, ! is 1).</p>
 
     <h2>Models</h2>
     <p>The world was created in Blender. I have a single .blend file storing everything and this gets exported to .obj which the project is able to read. Inside the project is a list called WORLD.obj, this is the file with lines as seprate items.</p>
