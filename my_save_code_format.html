@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Save Code Format</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+  <style>
+    .key {color: rgb(140, 0, 255); font-weight: bold;}
+    .val {color: rgb(250, 83, 0); font-weight: bold;}
+    .len {color: rgb(13, 187, 39); font-weight: bold;}
+    .magic_num {color: rgb(181, 188, 0); font-weight: bold;}
+  </style>
+</head>
+
+<body>
+<div class="navbar">
+  <div>
+    <a href="/" class="navbtn">Home</a>
+  </div>
+</div>
+
+  <div class="content">
+    <h1>My Save Code Format</h1>
+    <hr>
+    <p>Over many years of developing Scratch projects, I have settled on a simple-to-use and easy-to-understand save code format and now use it on pretty much everything.
+    It has no name, though sometimes I describe it as key-value pairs separated by commas. It really is just that although with a few adjustments. The only reserved chars are colon <span class="code">:</span> and comma <span class="code">,</span>. Escape chars are not supported.</span></p>
+    <p>Example (with colour showing the <span class="key">key</span> and <span class="val">values</span>):</p>
+    <p class="code">
+        <span class="key">user</span>:<span class="val">awesome-llama</span>,<span class="key">id</span>:<span class="val">8832510</span>,<span class="key">scratchteam</span>:<span class="val">false</span>
+    </p>
+    <p>But what happens if you need to store more than a single value? There is support for lists stored alongside each key. Implementation depends on the project but the general setup is to have the first number after a key representing <span class="len">the length of the list</span>:</p>
+    <p class="code">
+        <span class="key">recent_projects</span>:<span class="len">3</span>,<span class="val">The Mast</span>,<span class="val">Submersible</span>,<span class="val">Road Network Designer</span>
+    </p>
+    <p>The code responsible for reading the save code will be designed to understand what data is expected for a given key. For example, <span class="code">recent_projects</span> will be expected to be a list, the length determined by the first item. <span class="code">user</span> will be expected to always be a single value.</p>
+    
+    <p>I often also include a <i>magic number</i> at the start of the save code, like this:</p>
+    <p class="code">
+        <span class="magic_num">account_info</span>,<span class="key">user</span>:<span class="val">awesome-llama</span>,<span class="key">id</span>:<span class="val">8832510</span>,<span class="key">scratchteam</span>:<span class="val">false</span>
+    </p>
+    <p>This just helps to ensure the data comes from the right place as well as ensure I know what a save code stores.</p>
+    <p>Also, with save codes that are intended to be used by others and not just some internally-used thing, I also ensure a project version number and an approximate date is provided as keys. Username may also be useful too. The following example is from my game Submersible but trimmed down to just the first bit with the version (<span class="code">v</span> for project version, <span class="code">sv</span> for save code version) and time (<span class="code">t</span>, seconds since 2000):</p>
+    <p class="code">
+        <span class="magic_num">SUB</span>,<span class="key">v</span>:<span class="val">1.0</span>,<span class="key">sv</span>:<span class="val">1</span>,<span class="key">t</span>:<span class="val">731066503</span>,[...]
+    </p>
+    <hr>
+    <p>Here's a list of projects that use this system:</p>
+    <ul>
+        <li><a href="https://scratch.mit.edu/projects/341589959/">Flight Simulator 737-800 (flight route v2)</a></li>
+        <li><a href="https://scratch.mit.edu/projects/552647396/">Image Editor (CPD format)</a></li>
+        <li><a href="https://scratch.mit.edu/projects/711638071/">Mini Golf (internal level data storage, cloud data logs)</a></li>
+        <li><a href="https://scratch.mit.edu/projects/486632504/">Road Network Designer (road network save codes)</a></li>
+        <li><a href="https://scratch.mit.edu/projects/811805586/">Submersible (game progress save codes)</a></li>
+        <li><a href="https://scratch.mit.edu/projects/737370377/">Mindustry-Inspired Tower Defense (internal level data storage)</a></li>
+    </ul>
+
+</div>
+
+
+</body>
+
+</html>
