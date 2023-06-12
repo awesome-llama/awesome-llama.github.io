@@ -11,14 +11,21 @@
 <body>
 
 <script>
-  // chat gpt helped
   async function getImageData() {
-    var texturesStandard = await fetch("compressed_textures_full.txt").then((response) => response.text());
-    var dataLength = (texturesStandard.length/1000000).toFixed(2);
-
-    navigator.clipboard.writeText(texturesStandard);
-
+    let texturesStandard = await fetch("compressed_textures_full.txt").then(
+      (response) => {if (response.ok) {
+        return response.text();
+      }
+      alert("Failed to get data!")
+      throw new Error("Error");
+    }
+      );
+    
+    let dataLength = (texturesStandard.length/1000000).toFixed(2);
+    await navigator.clipboard.writeText(texturesStandard);
+    
     alert("Copied texture to clipboard! (" + dataLength + " MB in size)");
+
   }
     
 </script>
@@ -26,24 +33,18 @@
 
 <div class="navbar">
   <div>
-    <a href="index.html" class="navbtn">Home</a>
-    <a href="https://turbowarp.org/861541218" class="navbtn">TM3D (TurboWarp)</a>
+    <a href="/" class="navbtn">Home</a>
+    <a href="tm3d" class="navbtn">The Mast</a>
   </div>
 </div>
 
   <div class="content">
-    <h1>The Mast</h1>
+    <h1>The Mast Textures</h1>
     <hr>
-    <h2>You are probably here for the textures, click the button below to copy them to your clipboard.</h2>
+    <h2>Click the button below to copy the texture data to your clipboard.</h2>
     <button onclick="getImageData()" style="padding: 1em;">Copy textures to clipboard</button>
     <p>Then, go back to the project and paste them in to the input box that should've popped up. It will lag the game so hit enter as soon as you paste it, you don't need to wait to see the pasted text appear. Please note that there is a chance that this does not work fully. If your clipboard has a text length limitation, the entire texture might not've been copied. I don't have a solution for this.</p>
-    <br>
-    <h2>How does it work?</h2>
-    <p>The textures the game uses are images of varying sizes. I use a custom image format that consists entirely of printable ASCII characters. 94 of them, to be exact. The 95th character is whitespace, which I also use to separate the textures from each other! This image format can support 24-bit RGB data and compress it decently. I generate this format with a Python script and the project itself has its own script to read it.</p>
-    <br>
-    <h2>What do the textures actually look like?</h2>
-    <p>I think they look pretty interesting. Since they are baked with lighting, they come with a lot of unique detail. Here's one of them... but it might spoil the game a little: <a href="img/region_start_off.png">region_start_off.png</a></p>
-    
+
 </div>
 
 
