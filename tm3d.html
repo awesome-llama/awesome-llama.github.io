@@ -11,7 +11,7 @@
 <body>
 <div class="navbar">
   <div>
-    <a href="index.html" class="navbtn">Home</a>
+    <a href="/" class="navbtn">Home</a>
   </div>
 </div>
 
@@ -50,7 +50,8 @@
     <p class="code">[texture_name] [number_of_pixels_total] [texture_width] [texture_height] [checksum] [compresed_data]</p>
     <p>This repeats for every texture needed.</p>
     <p>The checksum is used to ensure texture data is intact. It is just a sum of the compressed data stream with each character being counted using its index in a list (matches the ordering of ASCII except with different indices, ! is 1).</p>
-
+    <p>Here's one of the textures in a format that can be seen: <a href="img/region_start_off.png">region_start_off.png</a></p>
+    <p>If you want the texture data in text form, go here: <a href="tex">The Mast Textures</a></p>
     <h2>Models</h2>
     <p>The world was created in Blender. I have a single .blend file storing everything and this gets exported to .obj which the project is able to read. Inside the project is a list called WORLD.obj, this is the file with lines as seprate items.</p>
     <p>There is a very important naming system being used to specify what each mesh is responsible for:</p>
