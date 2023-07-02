@@ -26,7 +26,7 @@
     
     <img src=https://cdn2.scratch.mit.edu/get_image/project/861541218_480x360.png>
     <br>
-    <p>A textured 3D game set on a fictional planet. Explore highly detailed environments and structures and uncover the events that took place. Inspired by Infra and Rain World, among other things.</p>
+    <p>A textured 3D game set on a fictional planet. Explore highly detailed environments and structures and uncover the events that took place. Inspired by <a href="https://en.wikipedia.org/wiki/Infra_(video_game)">Infra</a> and <a href="https://en.wikipedia.org/wiki/Rain_World">Rain World</a>, among other things.</p>
     <p>Controls can be set inside the project, by default it is WASD and mouse click/drag.</p>
     <br>
     <h2>General technical details</h2>
@@ -34,9 +34,10 @@
       <li>Z-up orientation, identical to Blender. Camera faces -Z (directly down) and up/down is around the X axis as well. Camera roll is not supported as it's not needed and just a waste of performance in this use case.</li>
       <li>Everything is Metric/SI.</li>
       <li>Rendering uses a textured tri filler created by <a href="https://scratch.mit.edu/projects/826059940/">Bambozzle</a>. This filler uses a depth buffer. No sorting is used.</li>
-      <li>A stripped-down version of the project exists as <a href="https://scratch.mit.edu/projects/861549676/">Nuclear Power Plant [3D]</a>. It is recommended you look at that first if you want to learn more or even develop your own games with it.</li>
+      <li>A stripped-down version of the project exists as <a href="https://scratch.mit.edu/projects/861549676/">Nuclear Power Plant [3D]</a>. It is recommended you look at that first if you want to learn more or even develop your own games with it. <a href="https://awesome-llama.github.io/model/nuclear_power_plant.blend">You can download the Blender file for it to use as a reference.</a></li>
     </ul>
 
+    <br>
     <h2>Textures</h2>
     <p>This project uses a <a href="https://scratch.mit.edu/projects/788861757/">custom text-based image format</a> developed by myself, with help from <a href="https://scratch.mit.edu/projects/693020370/">Arctenik</a>.
     This was necessary due to the fact that the textures take up a lot more space than what is allowed to be stored in a Scratch project's <span class="code">project.json</span>, which has a limit of 5MB, including scripts, vars, and anything else necessary to run the project.
@@ -52,6 +53,8 @@
     <p>The checksum is used to ensure texture data is intact. It is just a sum of the compressed data stream with each character being counted using its index in a list (matches the ordering of ASCII except with different indices, ! is 1).</p>
     <p>Here's one of the textures in a format that can be seen: <a href="img/region_start_off.png">region_start_off.png</a></p>
     <p>If you want the texture data in text form, go here: <a href="tex">The Mast Textures</a></p>
+    
+    <br>
     <h2>Models</h2>
     <p>The world was created in Blender. I have a single .blend file storing everything and this gets exported to .obj which the project is able to read. Inside the project is a list called WORLD.obj, this is the file with lines as seprate items.</p>
     <p>There is a very important naming system being used to specify what each mesh is responsible for:</p>
@@ -75,6 +78,7 @@
       Dynamic geometry does not need a bounding box, it will always be visible. A bounding box of size infinity is created automatically for the main room and dynamic geometry.
       </p>
     
+      <br>
       <h2>Player movement</h2>
       <p>This game uses a fixed update rate of 120Hz for player movement. This is to ensure that collisions occur correctly and are deterministic. The timer also is updated with this.
         Each game frame, a discrete number of movement ticks are run. At 60 FPS, that would be twice. 
