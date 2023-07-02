@@ -34,7 +34,8 @@
       <li>Z-up orientation, identical to Blender. Camera faces -Z (directly down) and up/down is around the X axis as well. Camera roll is not supported as it's not needed and just a waste of performance in this use case.</li>
       <li>Everything is Metric/SI.</li>
       <li>Rendering uses a textured tri filler created by <a href="https://scratch.mit.edu/projects/826059940/">Bambozzle</a>. This filler uses a depth buffer. No sorting is used.</li>
-      <li>A stripped-down version of the project exists as <a href="https://scratch.mit.edu/projects/861549676/">Nuclear Power Plant [3D]</a>. It is recommended you look at that first if you want to learn more or even develop your own games with it. <a href="https://awesome-llama.github.io/model/nuclear_power_plant.blend">You can download the Blender file for it to use as a reference.</a></li>
+      <li>A stripped-down version of the project exists as <a href="https://scratch.mit.edu/projects/861549676/">Nuclear Power Plant [3D]</a>. It is recommended you look at that first if you want to learn more or even develop your own games with it. <a href="https://awesome-llama.github.io/model/nuclear_power_plant.blend">You can download the Blender file for it to use as a reference.</a> Make sure you respect the object naming syntax required, older versions of Blender will not export the names correctly.</li>
+      <li>The text renderer can be found here: <a href="https://scratch.mit.edu/projects/735937335/">https://scratch.mit.edu/projects/735937335/</a> I made my own because I was not satisfied with other PTEs available. None of them can render text at small sizes like mine. Many are also bloated with features I would never use.</li>
     </ul>
 
     <br>
@@ -76,16 +77,24 @@
     </p>
     <p>Regions are split into rooms for improved performance. Rooms are separate objects. The default main room which is always visible will not have a subname, it will just be <span class="code">[region name]_VZ</span>. Any other room must be accompanied by a bounding box to be visible. The bounding box is calculated by the bounds of the tris of the object and can be of whatever you want. I use rectangular prisms to make visualisation easier. 
       Dynamic geometry does not need a bounding box, it will always be visible. A bounding box of size infinity is created automatically for the main room and dynamic geometry.
-      </p>
-    
-      <br>
-      <h2>Player movement</h2>
-      <p>This game uses a fixed update rate of 120Hz for player movement. This is to ensure that collisions occur correctly and are deterministic. The timer also is updated with this.
-        Each game frame, a discrete number of movement ticks are run. At 60 FPS, that would be twice. 
-        Limitations are in place just in case unexpected data is found, at most 20 ticks can occur each frame (equivalent to 6 FPS) and past that the player will move slower.
-      </p>
-      <p>The player is the camera. There is no differentiation.</p>
-      <p>Movement occurs along the XY plane and Z axis separately. The player moves horizontally as needed and collisions occur in 2D on line segments. If the player is above a floor triangle, the camera will be set so it is exactly 1.65m above it (the eye height of the player).</p>
+    </p>
+  
+    <br>
+    <h2>Player movement</h2>
+    <p>This game uses a fixed update rate of 120Hz for player movement. This is to ensure that collisions occur correctly and are deterministic. The timer also is updated with this.
+      Each game frame, a discrete number of movement ticks are run. At 60 FPS, that would be twice. 
+      Limitations are in place just in case unexpected data is found, at most 20 ticks can occur each frame (equivalent to 6 FPS) and past that, the player will move slower.
+    </p>
+    <p>The player is the camera. There is no differentiation.</p>
+    <p>Movement occurs along the XY plane and Z axis separately. The player moves horizontally as needed and collisions occur in 2D on line segments. If the player is above a floor triangle, the camera will be set so it is exactly 1.65m above it (the eye height of the player).</p>
+  
+    <br>
+    <h2>Debugging</h2>
+    <p>Enable dev (developer) mode. There is a variable in the project called <span class="code">! dev</span>, which should be set to 1 to enable. By default it is set based on the username (in the <span class="code">main</span> sprite). Dev mode provides access to a bunch of developer tools and cheats, including a command system. Note that it is primarily meant for the developer of the project (of course) and does not have the same polish the playable project has. The command input box can be opened with the / key. The command syntax is <span class="code">[command name] [params]</span>. The full list of commands can be seen inside the project, in the relevant sprite.</p>
+    <p>I highly recommend using TurboWarp or other scratch extensions to make use of the "debug blocks" in this project 
+      (the <span class="code">log</span>, <span class="code">warn</span> and <span class="code">error</span> blocks).
+      If an error occurs, it will likely be logged and give an explanation of what's known or assumed. Note that you should be using dev mode as some require it to be triggered.
+    </p>
   </div>
 
 
