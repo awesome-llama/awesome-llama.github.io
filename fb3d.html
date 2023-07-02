@@ -24,7 +24,7 @@
     </p>
     <img src=https://cdn2.scratch.mit.edu/get_image/project/773175240_480x360.png>
     <br>
-    <p>A textured 3D demo project inspired by the abandoned Hartsville Nuclear Plant and the game Infra.</p>
+    <p>A textured 3D demo project inspired by the abandoned <a href="https://en.wikipedia.org/wiki/Hartsville_Nuclear_Plant">Hartsville Nuclear Plant</a> and the game <a href="https://en.wikipedia.org/wiki/Infra_(video_game)">Infra</a>.</p>
     <p>WASD to move. Arrows or mouse (click and drag) to look around.
       <br>1,2,3,4,5,6,7 keys to choose resolution. </p>
     <br>
@@ -41,7 +41,48 @@
     <p>There's a sprite for importing .obj and the main thing you need to do there is import the data into the list with each item being a line of that file (it's just text). Look at mine to get an idea if you don't know. The texture data can be imported to a list in the project too. Note that the format expects each item to be a base-10 conversion of hexadecimal RGB (so essentially the numbers 0-16777215). There are some blocks and scripts in that same texture sprite that you may need to run to compress the image and store in a variable. The way I have it set up is the texture gets decompressed when the project starts as it is a bit too big to save (load texture broadcast). Note that you also need to change the texture size variables to match the dimensions of your texture.</p>
     <p>Additionally you probably want collisions and for that you need an extra .obj file. It should contain the 3D floor composed of triangles, and the walls, just a bunch of line segments (the project ignores the line segment z axis and calculates collision in 2D like my golf game). Import it into the physics sprite in the same way as the visible model.</p>
     <p>Finally there are a few adjustments to make in Scratch. Manually edit the room bounding box list to correctly contain the "rooms" (the separate sections of the visible mesh as mentioned above). This list determines which rooms should be visible based on the camera's position. Display the room if the camera is in its bounding box. The list expects a room number followed by 2 sets of x,y coordinates (bottom left, top right). Then see the other sprites and make changes as needed, for example the sound emitters, footstep sound locations, and the start point of the camera.</p>
-</div>
+    
+    <br>
+
+    <h2>What have people said about the project?</h2>
+    <p>According to commenters, the project looks like...</p>
+    <ul>
+      <li>ps1 graphics</li>
+      <li>ps2 graphics</li>
+      <li>unreal engine</li>
+      <li>unity engine</li>
+      <li>half life 1</li>
+      <li>half life 2</li>
+      <li>half life next (a book I assume they are referring to?)</li>
+      <li>valve</li>
+      <li>gmod</li>
+      <li>infra</li>
+      <li>"a horror game"</li>
+      <li>teardown</li>
+      <li>scp containment breach</li>
+      <li>scp</li>
+      <li>scp 2.0</li>
+      <li>the backrooms</li>
+      <li>"RTX Potato 4090 Ti"</li>
+      <li>"games puppetcombo makes"</li>
+      <li>satisfactory</li>
+      <li>portal 2 chapter 6</li>
+      <li>doom</li>
+      <li>"scribbled by a 5 year-old"</li>
+      <li>minecraft</li>
+      <li>poppy playtime</li>
+      <li>maze runner</li>
+      <li>"weird fallout shelter"</li>
+      <li>roblox doors</li>
+      <li>among us</li>
+      <li>"cod black ops for the ds"</li>
+      <li>0x10c</li>
+      <li>flee the facility on Roblox</li>
+      <li>Chernobyl</li>
+      <li>counter strike 1.6 airplane map</li>
+      <li>stray</li>
+    </ul>
+  </div>
 
 
 </body>
