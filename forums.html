@@ -43,6 +43,29 @@
 
   <hr>
 
+  <h3>Rotate towards direction / Signed direction difference</h3>
+  <p class="code">
+    You can find the signed difference between 2 directions with this:
+    difference = (((target direction - current direction) + 180) % 360) - 180
+    <br><br>
+    in scratchblocks...
+    <br>
+    [scratchblocks]
+    (((((target direction) - (current direction)) + (180)) mod (360)) - (180))
+    [/scratchblocks]
+    <br><br>
+    Then, you can rotate left or right depending on whether the difference is positive or negative.
+    I use mod 360 and it does work in this case because of the adding and subtracting of 180 which shifts where the mod wraps the numbers.
+    <br><br>
+    You can see an interactive example of the above here:
+    <br>
+    https://scratch.mit.edu/projects/687354428/
+    [url=https://scratch.mit.edu/projects/687354428/][img]https://cdn2.scratch.mit.edu/get_image/project/687354428_144x108.png[/img][/url]
+  </p>
+  <a href="https://scratch.mit.edu/discuss/post/7327635">Forum post</a>
+
+  <hr>
+
   <h3>Point towards x, y</h3>
   <p class="code">
   The Scratch Wiki Page ( https://en.scratch-wiki.info/wiki/List_of_Block_Workarounds ) has it included near the bottom.
