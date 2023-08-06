@@ -12,7 +12,7 @@
 
 <script>
   async function getImageData() {
-    let texturesStandard = await fetch("compressed_textures_full.txt").then(
+    let texturesStandard = await fetch("assets/tm3d/compressed_textures_full.txt").then(
       (response) => {if (response.ok) {
         return response.text();
       }
