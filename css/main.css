@@ -14,12 +14,17 @@ body {
 }
 
 .navbtn {
-    margin: 20px;
+    margin: 0px;
     float: left;
     display: block;
     color: #ffffff;
     font-size: 1.2em;
     text-decoration: none;
+}
+
+.navbtnlink {
+    display: block;
+    margin: 1em;
 }
 
 .content  {
