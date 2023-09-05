@@ -14,8 +14,8 @@
     <a href="/" class="navbtn"><div class="navbtnlink">Home</div></a>
     <a href="https://scratch.mit.edu/users/awesome-llama" class="navbtn"><div class="navbtnlink">Scratch</div></a>
     <a href="https://www.youtube.com/channel/UCi3owKAqA-tXUBNwN-Cc6uw" class="navbtn"><div class="navbtnlink">YouTube</div></a>
-    <a href="articles" class="navbtn"><div class="navbtnlink">Articles</div></a>
-    <a href="projects" class="navbtn"><div class="navbtnlink">Projects</div></a>
+    <a href="/articles" class="navbtn"><div class="navbtnlink">Articles</div></a>
+    <a href="/projects" class="navbtn"><div class="navbtnlink">Projects</div></a>
   </div>
 </div>
 
@@ -25,7 +25,7 @@
     <p>Play it here: 
       <b><a href="https://turbowarp.org/861541218">TurboWarp</a></b> |  
       <b><a href="https://scratch.mit.edu/projects/861541218">Scratch</a></b> |  
-      <b><a href="projects/the_mast">Standalone (TW packager)</a></b>
+      <b><a href="/projects/the_mast">Standalone (TW packager)</a></b>
     </p>
     
     <img src=https://cdn2.scratch.mit.edu/get_image/project/861541218_480x360.png>
@@ -49,15 +49,15 @@
     Costumes and audio are stored separately and have their own limit of 10MB each, no limit on total count. This image format compresses 24-bit RGB images which you can read about in more detail in the linked project description.</p>
     <p>The project size limit leaves few options for storing the needed textures. Even with compression, the full-res textures do not fit. I provide a low-res version in the project that can be loaded at any time but the full-res textures must either be scanned or pasted in via a text input box.
     The pipeline for importing full-res textures can be seen below. Half-res textures are the exact same except there is no branch for image scanning as it doesn't need it.</p>
-    <img src="img/TM3D_texture_data_flow.png">
+    <img src="/img/TM3D_texture_data_flow.png">
     <p>Additionally it must be noted that an exception is made for the starting Pod region. The player doesn't get to choose the texture quality for it, the full-res texture is automatically loaded from a separate variable storing it.</p>
 
     <p>A compressed texture by itself is pretty useless, it's just a stream of pixel colours. To make it usable, "metadata" is included and this is handled in the above diagram too. The format for the actual string accepted by the project is (spaces separate values):</p>
     <p class="code">[texture_name] [number_of_pixels_total] [texture_width] [texture_height] [checksum] [compresed_data]</p>
     <p>This repeats for every texture needed.</p>
     <p>The checksum is used to ensure texture data is intact. It is just a sum of the compressed data stream with each character being counted using its index in a list (matches the ordering of ASCII except with different indices, ! is 1).</p>
-    <p>Here's one of the textures in a format that can be seen: <a href="img/region_start_off.png">region_start_off.png</a></p>
-    <p>If you want the texture data in text form, go here: <a href="tex">The Mast Textures</a></p>
+    <p>Here's one of the textures in a format that can be seen: <a href="/img/region_start_off.png">region_start_off.png</a></p>
+    <p>If you want the texture data in text form, go here: <a href="/tex">The Mast Textures</a></p>
     
     <br>
     <h2>Models</h2>
