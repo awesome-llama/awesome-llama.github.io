@@ -1,3 +1,7 @@
 modified (censored) to be distributable
 
 created by awesome-llama
+
+---
+
+if you are looking for the 3D models, export them from the Scratch game. I promise it's not hard! Export the list, rename it to .obj
