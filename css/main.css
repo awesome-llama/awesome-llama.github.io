@@ -74,3 +74,16 @@ footer {
 ul {
     font-size: 1.2em;
 }
+
+th, td {
+    border: 1px solid;
+    border-color: #6c6c6c;
+    border-spacing: 0px;
+    padding: 0.2em;
+  }
+
+table {
+    border: 1px solid;
+    border-color: #0000004b;
+}
+
