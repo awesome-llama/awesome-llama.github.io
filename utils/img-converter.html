@@ -39,7 +39,7 @@
                     <option value="+x-y">left-to-right scanlines, top-to-bottom</option>
                 </select>
             </label>
-
+            <br>
             <label class="options">
                 Format
                 <select id="encodingFormat" name="Format">
@@ -54,16 +54,15 @@
         </div>
         <br>
         <div style="display: block;">
-            <button onclick="convertImage()" style="padding: 5px; font-weight: bold;">Convert</button>
-            <button onclick="copyTextbox()" style="padding: 5px;">Copy to clipboard</button>
-            <button onclick="downloadTextbox()" style="padding: 5px;">Download</button>
-            <button onclick="clearTextbox()" style="padding: 5px;">Clear</button>
+            <button id="convertImage" class="mainButtons" style="font-weight: bold;">Convert</button>
+            <button id="copyTextbox" class="mainButtons">Copy to clipboard</button>
+            <button id="downloadTextbox" class="mainButtons">Download</button>
+            <button id="clearTextbox" class="mainButtons">Clear</button>
         </div>
-        
 
         <textarea id="outputTextbox" readonly></textarea>
         
-        <script src="img-converter.js"></script>
+        <script src="img-converter.js" type="module"></script>
     </div>
 </body>
 </html>

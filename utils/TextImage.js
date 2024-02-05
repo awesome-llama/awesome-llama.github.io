@@ -3,7 +3,6 @@ Be warned, this code is probably poorly written!
 If you have feedback, I'd like to hear it. Alternatively, contribute code changes!
 */
 
-
 import { arrayRGBAToRGB } from './px-processing.js';
 import { processImagePreview, copyTextbox, downloadTextbox, clearTextbox } from './converter-ui.js';
 
@@ -46,31 +45,7 @@ function convertImage() {
             alert("Unknown pixel order");
     }
 
-    // Choose correct encoder for pixelData
-    switch (document.getElementById('encodingFormat').value) {
-        case ("RGBA list"):
-            outputTextArea.value = pixelData.flat().join('\n');
-            break;
+    outputTextArea.value = pixelData.flat().join('\n');
 
-        case ("RGBA JSON"):
-            outputTextArea.value = JSON.stringify(pixelData, null, 0);
-            break;
-        
-        case ("RGB list"):
-            outputTextArea.value = arrayRGBAToRGB(pixelData).flat().join('\n');
-            break;
-        
-        case ("Combined RGB list"):
-            outputTextArea.value = arrayRGBAToRGB(pixelData).map(e => [65536*e[0] + 256*e[1] + e[2]]).flat().join('\n');
-            break;
-            
-        case ("RGB JSON"):
-            outputTextArea.value = JSON.stringify(arrayRGBAToRGB(pixelData), null, 0);
-            break;
-        
-        default:
-            alert("Unknown format");
-
-    }
 }
 

@@ -1,32 +1,70 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>TextImage Converter</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
-    <link rel="stylesheet" href="converter.css">
+    <link rel="stylesheet" href="/css/converter.css">
+    
 </head>
-
 <body>
-<div class="navbar">
-    <div>
-        <a href="/" class="navbtn"><div class="navbtnlink">Home</div></a>
-        <a href="/articles" class="navbtn"><div class="navbtnlink">Articles</div></a>
-        <a href="/projects" class="navbtn"><div class="navbtnlink">Projects</div></a>
-        <a href="/utils" class="navbtn"><div class="navbtnlink">Utilities</div></a>
+    <div class="navbar">
+        <div>
+            <a href="/" class="navbtn"><div class="navbtnlink">Home</div></a>
+            <a href="/articles" class="navbtn"><div class="navbtnlink">Articles</div></a>
+            <a href="/projects" class="navbtn"><div class="navbtnlink">Projects</div></a>
+            <a href="/utils" class="navbtn"><div class="navbtnlink">Utilities</div></a>
+        </div>
     </div>
-</div>
 
     <div class="content">
-    <h1>TextImage Converter</h1>
-    <hr>
-    <p>
-        WIP
-    </p>
+        <h1>TextImage Converter (WIP)</h1>
+        
+        <div class="groupBox">
+            <input type="file" id="imageInput" accept="image/*">
+            <div style="margin-top: 5px;">
+                <canvas id="imageCanvas"></canvas>
+            </div>
+            <p id="imageStats" class="imageStats"></p>
+        </div>
 
-</div>
+        <div class="groupBox">
+            <label class="options">
+                Pixel order
+                <select id="pixelOrder" name="Pixel order">
+                    <option value="+x+y">left-to-right scanlines, bottom-to-top</option>
+                    <option value="+x-y">left-to-right scanlines, top-to-bottom</option>
+                </select>
+            </label>
+            <br>
+            <label class="options">
+                Compression tolerance (0 for lossless)
+                <input id="tolerance" type="range" name="Tolerance" min="0" max="16" step="1">
+            </label>
+            <br>
+            <label class="options">
+                Main layer: use A8
+                <input id="main use A8" type="checkbox" name="main use A8" >
+            </label>
+            <br>
+            <label class="options">
+                Include alpha (if it exists)
+                <input id="includeAlpha" type="checkbox" name="Include alpha" >
+            </label>
+        </div>
+        <br>
+        <div style="display: block;">
+            <button id="convertImage" class="mainButtons" style="font-weight: bold;">Convert</button>
+            <button id="copyTextbox" class="mainButtons">Copy to clipboard</button>
+            <button id="downloadTextbox" class="mainButtons">Download</button>
+            <button id="clearTextbox" class="mainButtons">Clear</button>
+        </div>
 
+        <textarea id="outputTextbox" readonly></textarea>
+        
+        <script src="img-converter.js" type="module"></script>
+    </div>
 </body>
 </html>

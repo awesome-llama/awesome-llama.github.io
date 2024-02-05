@@ -31,11 +31,14 @@ select {
     border-color: rgba(0, 0, 0, 0.1);
     background-color: #ffffff;
     margin-bottom: 5px;
-    display: grid;
 }
 
 .imageStats {
     font-size: 1em;
     margin: 0px;
     font-family: monospace;
+}
+
+.mainButtons {
+    padding: 5px;
 }
