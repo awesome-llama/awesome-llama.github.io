@@ -1,7 +1,7 @@
 body {
     margin: 0;
     background-color: #fbfbfb;
-    font-family: "Lato", sans-serif
+    font-family: "Lato", "Segoe UI", sans-serif, Verdana
 }
 
 .navbar {
@@ -20,6 +20,10 @@ body {
     color: #ffffff;
     font-size: 1.2em;
     text-decoration: none;
+}
+
+.navbtn:hover {
+    background-color: #0000003f;
 }
 
 .navbtnlink {
