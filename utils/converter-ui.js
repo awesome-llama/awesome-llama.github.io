@@ -32,8 +32,8 @@ export function clearTextbox() {document.getElementById('outputTextbox').value =
 
 export function downloadTextbox() {
     const textareaContent = document.getElementById('outputTextbox').value;
-
-    if (textareaContent == "") {return}
+    
+    if (textareaContent.trim() == "") return;
     
     let blob = new Blob([textareaContent], { type: 'text/plain' });
 
