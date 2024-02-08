@@ -20,51 +20,86 @@
     </div>
 
     <div class="content">
-        <h1>TextImage Converter (WIP)</h1>
+        <h2>TextImage Converter</h2>
+        <p>WIP</p>
+        <div class="tabButtons">
+            <button onclick="openTab('encode')" id="encodeTab">Encode</button>
+            <button onclick="openTab('decode')" id="decodeTab">Decode</button>
+        </div>
         
-        <div class="groupBox">
-            <input type="file" id="imageInput" accept="image/*">
-            <div style="margin-top: 5px;">
-                <canvas id="imageCanvas"></canvas>
+        <div id="encode" class="tabContent">
+            <div class="groupBox">
+                <input type="file" id="imageInput" accept="image/*">
+                <div style="margin-top: 5px;">
+                    <canvas id="imageCanvas"></canvas>
+                </div>
+                <p id="imageStats" class="imageStats"></p>
             </div>
-            <p id="imageStats" class="imageStats"></p>
+
+            <div class="groupBox">
+                <label class="options">
+                    Pixel order
+                    <select id="pixelOrder" name="Pixel order">
+                        <option value="+x+y">left-to-right scanlines, bottom-to-top</option>
+                        <option value="+x-y">left-to-right scanlines, top-to-bottom</option>
+                    </select>
+                </label>
+                <br>
+                <label class="options">
+                    Compression tolerance (0 for lossless)
+                    <input id="tolerance" type="range" name="Tolerance" min="0" max="16" step="1">
+                </label>
+                <br>
+                <label class="options">
+                    Main layer: use A8
+                    <input id="main use A8" type="checkbox" name="main use A8" >
+                </label>
+                <br>
+                <label class="options">
+                    Include alpha (if it exists)
+                    <input id="includeAlpha" type="checkbox" name="Include alpha" >
+                </label>
+            </div>
+            <br>
+            <div style="display: block;">
+                <button id="convertImage" class="mainButtons" style="font-weight: bold;">Convert</button>
+                <button id="copyTextbox" class="mainButtons">Copy to clipboard</button>
+                <button id="downloadTextbox" class="mainButtons">Download</button>
+                <button id="clearTextbox" class="mainButtons">Clear</button>
+            </div>
+
+            <textarea id="outputTextbox" readonly></textarea>
         </div>
 
-        <div class="groupBox">
-            <label class="options">
-                Pixel order
-                <select id="pixelOrder" name="Pixel order">
-                    <option value="+x+y">left-to-right scanlines, bottom-to-top</option>
-                    <option value="+x-y">left-to-right scanlines, top-to-bottom</option>
-                </select>
-            </label>
-            <br>
-            <label class="options">
-                Compression tolerance (0 for lossless)
-                <input id="tolerance" type="range" name="Tolerance" min="0" max="16" step="1">
-            </label>
-            <br>
-            <label class="options">
-                Main layer: use A8
-                <input id="main use A8" type="checkbox" name="main use A8" >
-            </label>
-            <br>
-            <label class="options">
-                Include alpha (if it exists)
-                <input id="includeAlpha" type="checkbox" name="Include alpha" >
-            </label>
-        </div>
-        <br>
-        <div style="display: block;">
-            <button id="convertImage" class="mainButtons" style="font-weight: bold;">Convert</button>
-            <button id="copyTextbox" class="mainButtons">Copy to clipboard</button>
-            <button id="downloadTextbox" class="mainButtons">Download</button>
-            <button id="clearTextbox" class="mainButtons">Clear</button>
-        </div>
+        <div id="decode" class="tabContent">
+            <p>Paste TextImage here:</p>
+            <textarea id="inputTextbox"></textarea>
 
-        <textarea id="outputTextbox" readonly></textarea>
-        
-        <script src="img-converter.js" type="module"></script>
+
+        </div>
     </div>
+
+    <script src="img-converter.js" type="module"></script>
+
+    <script>
+        function openTab(tabName) {
+            // Hide all tabs
+            for (const elem of document.getElementsByClassName("tabContent")) {
+                elem.style.display = "none";
+            }
+
+            // Show the tab contents
+            document.getElementById(tabName).style.display = "block";
+            
+            // Reset tab buttons
+            for (const elem of document.getElementsByTagName("button")) {
+                elem.style.backgroundColor = "";
+            }
+            
+            document.getElementById(tabName + "Tab").style.backgroundColor = "#cbb";
+        }
+        
+        openTab('encode'); // default, open the "Encode" tab
+      </script>
 </body>
 </html>

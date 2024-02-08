@@ -20,49 +20,49 @@
     </div>
 
     <div class="content">
-        <h1>Image Converter</h1>
+        <h2>Image Converter</h2>
         <p><i>Convert images to a variety of text-based formats</i></p>
-        
-        <div class="groupBox">
-            <input type="file" id="imageInput" accept="image/*">
-            <div style="margin-top: 5px;">
-                <canvas id="imageCanvas"></canvas>
+        <div id="encode" class="tabContent">
+            <div class="groupBox">
+                <input type="file" id="imageInput" accept="image/*">
+                <div style="margin-top: 5px;">
+                    <canvas id="imageCanvas"></canvas>
+                </div>
+                <p id="imageStats" class="imageStats"></p>
             </div>
-            <p id="imageStats" class="imageStats"></p>
-        </div>
 
-        <div class="groupBox">
-            <label class="options">
-                Pixel order
-                <select id="pixelOrder" name="Pixel order">
-                    <option value="+x+y">left-to-right scanlines, bottom-to-top</option>
-                    <option value="+x-y">left-to-right scanlines, top-to-bottom</option>
-                </select>
-            </label>
+            <div class="groupBox">
+                <label class="options">
+                    Pixel order
+                    <select id="pixelOrder" name="Pixel order">
+                        <option value="+x+y">left-to-right scanlines, bottom-to-top</option>
+                        <option value="+x-y">left-to-right scanlines, top-to-bottom</option>
+                    </select>
+                </label>
+                <br>
+                <label class="options">
+                    Format
+                    <select id="encodingFormat" name="Format">
+                        <option value="RGB list">RGB list</option>
+                        <option value="RGBA list">RGBA list</option>
+                        <option value="Combined RGB list">Combined RGB list</option>
+                        <hr>
+                        <option value="RGB JSON">RGB JSON</option>
+                        <option value="RGBA JSON">RGBA JSON</option>
+                    </select>
+                </label>
+            </div>
             <br>
-            <label class="options">
-                Format
-                <select id="encodingFormat" name="Format">
-                    <option value="RGB list">RGB list</option>
-                    <option value="RGBA list">RGBA list</option>
-                    <option value="Combined RGB list">Combined RGB list</option>
-                    <hr>
-                    <option value="RGB JSON">RGB JSON</option>
-                    <option value="RGBA JSON">RGBA JSON</option>
-                </select>
-            </label>
-        </div>
-        <br>
-        <div style="display: block;">
-            <button id="convertImage" class="mainButtons" style="font-weight: bold;">Convert</button>
-            <button id="copyTextbox" class="mainButtons">Copy to clipboard</button>
-            <button id="downloadTextbox" class="mainButtons">Download</button>
-            <button id="clearTextbox" class="mainButtons">Clear</button>
-        </div>
+            <div style="display: block;">
+                <button id="convertImage" class="mainButtons" style="font-weight: bold;">Convert</button>
+                <button id="copyTextbox" class="mainButtons">Copy to clipboard</button>
+                <button id="downloadTextbox" class="mainButtons">Download</button>
+                <button id="clearTextbox" class="mainButtons">Clear</button>
+            </div>
 
-        <textarea id="outputTextbox" readonly></textarea>
-        
-        <script src="img-converter.js" type="module"></script>
+            <textarea id="outputTextbox" readonly></textarea>
+        </div>
     </div>
+    <script src="img-converter.js" type="module"></script>
 </body>
 </html>

@@ -3,6 +3,7 @@ Be warned, this code is probably poorly written!
 If you have feedback, I'd like to hear it. Alternatively, contribute code changes!
 */
 
+// This file contains all the shared functions for controlling the text box
 
 import { arrayRGBAToRGB } from './px-processing.js';
 import { processImagePreview, copyTextbox, downloadTextbox, clearTextbox } from './converter-ui.js';
