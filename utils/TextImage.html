@@ -21,7 +21,6 @@
 
     <div class="content">
         <h2>TextImage Converter</h2>
-        <p>WIP</p>
         <div class="tabButtons">
             <button onclick="openTab('encode')" id="encodeTab">Encode</button>
             <button onclick="openTab('decode')" id="decodeTab">Decode</button>
@@ -51,7 +50,7 @@
                 </label>
                 <br>
                 <label class="options">
-                    Main layer: use A8
+                    Encode main layer as greyscale (A8)
                     <input id="main use A8" type="checkbox" name="main use A8" >
                 </label>
                 <br>
@@ -60,22 +59,46 @@
                     <input id="includeAlpha" type="checkbox" name="Include alpha" >
                 </label>
             </div>
-            <br>
-            <div style="display: block;">
-                <button id="convertImage" class="mainButtons" style="font-weight: bold;">Convert</button>
-                <button id="copyTextbox" class="mainButtons">Copy to clipboard</button>
-                <button id="downloadTextbox" class="mainButtons">Download</button>
-                <button id="clearTextbox" class="mainButtons">Clear</button>
-            </div>
+            <div class="groupBox">
+                <div style="display: block;">
+                    <button id="convertImage" class="mainButtons" style="font-weight: bold;">Convert</button>
+                    <button id="copyTextbox" class="mainButtons">Copy to clipboard</button>
+                    <button id="downloadTextbox" class="mainButtons">Download</button>
+                    <button id="clearTextbox" class="mainButtons">Clear</button>
+                </div>
 
-            <textarea id="outputTextbox" readonly></textarea>
+                <textarea id="outputTextbox" class="largeTextArea" readonly></textarea>
+            </div>
         </div>
 
         <div id="decode" class="tabContent">
-            <p>Paste TextImage here:</p>
-            <textarea id="inputTextbox"></textarea>
-
-
+            <div class="groupBox">
+                <input type="file" id="imageInput" accept="image/*">
+                <textarea id="inputTextbox" class="largeTextArea" placeholder="Input TextImage here..."></textarea>
+            </div>
+            <div class="groupBox">
+                <label class="options">
+                    Map layer to image RGB
+                    <textarea id="layerToRGB" class="optionTextArea">main</textarea>
+                </label>
+                <br>
+                <label class="options">
+                    Map layer to image A
+                    <textarea id="layerToA" class="optionTextArea">alpha</textarea>
+                </label>
+            </div>
+            
+            <div class="groupBox">
+                <div style="display: block;">
+                    <button id="decodeTextImage" class="mainButtons" style="font-weight: bold;">Convert</button>
+                    <button id="downloadImage" class="mainButtons">Download</button>
+                </div>
+                
+                <div style="margin-top: 5px;">
+                    <canvas id="imageCanvas"></canvas>
+                </div>
+            </div>
+            
         </div>
     </div>
 
