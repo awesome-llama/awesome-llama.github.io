@@ -127,3 +127,20 @@ table {
     margin-block-start: 0;
     margin-block-end: 0;
 }
+
+
+table {
+    border-collapse: collapse;
+    border: solid 2px #555;
+    border-radius: 4px;
+}
+
+
+th, td {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+th {
+    background-color: #58585816;
+}
