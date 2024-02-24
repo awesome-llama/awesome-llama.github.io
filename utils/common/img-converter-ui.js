@@ -3,21 +3,18 @@ Be warned, this code is probably poorly written!
 If you have feedback, I'd like to hear it. Alternatively, contribute code changes!
 */
 
-
-export function processImagePreview() {
+export function processImagePreview(targetImageInput, targetImageCanvas) {
     // For displaying the image preview in a canvas
-    const input = document.getElementById('imageInput');
-    const canvas = document.getElementById('imageCanvas');
-    const context = canvas.getContext('2d', {willReadFrequently: true});
+    const context = targetImageCanvas.getContext('2d', {willReadFrequently: true});
     
-    let file = input.files[0];
+    let file = targetImageInput.files[0];
     let reader = new FileReader();
 
     reader.onload = function (e) {
         let img = new Image();
         img.onload = function () {
-            canvas.width = img.width;
-            canvas.height = img.height;
+            targetImageCanvas.width = img.width;
+            targetImageCanvas.height = img.height;
             context.drawImage(img, 0, 0);
             document.getElementById("imageStats").innerText = `dimensions: ${img.width}x${img.height}, total pixels: ${img.width*img.height}`;
         };
@@ -27,11 +24,16 @@ export function processImagePreview() {
     reader.readAsDataURL(file);
 }
 
-export function copyTextbox() {navigator.clipboard.writeText(document.getElementById('outputTextbox').value)}
-export function clearTextbox() {document.getElementById('outputTextbox').value = ""}
+export function copyTextArea(targetTextArea) {
+    navigator.clipboard.writeText(targetTextArea.value);
+}
 
-export function downloadTextbox() {
-    const textareaContent = document.getElementById('outputTextbox').value;
+export function clearTextArea(targetTextArea) {
+    targetTextArea.value = "";
+}
+
+export function downloadTextArea(targetTextArea) {
+    const textareaContent = targetTextArea.value;
     
     if (textareaContent.trim() == "") return;
     

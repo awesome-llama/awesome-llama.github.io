@@ -3,25 +3,28 @@ Be warned, this code is probably poorly written!
 If you have feedback, I'd like to hear it. Alternatively, contribute code changes!
 */
 
-// This file contains all the shared functions for controlling the text box
+import { arrayRGBAToRGB } from './common/px-processing.js';
+import { processImagePreview, copyTextArea, downloadTextArea, clearTextArea } from './common/img-converter-ui.js';
 
-import { arrayRGBAToRGB } from './px-processing.js';
-import { processImagePreview, copyTextbox, downloadTextbox, clearTextbox } from './converter-ui.js';
+const outputTextArea = document.getElementById('outputTextArea');
+const targetImageInput = document.getElementById('imageInput');
+const targetImageCanvas = document.getElementById('imageCanvas');
 
-// Buttons
-document.getElementById('convertImage').addEventListener('click', convertImage);
-document.getElementById('copyTextbox').addEventListener('click', copyTextbox);
-document.getElementById('downloadTextbox').addEventListener('click', downloadTextbox);
-document.getElementById('clearTextbox').addEventListener('click', clearTextbox);
+document.getElementById('convertImageToText').addEventListener('click', convertImageToText);
+document.getElementById('copyTextArea').addEventListener('click', function() {copyTextArea(outputTextArea)});
+document.getElementById('downloadTextArea').addEventListener('click', function() {downloadTextArea(outputTextArea)});
+document.getElementById('clearTextArea').addEventListener('click', function() {clearTextArea(outputTextArea)});
 
-// Trigger processImagePreview when a file is selected
-document.getElementById('imageInput').addEventListener('change', processImagePreview);
+targetImageInput.addEventListener('change', function() {
+    processImagePreview(targetImageInput, targetImageCanvas) // Trigger when a file is selected
+});
 
 
-function convertImage() {
-    const canvas = document.getElementById('imageCanvas');
+function convertImageToText() {
+    /* Image converter function - convert to various text formats (but not TextImage) */ 
+    
+    const canvas = targetImageCanvas;
     const context = canvas.getContext('2d', {willReadFrequently: true});
-    const outputTextArea = document.getElementById('outputTextbox');
 
     // Get pixel values as array
     let imageData = context.getImageData(0, 0, canvas.width, canvas.height);

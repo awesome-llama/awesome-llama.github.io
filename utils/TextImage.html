@@ -61,20 +61,20 @@
             </div>
             <div class="groupBox">
                 <div style="display: block;">
-                    <button id="convertImage" class="mainButtons" style="font-weight: bold;">Convert</button>
-                    <button id="copyTextbox" class="mainButtons">Copy to clipboard</button>
-                    <button id="downloadTextbox" class="mainButtons">Download</button>
-                    <button id="clearTextbox" class="mainButtons">Clear</button>
+                    <button id="encodeTextImage" class="mainButtons" style="font-weight: bold;">Convert</button>
+                    <button id="copyTextArea" class="mainButtons">Copy to clipboard</button>
+                    <button id="downloadTextArea" class="mainButtons">Download</button>
+                    <button id="clearTextArea" class="mainButtons">Clear</button>
                 </div>
 
-                <textarea id="outputTextbox" class="largeTextArea" readonly></textarea>
+                <textarea id="outputTextArea" class="largeTextArea" readonly></textarea>
             </div>
         </div>
 
         <div id="decode" class="tabContent">
             <div class="groupBox">
                 <input type="file" id="imageInput" accept="image/*">
-                <textarea id="inputTextbox" class="largeTextArea" placeholder="Input TextImage here..."></textarea>
+                <textarea id="inputTextArea" class="largeTextArea" placeholder="Input TextImage here..."></textarea>
             </div>
             <div class="groupBox">
                 <label class="options">
@@ -102,7 +102,7 @@
         </div>
     </div>
 
-    <script src="img-converter.js" type="module"></script>
+    <script src="TextImage.js" type="module"></script>
 
     <script>
         function openTab(tabName) {
