@@ -20,7 +20,7 @@
     </div>
 
     <div class="content">
-        <h2>TextImage Converter (WIP, not functional)</h2>
+        <h2>TextImage Converter (WIP)</h2>
         <div class="tabButtons">
             <button onclick="openTab('encode')" id="encodeTab">Encode</button>
             <button onclick="openTab('decode')" id="decodeTab">Decode</button>
@@ -28,9 +28,9 @@
         
         <div id="encode" class="tabContent">
             <div class="groupBox">
-                <input type="file" id="imageInput" accept="image/*">
+                <input type="file" id="encodeImageInput" accept="image/*">
                 <div style="margin-top: 5px;">
-                    <canvas id="imageCanvas"></canvas>
+                    <canvas id="encodeImageCanvas"></canvas>
                 </div>
                 <p id="imageStats" class="imageStats"></p>
             </div>
@@ -46,56 +46,56 @@
                 <br>
                 <label class="options">
                     Compression tolerance (0 for lossless)
-                    <input id="tolerance" type="range" name="Tolerance" min="0" max="16" step="1">
+                    <input id="encodeTolerance" type="range" name="Tolerance" min="0" max="16" step="1" value="0">
                 </label>
                 <br>
                 <label class="options">
                     Encode main layer as greyscale (A8)
-                    <input id="main use A8" type="checkbox" name="main use A8" >
+                    <input id="encodeMainUseA8" type="checkbox" name="main use A8" >
                 </label>
                 <br>
                 <label class="options">
                     Include alpha (if it exists)
-                    <input id="includeAlpha" type="checkbox" name="Include alpha" >
+                    <input id="encodeIncludeAlpha" type="checkbox" name="Include alpha" >
                 </label>
             </div>
             <div class="groupBox">
                 <div style="display: block;">
-                    <button id="encodeTextImage" class="mainButtons" style="font-weight: bold;">Convert</button>
-                    <button id="copyTextArea" class="mainButtons">Copy to clipboard</button>
-                    <button id="downloadTextArea" class="mainButtons">Download</button>
-                    <button id="clearTextArea" class="mainButtons">Clear</button>
+                    <button id="encodeConvertTextImage" class="mainButtons" style="font-weight: bold;">Convert</button>
+                    <button id="encodeCopyTextArea" class="mainButtons">Copy to clipboard</button>
+                    <button id="encodeDownloadTextArea" class="mainButtons">Download</button>
+                    <button id="encodeClearTextArea" class="mainButtons">Clear</button>
                 </div>
 
-                <textarea id="outputTextArea" class="largeTextArea" readonly></textarea>
+                <textarea id="encodeOutputTextArea" class="largeTextArea" readonly></textarea>
             </div>
         </div>
 
         <div id="decode" class="tabContent">
             <div class="groupBox">
-                <input type="file" id="imageInput" accept="image/*">
-                <textarea id="inputTextArea" class="largeTextArea" placeholder="Input TextImage here..."></textarea>
+                <input type="file" id="decodeImageInput" accept="text/*">
+                <textarea id="decodeInputTextArea" class="largeTextArea" placeholder="Input TextImage here..."></textarea>
             </div>
             <div class="groupBox">
                 <label class="options">
                     Map layer to image RGB
-                    <textarea id="layerToRGB" class="optionTextArea">main</textarea>
+                    <textarea id="decodeLayerToRGB" class="optionTextArea">main</textarea>
                 </label>
                 <br>
                 <label class="options">
                     Map layer to image A
-                    <textarea id="layerToA" class="optionTextArea">alpha</textarea>
+                    <textarea id="decodeLayerToA" class="optionTextArea">alpha</textarea>
                 </label>
             </div>
             
             <div class="groupBox">
                 <div style="display: block;">
-                    <button id="decodeTextImage" class="mainButtons" style="font-weight: bold;">Convert</button>
-                    <button id="downloadImage" class="mainButtons">Download</button>
+                    <button id="decodeConvertTextImage" class="mainButtons" style="font-weight: bold;">Convert</button>
+                    <button id="decodeDownloadImage" class="mainButtons">Download</button>
                 </div>
                 
                 <div style="margin-top: 5px;">
-                    <canvas id="imageCanvas"></canvas>
+                    <canvas id="decodeImageCanvas"></canvas>
                 </div>
             </div>
             
@@ -110,16 +110,14 @@
             for (const elem of document.getElementsByClassName("tabContent")) {
                 elem.style.display = "none";
             }
-
-            // Show the tab contents
-            document.getElementById(tabName).style.display = "block";
+            document.getElementById(tabName).style.display = "block"; // Show the tab contents
             
+
             // Reset tab buttons
             for (const elem of document.getElementsByTagName("button")) {
                 elem.style.backgroundColor = "";
             }
-            
-            document.getElementById(tabName + "Tab").style.backgroundColor = "#cbb";
+            document.getElementById(tabName + "Tab").style.backgroundColor = "#cbb"; // Highlight button
         }
         
         openTab('encode'); // default, open the "Encode" tab
