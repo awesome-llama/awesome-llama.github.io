@@ -36,28 +36,26 @@
             </div>
 
             <div class="groupBox">
-                <label class="options">
-                    Pixel order
+                <div class="setting">
+                    <label>Pixel order</label>
                     <select id="pixelOrder" name="Pixel order">
                         <option value="+x+y">left-to-right scanlines, bottom-to-top</option>
                         <option value="+x-y">left-to-right scanlines, top-to-bottom</option>
                     </select>
-                </label>
-                <br>
-                <label class="options">
-                    Compression tolerance (0 for lossless)
-                    <input id="encodeTolerance" type="range" name="Tolerance" min="0" max="16" step="1" value="0">
-                </label>
-                <br>
-                <label class="options">
-                    Encode main layer as greyscale (A8)
+                </div>
+                <div class="setting">
+                    <label>Compression tolerance (0 for lossless)</label>
+                    <input id="encodeTolerance" type="range" name="Tolerance" min="0" max="16" step="1" value="0" oninput="updateToleranceValue(this.value)" style="width: 200px;">
+                    <span id="toleranceValue">0</span>
+                </div>
+                <div class="setting">
+                    <label>Encode main layer as greyscale (A8)</label>
                     <input id="encodeMainUseA8" type="checkbox" name="main use A8" >
-                </label>
-                <br>
-                <label class="options">
-                    Include alpha (if it exists)
+                </div>
+                <div class="setting">
+                    <label>Include alpha (if it exists)</label>
                     <input id="encodeIncludeAlpha" type="checkbox" name="Include alpha" checked>
-                </label>
+                </div>
             </div>
             <div class="groupBox">
                 <div style="display: block;">
@@ -77,15 +75,14 @@
                 <textarea id="decodeInputTextArea" class="largeTextArea" placeholder="Input TextImage here..."></textarea>
             </div>
             <div class="groupBox">
-                <label class="options">
-                    Map layer to image RGB
+                <div class="setting">
+                    <label>Map layer to image RGB</label>
                     <textarea id="decodeLayerToRGB" class="optionTextArea">main</textarea>
-                </label>
-                <br>
-                <label class="options">
-                    Map layer to image A
+                </div>
+                <div class="setting">
+                    <label>Map layer to image A</label>
                     <textarea id="decodeLayerToA" class="optionTextArea">alpha</textarea>
-                </label>
+                </div>
             </div>
             
             <div class="groupBox">
@@ -121,6 +118,11 @@
         }
         
         openTab('encode'); // default, open the "Encode" tab
-      </script>
+    </script>
+    <script>
+        function updateToleranceValue(value) {
+            document.getElementById('toleranceValue').textContent = value;
+        }
+    </script>
 </body>
 </html>

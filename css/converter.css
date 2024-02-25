@@ -78,3 +78,9 @@ select {
     border-radius: 5px;
     padding: 10px;
 }
+
+.setting {
+    margin-top: 4px;
+    margin-bottom: 4px;
+    align-items: center;
+}

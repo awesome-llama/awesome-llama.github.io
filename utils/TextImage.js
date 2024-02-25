@@ -3,9 +3,10 @@ Be warned, this code is probably poorly written!
 If you have feedback, I'd like to hear it. Alternatively, contribute code changes!
 */
 
-import { CHARS, index_to_txt, col_to_vol_index, colToFtup } from './common/px-processing.js';
 import { processImagePreview, copyTextArea, downloadTextArea, clearTextArea, downloadImage } from './common/img-converter-ui.js';
+import { CHARS, indexToTxt, charIndex, colToVolIndex, volIndexToCol, colToFtup, ftupToCol, chunkRLE } from './common/px-processing.js';
 import { CSKV_write, CSKV_read } from './common/cskv-utils.js';
+
 
 /* ENCODE UI */
 const encodeImageInput = document.getElementById('encodeImageInput'); // choose file
@@ -105,13 +106,13 @@ function encodeTextImage(pixelData, imageDimensions, compressionTolerance=0, mai
         layers['main'] = {
             'type':'A8',
             'version':'0',
-            'data_stream':compressA8(pixelData.map(element => element[1]), imageDimensions),
+            'data_stream':compressA8(pixelData.map(element => element[1]), imageDimensions, true, compressionTolerance),
         }
     } else {
         layers['main'] = {
             'type':'RGB8',
             'version':'0',
-            'data_stream':compressRGB8(pixelData.map(element => element.slice(0, 3)), imageDimensions),
+            'data_stream':compressRGB8(pixelData.map(element => element.slice(0, 3)), imageDimensions, true, compressionTolerance),
         }
     }
 
@@ -122,7 +123,7 @@ function encodeTextImage(pixelData, imageDimensions, compressionTolerance=0, mai
             layers['alpha'] = {
                 'type':'A8',
                 'version':'0',
-                'data_stream':compressA8(alphaPixelData, imageDimensions),
+                'data_stream':compressA8(alphaPixelData, imageDimensions, true, compressionTolerance),
             }
         }
     }
@@ -156,29 +157,34 @@ function encodeTextImage(pixelData, imageDimensions, compressionTolerance=0, mai
 }
 
 
-function compressA8(datastream, dimensions, RLE = true) {
+function compressA8(datastream, dimensions, RLE=true, lossyTolerance=0) {
     return '';
 }
 
 
 
-function compressRGB8(datastream, dimensions, RLE = true) {
+function compressRGB8(datastream, dimensions, RLE=true, lossyTolerance=0) {
     /* Compress RGB 8 bit per channel data stream */
 
-    let chunks = dataStreamToChunksRGB8(datastream, dimensions); // get a list of chunks
+    let chunks = dataStreamToChunksRGB8(datastream, dimensions, lossyTolerance); // get a list of chunks
 
-    if (RLE) {chunks = chunkRLE(chunks, ChunkRGB8);} // second pass for RLE
+    if (RLE) {chunks = chunkRLE(chunks, ChunkRGB8)} // second pass for RLE
 
     //for (let c of chunks) {console.log(c.toString())}
 
     // final pass to convert chunks into strings:
     const stringChunks = chunks.map(chunk => {
         chunk instanceof ChunkRGB8;
-        return index_to_txt(chunk.indices());
+        return indexToTxt(chunk.indices());
     });
 
     return stringChunks.join('');
 }
+
+
+
+const RGB8_DEFAULT_VAL = [0,0,0]
+const VOLUMES = [[[-2,-1,-1],[5,4,4],1],[[-2,3,-1],[5,4,4],1],[[-2,-5,-1],[5,4,4],1],[[-2,-5,2],[5,4,4],1],[[-2,3,2],[5,4,4],1],[[-2,-1,2],[5,4,4],1],[[-2,-5,-5],[5,4,4],1],[[-2,3,-5],[5,4,4],1],[[-2,-1,-5],[5,4,4],1],[[3,-1,-5],[5,4,4],1],[[3,3,-5],[5,4,4],1],[[3,-5,-5],[5,4,4],1],[[3,-1,2],[5,4,4],1],[[3,3,2],[5,4,4],1],[[3,-5,2],[5,4,4],1],[[3,-5,-1],[5,4,4],1],[[3,3,-1],[5,4,4],1],[[3,-1,-1],[5,4,4],1],[[8,-1,-1],[5,4,4],1],[[8,3,-1],[5,4,4],1],[[8,-5,-1],[5,4,4],1],[[8,-5,2],[5,4,4],1],[[8,3,2],[5,4,4],1],[[8,-1,2],[5,4,4],1],[[8,-5,-5],[5,4,4],1],[[8,3,-5],[5,4,4],1],[[8,-1,-5],[5,4,4],1],[[-7,-1,-5],[5,4,4],1],[[-7,3,-5],[5,4,4],1],[[-7,-5,-5],[5,4,4],1],[[-7,-1,2],[5,4,4],1],[[-7,3,2],[5,4,4],1],[[-7,-5,2],[5,4,4],1],[[-7,-5,-1],[5,4,4],1],[[-7,3,-1],[5,4,4],1],[[-7,-1,-1],[5,4,4],1],[[-12,-1,-1],[5,4,4],1],[[-12,3,-1],[5,4,4],1],[[-12,-5,-1],[5,4,4],1],[[-12,-5,2],[5,4,4],1],[[-12,3,2],[5,4,4],1],[[-12,-1,2],[5,4,4],1],[[-12,-5,-5],[5,4,4],1],[[-12,3,-5],[5,4,4],1],[[-12,-1,-5],[5,4,4],1],[[-10,7,-9],[21,20,20],2],[[-10,-25,-9],[21,20,20],2],[[-10,-9,7],[21,20,20],2],[[-10,-9,-24],[21,20,20],2],[[11,-9,-8],[21,20,20],2],[[-31,-9,-8],[21,20,20],2],[[32,-9,-8],[21,20,20],2],[[-52,-9,-8],[21,20,20],2],[[53,-9,-8],[21,20,20],2],[[-73,-9,-8],[21,20,20],2],[[11,-9,-24],[21,20,20],2],[[11,-9,7],[21,20,20],2],[[11,-25,-9],[21,20,20],2],[[11,7,-9],[21,20,20],2],[[-31,7,-9],[21,20,20],2],[[-31,-25,-9],[21,20,20],2],[[-31,-9,7],[21,20,20],2],[[-10,11,-29],[21,20,20],2]]
 
 
 function dataStreamToChunksRGB8(imageArray, dimensions, lossyTolerance=0) {
@@ -221,8 +227,8 @@ function dataStreamToChunksRGB8(imageArray, dimensions, lossyTolerance=0) {
         return null;
     }
 
-    let colPrev = new Array(dimensions[0] + 2).fill(DEFAULT_VAL);
-    let colTable = new Array(CHARS.length).fill(DEFAULT_VAL);
+    let colPrev = new Array(dimensions[0] + 2).fill(RGB8_DEFAULT_VAL);
+    let colTable = new Array(CHARS.length).fill(RGB8_DEFAULT_VAL);
     let chunks = [];
     
     for (const col of imageArray) {
@@ -266,7 +272,7 @@ function dataStreamToChunksRGB8(imageArray, dimensions, lossyTolerance=0) {
 
         for (let i = 0; i < VOLUMES.length; i++) {
             let volume = VOLUMES[i];
-            let index = col_to_vol_index(YUVDiff, volume[0], volume[1]);
+            let index = colToVolIndex(YUVDiff, volume[0], volume[1]);
 
             if (index !== null) {
                 if (volume[2] === 1) {
@@ -296,8 +302,6 @@ function dataStreamToChunksRGB8(imageArray, dimensions, lossyTolerance=0) {
 
 
 
-const DEFAULT_VAL = [0,0,0]
-const VOLUMES = [[[-2,-1,-1],[5,4,4],1],[[-2,3,-1],[5,4,4],1],[[-2,-5,-1],[5,4,4],1],[[-2,-5,2],[5,4,4],1],[[-2,3,2],[5,4,4],1],[[-2,-1,2],[5,4,4],1],[[-2,-5,-5],[5,4,4],1],[[-2,3,-5],[5,4,4],1],[[-2,-1,-5],[5,4,4],1],[[3,-1,-5],[5,4,4],1],[[3,3,-5],[5,4,4],1],[[3,-5,-5],[5,4,4],1],[[3,-1,2],[5,4,4],1],[[3,3,2],[5,4,4],1],[[3,-5,2],[5,4,4],1],[[3,-5,-1],[5,4,4],1],[[3,3,-1],[5,4,4],1],[[3,-1,-1],[5,4,4],1],[[8,-1,-1],[5,4,4],1],[[8,3,-1],[5,4,4],1],[[8,-5,-1],[5,4,4],1],[[8,-5,2],[5,4,4],1],[[8,3,2],[5,4,4],1],[[8,-1,2],[5,4,4],1],[[8,-5,-5],[5,4,4],1],[[8,3,-5],[5,4,4],1],[[8,-1,-5],[5,4,4],1],[[-7,-1,-5],[5,4,4],1],[[-7,3,-5],[5,4,4],1],[[-7,-5,-5],[5,4,4],1],[[-7,-1,2],[5,4,4],1],[[-7,3,2],[5,4,4],1],[[-7,-5,2],[5,4,4],1],[[-7,-5,-1],[5,4,4],1],[[-7,3,-1],[5,4,4],1],[[-7,-1,-1],[5,4,4],1],[[-12,-1,-1],[5,4,4],1],[[-12,3,-1],[5,4,4],1],[[-12,-5,-1],[5,4,4],1],[[-12,-5,2],[5,4,4],1],[[-12,3,2],[5,4,4],1],[[-12,-1,2],[5,4,4],1],[[-12,-5,-5],[5,4,4],1],[[-12,3,-5],[5,4,4],1],[[-12,-1,-5],[5,4,4],1],[[-10,7,-9],[21,20,20],2],[[-10,-25,-9],[21,20,20],2],[[-10,-9,7],[21,20,20],2],[[-10,-9,-24],[21,20,20],2],[[11,-9,-8],[21,20,20],2],[[-31,-9,-8],[21,20,20],2],[[32,-9,-8],[21,20,20],2],[[-52,-9,-8],[21,20,20],2],[[53,-9,-8],[21,20,20],2],[[-73,-9,-8],[21,20,20],2],[[11,-9,-24],[21,20,20],2],[[11,-9,7],[21,20,20],2],[[11,-25,-9],[21,20,20],2],[[11,7,-9],[21,20,20],2],[[-31,7,-9],[21,20,20],2],[[-31,-25,-9],[21,20,20],2],[[-31,-9,7],[21,20,20],2],[[-10,11,-29],[21,20,20],2]]
 
 
 
@@ -376,54 +380,3 @@ class ChunkA8 {
     }
 }
 
-
-function chunkRLE(chunks, chunk_class) {
-    function nameEqual(name0, name1) {
-        return name0[0] == name1[0] && name0[1] == name1[1];
-    }
-
-    let output = [];
-    let buffer = [];
-    let buffer_op = null;
-
-    function _buffer_contents(buffer) {
-        let repeat_size_chars = 3 + buffer.length * buffer[0].size;
-        let buffer_size_chars = buffer.length * (1 + buffer[0].size);
-
-        if (repeat_size_chars < buffer_size_chars) {
-            let cd = [buffer[0].index, buffer.length];
-            for (let elem of buffer) {
-                cd = cd.concat(elem.data);
-            }
-
-            if (repeat_size_chars !== 1 + cd.length) {
-                throw new Error('Mismatch in size measurements for RLE');
-            }
-            
-            let rep = new chunk_class('repeat_op', 0, cd)
-            //console.debug(rep)
-            return [rep];
-        } else {
-            return buffer;
-        }
-    }
-
-    for (let chunk of chunks) {
-        //console.debug(chunk.toString())
-        if (buffer_op !== null && (!nameEqual(buffer_op, chunk.name) || buffer.length >= 93)) {
-            output = output.concat(_buffer_contents(buffer));
-            buffer = [];
-        }
-
-        buffer_op = chunk.name;
-        buffer.push(chunk);
-
-        //console.debug(output)
-    }
-
-    if (buffer_op !== null) {
-        output = output.concat(_buffer_contents(buffer));
-    }
-
-    return output;
-}
