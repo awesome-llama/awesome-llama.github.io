@@ -3,7 +3,7 @@ Be warned, this code is probably poorly written!
 If you have feedback, I'd like to hear it. Alternatively, contribute code changes!
 */
 
-import {} from './common/px-processing.js';
+import { CHARS, index_to_txt, col_to_vol_index, colToFtup } from './common/px-processing.js';
 import { processImagePreview, copyTextArea, downloadTextArea, clearTextArea, downloadImage } from './common/img-converter-ui.js';
 import { CSKV_write, CSKV_read } from './common/cskv-utils.js';
 
@@ -77,45 +77,56 @@ function encode() {
         default:
             alert("Unknown pixel order");
     }
+    
     //encodeOutputTextArea.value = pixelData.flat().join('\n'); // testing
-    encodeOutputTextArea.value = encodeTextImage(pixelData, [canvas.width, canvas.height]);
+    
+    const compressionTolerance = document.getElementById('encodeTolerance').value;
+    const includeAlpha = document.getElementById('encodeIncludeAlpha').checked;
+    const encodeMainAsA8 = document.getElementById('encodeMainUseA8').checked;
+    
+    encodeOutputTextArea.value = encodeTextImage(pixelData, [canvas.width, canvas.height], compressionTolerance, encodeMainAsA8, includeAlpha);
 
 }
 
 
 ///////////////
-
-
-
 // TextImage handling RGBA or RGB
 
-const CHARS = '!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'
 const MAGIC_NUM = 'txtimg'
 
 
-function encodeTextImage(pixelData, imageDimensions) {
+function encodeTextImage(pixelData, imageDimensions, compressionTolerance=0, mainUseA8=false, includeAlpha=true) {
     // pixelData is a list of 4-element colour channels
 
-    // Create layers:
     let layers = {};
 
-    // main RGB layer
-    layers['main'] = {
-        'type':'RGB8',
-        'version':'0',
-        'data_stream':compressRGB8(pixelData.map(element => element.slice(0, 3)), imageDimensions),
-    }
-
-    // alpha (only do it if needed)
-    const alphaPixelData = pixelData.map(element => [element[3]]).flat()
-    if (!(alphaPixelData.every(value => value === 255))) { 
-        layers['alpha'] = {
+    // main layer
+    if (mainUseA8) {
+        layers['main'] = {
             'type':'A8',
             'version':'0',
-            'data_stream':compressA8(alphaPixelData, imageDimensions),
+            'data_stream':compressA8(pixelData.map(element => element[1]), imageDimensions),
+        }
+    } else {
+        layers['main'] = {
+            'type':'RGB8',
+            'version':'0',
+            'data_stream':compressRGB8(pixelData.map(element => element.slice(0, 3)), imageDimensions),
         }
     }
 
+    // alpha layer
+    if (includeAlpha) {
+        const alphaPixelData = pixelData.map(element => [element[3]]).flat()
+        if (!(alphaPixelData.every(value => value === 255))) { 
+            layers['alpha'] = {
+                'type':'A8',
+                'version':'0',
+                'data_stream':compressA8(alphaPixelData, imageDimensions),
+            }
+        }
+    }
+    
     // Construct file:
 
     let header = {
@@ -289,41 +300,6 @@ const DEFAULT_VAL = [0,0,0]
 const VOLUMES = [[[-2,-1,-1],[5,4,4],1],[[-2,3,-1],[5,4,4],1],[[-2,-5,-1],[5,4,4],1],[[-2,-5,2],[5,4,4],1],[[-2,3,2],[5,4,4],1],[[-2,-1,2],[5,4,4],1],[[-2,-5,-5],[5,4,4],1],[[-2,3,-5],[5,4,4],1],[[-2,-1,-5],[5,4,4],1],[[3,-1,-5],[5,4,4],1],[[3,3,-5],[5,4,4],1],[[3,-5,-5],[5,4,4],1],[[3,-1,2],[5,4,4],1],[[3,3,2],[5,4,4],1],[[3,-5,2],[5,4,4],1],[[3,-5,-1],[5,4,4],1],[[3,3,-1],[5,4,4],1],[[3,-1,-1],[5,4,4],1],[[8,-1,-1],[5,4,4],1],[[8,3,-1],[5,4,4],1],[[8,-5,-1],[5,4,4],1],[[8,-5,2],[5,4,4],1],[[8,3,2],[5,4,4],1],[[8,-1,2],[5,4,4],1],[[8,-5,-5],[5,4,4],1],[[8,3,-5],[5,4,4],1],[[8,-1,-5],[5,4,4],1],[[-7,-1,-5],[5,4,4],1],[[-7,3,-5],[5,4,4],1],[[-7,-5,-5],[5,4,4],1],[[-7,-1,2],[5,4,4],1],[[-7,3,2],[5,4,4],1],[[-7,-5,2],[5,4,4],1],[[-7,-5,-1],[5,4,4],1],[[-7,3,-1],[5,4,4],1],[[-7,-1,-1],[5,4,4],1],[[-12,-1,-1],[5,4,4],1],[[-12,3,-1],[5,4,4],1],[[-12,-5,-1],[5,4,4],1],[[-12,-5,2],[5,4,4],1],[[-12,3,2],[5,4,4],1],[[-12,-1,2],[5,4,4],1],[[-12,-5,-5],[5,4,4],1],[[-12,3,-5],[5,4,4],1],[[-12,-1,-5],[5,4,4],1],[[-10,7,-9],[21,20,20],2],[[-10,-25,-9],[21,20,20],2],[[-10,-9,7],[21,20,20],2],[[-10,-9,-24],[21,20,20],2],[[11,-9,-8],[21,20,20],2],[[-31,-9,-8],[21,20,20],2],[[32,-9,-8],[21,20,20],2],[[-52,-9,-8],[21,20,20],2],[[53,-9,-8],[21,20,20],2],[[-73,-9,-8],[21,20,20],2],[[11,-9,-24],[21,20,20],2],[[11,-9,7],[21,20,20],2],[[11,-25,-9],[21,20,20],2],[[11,7,-9],[21,20,20],2],[[-31,7,-9],[21,20,20],2],[[-31,-25,-9],[21,20,20],2],[[-31,-9,7],[21,20,20],2],[[-10,11,-29],[21,20,20],2]]
 
 
-///////////////////////////
-
-function index_to_txt(indices) {
-    // Assuming CHARS is a global array in your JavaScript context
-    return indices.map(i => CHARS[i]).join('');
-}
-
-
-function col_to_vol_index(colour, origin=[0, 0, 0], dimensions=[21, 20, 20]) {
-    // Return the index of the colour inside the volume, None if out of bounds
-
-    let relative_colour = [colour[0] - origin[0], colour[1] - origin[1], colour[2] - origin[2]];
-
-    if (
-        relative_colour[0] >= 0 && relative_colour[0] < dimensions[0] &&
-        relative_colour[1] >= 0 && relative_colour[1] < dimensions[1] &&
-        relative_colour[2] >= 0 && relative_colour[2] < dimensions[2]
-    ) {
-        return dimensions[1] * dimensions[2] * relative_colour[0] + dimensions[2] * relative_colour[1] + relative_colour[2];
-    }
-
-    return null;
-}
-
-
-function colToFtup(colour) {
-    // ftup, or 4-tuple uses a mixed base of (21, 94, 94, 94) for representing a 3-tuple with bases (256, 256, 256).
-    let dec = 65536 * colour[0] + 256 * colour[1] + colour[2];
-    return [
-        Math.floor(dec / (94 * 94 * 94) % 21),
-        Math.floor(dec / (94 * 94) % 94),
-        Math.floor(dec / 94 % 94),
-        dec % 94
-    ];
-}
 
 
 /////////////////////
