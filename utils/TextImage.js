@@ -106,7 +106,7 @@ function encodeTextImage(pixelData, imageDimensions, compressionTolerance=0, mai
         layers['main'] = {
             'type':'A8',
             'version':'0',
-            'data_stream':compressA8(pixelData.map(element => element[1]), imageDimensions, true, compressionTolerance),
+            'data_stream':compressA8(pixelData.map(element => Math.round(0.25*element[1]+0.5*element[1]+0.25*element[1])), imageDimensions, true, compressionTolerance),
         }
     } else {
         layers['main'] = {
@@ -157,20 +157,102 @@ function encodeTextImage(pixelData, imageDimensions, compressionTolerance=0, mai
 }
 
 
+
 function compressA8(datastream, dimensions, RLE=true, lossyTolerance=0) {
-    return '';
+    // Compress generic 8 bit per channel data stream (e.g. alpha)
+
+    let chunks = dataStreamToChunksA8(datastream, dimensions, lossyTolerance); // get a list of chunks
+    
+    if (RLE) chunks = chunkRLE(chunks, ChunkA8); // second pass for RLE
+
+    // final pass to convert chunks into strings:
+    const stringChunks = chunks.map(chunk => {
+        chunk instanceof ChunkA8;
+        return indexToTxt(chunk.indices());
+    });
+
+    return stringChunks.join('');
+}
+
+function dataStreamToChunksA8(imageArray, dimensions, lossyTolerance=0) {
+    function isSimilar(a, b, tol = 0) {
+        // Check if two numbers are similar based on a tolerance value.
+        return Math.abs(a - b) <= tol;
+    }
+
+    function limitA(a) {
+        // Ensure generic value is an int in the range 0-255.
+        return Math.max(0, Math.min(255, parseInt(a)));
+    }
+
+    function addVal(colour) {
+        colPrev.unshift(colour);
+        colPrev.pop();
+    }
+
+    const A8_DEFAULT_VAL = 0; 
+    const colPrev = new Array(dimensions[0] + 2).fill(A8_DEFAULT_VAL);
+    const chunks = [];
+
+    for (const col of imageArray) {
+        const limitedCol = limitA(col);
+
+        // find chunk to encode with:
+        if (isSimilar(limitedCol, colPrev[0], lossyTolerance)) {
+            chunks.push(new ChunkA8('copy_prev'));
+            addVal(limitedCol);
+            continue;
+        }
+
+        if (isSimilar(limitedCol, colPrev[dimensions[0] - 2], lossyTolerance)) {
+            chunks.push(new ChunkA8('copy_vert_fwd'));
+            addVal(limitedCol);
+            continue;
+        }
+
+        if (isSimilar(limitedCol, colPrev[dimensions[0] - 1], lossyTolerance)) {
+            chunks.push(new ChunkA8('copy_vert'));
+            addVal(limitedCol);
+            continue;
+        }
+
+        if (isSimilar(limitedCol, colPrev[dimensions[0]], lossyTolerance)) {
+            chunks.push(new ChunkA8('copy_vert_back'));
+            addVal(limitedCol);
+            continue;
+        }
+
+        const diff = (((limitedCol - colPrev[0]) + 128) % 256) - 128;
+
+        if (0 < diff && diff < 42) {
+            chunks.push(new ChunkA8('inc', diff-1));
+            addVal(limitedCol);
+            continue;
+        }
+
+        if (-42 < diff && diff < 0) {
+            chunks.push(new ChunkA8('dec', -1-diff));
+            addVal(limitedCol);
+            continue;
+        }
+
+        // raw pixel, do not compress
+        chunks.push(new ChunkA8('raw', Math.floor(limitedCol / 94), [limitedCol % 94]));
+        addVal(limitedCol);
+    }
+
+    return chunks;
 }
 
 
 
+
 function compressRGB8(datastream, dimensions, RLE=true, lossyTolerance=0) {
-    /* Compress RGB 8 bit per channel data stream */
+    // Compress RGB 8 bit per channel data stream
 
     let chunks = dataStreamToChunksRGB8(datastream, dimensions, lossyTolerance); // get a list of chunks
 
     if (RLE) {chunks = chunkRLE(chunks, ChunkRGB8)} // second pass for RLE
-
-    //for (let c of chunks) {console.log(c.toString())}
 
     // final pass to convert chunks into strings:
     const stringChunks = chunks.map(chunk => {
@@ -181,13 +263,12 @@ function compressRGB8(datastream, dimensions, RLE=true, lossyTolerance=0) {
     return stringChunks.join('');
 }
 
-
-
-const RGB8_DEFAULT_VAL = [0,0,0]
-const VOLUMES = [[[-2,-1,-1],[5,4,4],1],[[-2,3,-1],[5,4,4],1],[[-2,-5,-1],[5,4,4],1],[[-2,-5,2],[5,4,4],1],[[-2,3,2],[5,4,4],1],[[-2,-1,2],[5,4,4],1],[[-2,-5,-5],[5,4,4],1],[[-2,3,-5],[5,4,4],1],[[-2,-1,-5],[5,4,4],1],[[3,-1,-5],[5,4,4],1],[[3,3,-5],[5,4,4],1],[[3,-5,-5],[5,4,4],1],[[3,-1,2],[5,4,4],1],[[3,3,2],[5,4,4],1],[[3,-5,2],[5,4,4],1],[[3,-5,-1],[5,4,4],1],[[3,3,-1],[5,4,4],1],[[3,-1,-1],[5,4,4],1],[[8,-1,-1],[5,4,4],1],[[8,3,-1],[5,4,4],1],[[8,-5,-1],[5,4,4],1],[[8,-5,2],[5,4,4],1],[[8,3,2],[5,4,4],1],[[8,-1,2],[5,4,4],1],[[8,-5,-5],[5,4,4],1],[[8,3,-5],[5,4,4],1],[[8,-1,-5],[5,4,4],1],[[-7,-1,-5],[5,4,4],1],[[-7,3,-5],[5,4,4],1],[[-7,-5,-5],[5,4,4],1],[[-7,-1,2],[5,4,4],1],[[-7,3,2],[5,4,4],1],[[-7,-5,2],[5,4,4],1],[[-7,-5,-1],[5,4,4],1],[[-7,3,-1],[5,4,4],1],[[-7,-1,-1],[5,4,4],1],[[-12,-1,-1],[5,4,4],1],[[-12,3,-1],[5,4,4],1],[[-12,-5,-1],[5,4,4],1],[[-12,-5,2],[5,4,4],1],[[-12,3,2],[5,4,4],1],[[-12,-1,2],[5,4,4],1],[[-12,-5,-5],[5,4,4],1],[[-12,3,-5],[5,4,4],1],[[-12,-1,-5],[5,4,4],1],[[-10,7,-9],[21,20,20],2],[[-10,-25,-9],[21,20,20],2],[[-10,-9,7],[21,20,20],2],[[-10,-9,-24],[21,20,20],2],[[11,-9,-8],[21,20,20],2],[[-31,-9,-8],[21,20,20],2],[[32,-9,-8],[21,20,20],2],[[-52,-9,-8],[21,20,20],2],[[53,-9,-8],[21,20,20],2],[[-73,-9,-8],[21,20,20],2],[[11,-9,-24],[21,20,20],2],[[11,-9,7],[21,20,20],2],[[11,-25,-9],[21,20,20],2],[[11,7,-9],[21,20,20],2],[[-31,7,-9],[21,20,20],2],[[-31,-25,-9],[21,20,20],2],[[-31,-9,7],[21,20,20],2],[[-10,11,-29],[21,20,20],2]]
-
-
 function dataStreamToChunksRGB8(imageArray, dimensions, lossyTolerance=0) {
+    // Convert an array of pixels into chunks
+
+    const RGB8_DEFAULT_VAL = [0,0,0]
+    const VOLUMES = [[[-2,-1,-1],[5,4,4],1],[[-2,3,-1],[5,4,4],1],[[-2,-5,-1],[5,4,4],1],[[-2,-5,2],[5,4,4],1],[[-2,3,2],[5,4,4],1],[[-2,-1,2],[5,4,4],1],[[-2,-5,-5],[5,4,4],1],[[-2,3,-5],[5,4,4],1],[[-2,-1,-5],[5,4,4],1],[[3,-1,-5],[5,4,4],1],[[3,3,-5],[5,4,4],1],[[3,-5,-5],[5,4,4],1],[[3,-1,2],[5,4,4],1],[[3,3,2],[5,4,4],1],[[3,-5,2],[5,4,4],1],[[3,-5,-1],[5,4,4],1],[[3,3,-1],[5,4,4],1],[[3,-1,-1],[5,4,4],1],[[8,-1,-1],[5,4,4],1],[[8,3,-1],[5,4,4],1],[[8,-5,-1],[5,4,4],1],[[8,-5,2],[5,4,4],1],[[8,3,2],[5,4,4],1],[[8,-1,2],[5,4,4],1],[[8,-5,-5],[5,4,4],1],[[8,3,-5],[5,4,4],1],[[8,-1,-5],[5,4,4],1],[[-7,-1,-5],[5,4,4],1],[[-7,3,-5],[5,4,4],1],[[-7,-5,-5],[5,4,4],1],[[-7,-1,2],[5,4,4],1],[[-7,3,2],[5,4,4],1],[[-7,-5,2],[5,4,4],1],[[-7,-5,-1],[5,4,4],1],[[-7,3,-1],[5,4,4],1],[[-7,-1,-1],[5,4,4],1],[[-12,-1,-1],[5,4,4],1],[[-12,3,-1],[5,4,4],1],[[-12,-5,-1],[5,4,4],1],[[-12,-5,2],[5,4,4],1],[[-12,3,2],[5,4,4],1],[[-12,-1,2],[5,4,4],1],[[-12,-5,-5],[5,4,4],1],[[-12,3,-5],[5,4,4],1],[[-12,-1,-5],[5,4,4],1],[[-10,7,-9],[21,20,20],2],[[-10,-25,-9],[21,20,20],2],[[-10,-9,7],[21,20,20],2],[[-10,-9,-24],[21,20,20],2],[[11,-9,-8],[21,20,20],2],[[-31,-9,-8],[21,20,20],2],[[32,-9,-8],[21,20,20],2],[[-52,-9,-8],[21,20,20],2],[[53,-9,-8],[21,20,20],2],[[-73,-9,-8],[21,20,20],2],[[11,-9,-24],[21,20,20],2],[[11,-9,7],[21,20,20],2],[[11,-25,-9],[21,20,20],2],[[11,7,-9],[21,20,20],2],[[-31,7,-9],[21,20,20],2],[[-31,-25,-9],[21,20,20],2],[[-31,-9,7],[21,20,20],2],[[-10,11,-29],[21,20,20],2]]
+
     function addColour(colour) {
         colPrev.unshift(colour);
         colPrev.pop();
@@ -306,11 +387,14 @@ function dataStreamToChunksRGB8(imageArray, dimensions, lossyTolerance=0) {
 
 
 
-/////////////////////
+
+
+///////////////////
+/* CHUNK CLASSES */
+///////////////////
 
 const RGB8_OPERATIONS = [["raw",0,3],["raw",1,3],["raw",2,3],["raw",3,3],["raw",4,3],["raw",5,3],["raw",6,3],["raw",7,3],["raw",8,3],["raw",9,3],["raw",10,3],["raw",11,3],["raw",12,3],["raw",13,3],["raw",14,3],["raw",15,3],["raw",16,3],["raw",17,3],["raw",18,3],["raw",19,3],["raw",20,3],["unassigned",3,0],["copy_prev",0,0],["copy_vert_fwd",0,0],["copy_vert",0,0],["copy_vert_back",0,0],["hash_table",0,1],["repeat_op",0,null],["vol",0,1],["vol",1,1],["vol",2,1],["vol",3,1],["vol",4,1],["vol",5,1],["vol",6,1],["vol",7,1],["vol",8,1],["vol",9,1],["vol",10,1],["vol",11,1],["vol",12,1],["vol",13,1],["vol",14,1],["vol",15,1],["vol",16,1],["vol",17,1],["vol",18,1],["vol",19,1],["vol",20,1],["vol",21,1],["vol",22,1],["vol",23,1],["vol",24,1],["vol",25,1],["vol",26,1],["vol",27,1],["vol",28,1],["vol",29,1],["vol",30,1],["vol",31,1],["vol",32,1],["vol",33,1],["vol",34,1],["vol",35,1],["vol",36,1],["vol",37,1],["vol",38,1],["vol",39,1],["vol",40,1],["vol",41,1],["vol",42,1],["vol",43,1],["vol",44,1],["vol",45,2],["vol",46,2],["vol",47,2],["vol",48,2],["vol",49,2],["vol",50,2],["vol",51,2],["vol",52,2],["vol",53,2],["vol",54,2],["vol",55,2],["vol",56,2],["vol",57,2],["vol",58,2],["vol",59,2],["vol",60,2],["vol",61,2],["vol",62,2],["unassigned",0,0],["unassigned",1,0],["unassigned",2,0]]
 const RGB8_OPERATIONS_DICT = Object.fromEntries(RGB8_OPERATIONS.map((o, i) => [[o[0], o[1]], i]));
-
 
 class ChunkRGB8 {
     /* A single chunk containing operation name and data */
@@ -342,8 +426,6 @@ class ChunkRGB8 {
         return [this.index, ...this.data];
     }
 }
-
-
 
 
 const A8_OPERATIONS = [["raw",0,1],["raw",1,1],["raw",2,1],["copy_prev",0,0],["copy_vert_fwd",0,0],["copy_vert",0,0],["copy_vert_back",0,0],["repeat_op",0,null],["inc",0,0],["inc",1,0],["inc",2,0],["inc",3,0],["inc",4,0],["inc",5,0],["inc",6,0],["inc",7,0],["inc",8,0],["inc",9,0],["inc",10,0],["inc",11,0],["inc",12,0],["inc",13,0],["inc",14,0],["inc",15,0],["inc",16,0],["inc",17,0],["inc",18,0],["inc",19,0],["inc",20,0],["inc",21,0],["inc",22,0],["inc",23,0],["inc",24,0],["inc",25,0],["inc",26,0],["inc",27,0],["inc",28,0],["inc",29,0],["inc",30,0],["inc",31,0],["inc",32,0],["inc",33,0],["inc",34,0],["inc",35,0],["inc",36,0],["inc",37,0],["inc",38,0],["inc",39,0],["inc",40,0],["inc",41,0],["inc",42,0],["dec",0,0],["dec",1,0],["dec",2,0],["dec",3,0],["dec",4,0],["dec",5,0],["dec",6,0],["dec",7,0],["dec",8,0],["dec",9,0],["dec",10,0],["dec",11,0],["dec",12,0],["dec",13,0],["dec",14,0],["dec",15,0],["dec",16,0],["dec",17,0],["dec",18,0],["dec",19,0],["dec",20,0],["dec",21,0],["dec",22,0],["dec",23,0],["dec",24,0],["dec",25,0],["dec",26,0],["dec",27,0],["dec",28,0],["dec",29,0],["dec",30,0],["dec",31,0],["dec",32,0],["dec",33,0],["dec",34,0],["dec",35,0],["dec",36,0],["dec",37,0],["dec",38,0],["dec",39,0],["dec",40,0],["dec",41,0],["dec",42,0]]
