@@ -120,8 +120,8 @@ export function chunkRLE(chunks, chunkClass) {
 
         if (repeatSizeChars < bufferSizeChars) {
             let cd = [buffer[0].index, buffer.length];
-            for (let elem of buffer) {
-                cd = cd.concat(elem.data);
+            for (const elem of buffer) {
+                cd.push(...elem.data);
             }
 
             if (repeatSizeChars !== 1 + cd.length) {
@@ -136,10 +136,10 @@ export function chunkRLE(chunks, chunkClass) {
         }
     }
 
-    for (let chunk of chunks) {
+    for (const chunk of chunks) {
         //console.debug(chunk.toString())
         if (bufferOp !== null && (!nameEqual(bufferOp, chunk.name) || buffer.length >= 93)) {
-            output = output.concat(_bufferContents(buffer));
+            output.push(..._bufferContents(buffer));
             buffer = [];
         }
 
@@ -150,8 +150,8 @@ export function chunkRLE(chunks, chunkClass) {
     }
 
     if (bufferOp !== null) {
-        output = output.concat(_bufferContents(buffer));
+        output.push(..._bufferContents(buffer));
     }
-
+    
     return output;
 }

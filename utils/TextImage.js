@@ -98,6 +98,7 @@ const MAGIC_NUM = 'txtimg'
 
 function encodeTextImage(pixelData, imageDimensions, compressionTolerance=0, mainUseA8=false, includeAlpha=true) {
     // pixelData is a list of 4-element colour channels
+    console.log('encode TextImage')
 
     let layers = {};
 
@@ -129,7 +130,6 @@ function encodeTextImage(pixelData, imageDimensions, compressionTolerance=0, mai
     }
     
     // Construct file:
-
     let header = {
         'v': 0,
         'x': imageDimensions[0],
@@ -152,7 +152,7 @@ function encodeTextImage(pixelData, imageDimensions, compressionTolerance=0, mai
     // Concatenate everything into a single string...
     let file = [];
     file = CSKV_write(header, {magicNumber: MAGIC_NUM, appendComma: false}) + '|' + layerDataStreams.join('');
-
+    console.debug('finished encoding of TextImage')
     return file;
 }
 
@@ -160,6 +160,7 @@ function encodeTextImage(pixelData, imageDimensions, compressionTolerance=0, mai
 
 function compressA8(datastream, dimensions, RLE=true, lossyTolerance=0) {
     // Compress generic 8 bit per channel data stream (e.g. alpha)
+    console.log('compress A8')
 
     let chunks = dataStreamToChunksA8(datastream, dimensions, lossyTolerance); // get a list of chunks
     
@@ -175,6 +176,7 @@ function compressA8(datastream, dimensions, RLE=true, lossyTolerance=0) {
 }
 
 function dataStreamToChunksA8(imageArray, dimensions, lossyTolerance=0) {
+
     function isSimilar(a, b, tol = 0) {
         // Check if two numbers are similar based on a tolerance value.
         return Math.abs(a - b) <= tol;
@@ -249,6 +251,7 @@ function dataStreamToChunksA8(imageArray, dimensions, lossyTolerance=0) {
 
 function compressRGB8(datastream, dimensions, RLE=true, lossyTolerance=0) {
     // Compress RGB 8 bit per channel data stream
+    console.log('compress RGB8')
 
     let chunks = dataStreamToChunksRGB8(datastream, dimensions, lossyTolerance); // get a list of chunks
 
@@ -377,7 +380,7 @@ function dataStreamToChunksRGB8(imageArray, dimensions, lossyTolerance=0) {
             addColour(limitedCol);
         }
     }
-
+    
     return chunks;
 }
 
