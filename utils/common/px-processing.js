@@ -19,25 +19,20 @@ export function arrayRGBAToRGB(pixelData) {
 
 
 export const CHARS = '!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~';
-export const CHAR_LOOKUP = {};
-for (let i = 0; i < CHARS.length; i++) {
-    CHAR_LOOKUP[CHARS[i]] = i;
-}
+//export const CHAR_LOOKUP = {};
+//for (let i = 0; i < CHARS.length; i++) {
+//    CHAR_LOOKUP[CHARS[i]] = i;
+//}
 
-
-export function indexToTxt(indices) {
-    // characters is a string of all characters
+export function indicesToTxt(indices) {
+    // Convert a list of indices into a string using the character table
     return indices.map(i => CHARS[i]).join('');
 }
 
-
-export function charIndex(char) {
-    // Get the index of a character
-    return CHAR_LOOKUP[char];
+export function txtToIndices(text) {
+    // Convert string into a list of indices using the character table
+    return Array.from(text, char => CHARS.indexOf(char));
 }
-
-
-
 
 
 export function colToVolIndex(colour, origin=[0, 0, 0], dimensions=[21, 20, 20]) {
@@ -95,9 +90,9 @@ export function ftupToCol(ftup) {
     // ftup, or 4-tuple uses a mixed base of (21,94,94,94) for representing a 3-tuple with bases (256,256,256).
     const dec = 830584 * ftup[0] + 8836 * ftup[1] + 94 * ftup[2] + ftup[3];
     return [
-        Math.floor((dec / 65536) % 256),
-        Math.floor((dec / 256) % 256),
-        Math.floor(dec % 256)
+        Math.floor(dec / 65536) % 256,
+        Math.floor(dec / 256) % 256,
+        Math.floor(dec) % 256,
     ];
 }
 
@@ -155,3 +150,17 @@ export function chunkRLE(chunks, chunkClass) {
     
     return output;
 }
+
+   
+export function splitByLengths(data, lengths) {
+    // Split indexable data by a list of desired resulting lengths
+    const result = [];
+    let start = 0;
+    for (const length of lengths) {
+        result.push(data.slice(start, start + length));
+        start += length;
+    }
+    return result;
+}
+
+

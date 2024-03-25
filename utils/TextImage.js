@@ -4,7 +4,7 @@ If you have feedback, I'd like to hear it. Alternatively, contribute code change
 */
 
 import { processImagePreview, copyTextArea, downloadTextArea, clearTextArea, downloadImage } from './common/img-converter-ui.js';
-import { CHARS, indexToTxt, charIndex, colToVolIndex, volIndexToCol, colToFtup, ftupToCol, chunkRLE } from './common/px-processing.js';
+import { CHARS, indicesToTxt, txtToIndices, colToVolIndex, volIndexToCol, colToFtup, ftupToCol, chunkRLE, splitByLengths} from './common/px-processing.js';
 import { CSKV_write, CSKV_read } from './common/cskv-utils.js';
 
 
@@ -44,9 +44,115 @@ decodeImageInput.addEventListener('change', function() {
 
 
 function decode() {
-    alert("unimplemented")
-    throw new Error('unimplemented');
+    const file = decodeInputTextArea.value; // decodeInputTextArea is the source of the data
+
+    // Split at the first bar character
+    const sepIndex = file.indexOf('|');
+    if (sepIndex < 0) {throw new Error('No separator "|" found, succeeding data streams not found')}
+    const headerStream = file.slice(0, sepIndex);
+    const layerDataStreams = file.slice(sepIndex+1); // add 1 to skip bar
+
+    // Read header
+    const header = CSKV_read(headerStream, {removeMagicNumber: false, removeEndComma: false});
+    console.debug(header);
+    
+    // Format validity
+    if (header[null] !== MAGIC_NUM) {
+        throw new Error('Unknown magic number, expected: ' + MAGIC_NUM);
+    }
+    if (header['v'] !== '0') {
+        throw new Error('Incompatible version number, expected: 0');
+    }
+    if (parseInt(header['p'][0]) + 1 !== header['p'].length) {
+        throw new Error('Layer properties invalid length');
+    }
+    
+    const imageDimensions = [parseInt(header['x']), parseInt(header['y'])];
+
+    // Reformat layers
+    header['p'].shift(); // unnecessary line, could change the indexing?
+    const layerProperties = [];
+    const lengths = [];
+    for (let i = 0; i < header['p'].length; i += 4) {
+        layerProperties.push(header['p'].slice(i, i+3));
+        lengths.push(parseInt(header['p'][i+3]));
+    }
+
+    const layerDataStreamsArray = splitByLengths(layerDataStreams, lengths);
+
+    // Add all the layers to the object
+    const layerObject = {};
+    for (let i = 0; i < layerProperties.length; i++) {
+        const [p1, p2, p3] = layerProperties[i];
+        layerObject[p1] = {'type':p2, 'version':p3, 'data_stream':layerDataStreamsArray[i]}; // txtimg.addlayer()
+    }
+    
+    console.debug(layerObject);
+
+    // Create the image with default values
+    const pixelData = [];
+    const pixelCount = imageDimensions[0] * imageDimensions[1]
+    //const defaultPixel = [0,0,0,255]
+    //for (let i = 0; i < pixelCount; i++) {pixelData.push({ ...defaultPixel })}
+    let layer;
+
+    layer = layerObject[document.getElementById('decodeLayerToRGB').value];
+    if (layer['type'] === 'RGB8') {
+        let decompressedData = decompressRGB8(layer['data_stream'], imageDimensions);
+        //console.debug(decompressedData);
+        // add to pixel data
+        for (let i = 0; i < pixelCount; i++) {pixelData.push([decompressedData[i][0], decompressedData[i][1], decompressedData[i][2], 255])}
+    } else if (layer['type'] === 'A8') {
+        let decompressedData = decompressA8(layer['data_stream'], imageDimensions);
+        // add to pixel data
+        for (let i = 0; i < pixelCount; i++) {pixelData.push([decompressedData[i], decompressedData[i], decompressedData[i], 255])}
+    } else {
+        // no layer found, default to black (0,0,0)
+        for (let i = 0; i < pixelCount; i++) {pixelData.push([0,0,0,255])}
+    }
+    
+    //layer = layerObject[document.getElementById('decodeLayerToA').value];
+    // add a check if the layer exists
+    //if (layer['type'] === 'A8') {
+        //let decompressedData = decompressA8(layer['data_stream'], imageDimensions);
+        // add to pixel data
+        //for (let i = 0; i < pixelCount; i++) {pixelData[i][3] = decompressedData[i]}
+    //} else {
+        // no layer found, default to opaque (1.0)
+    //}
+
+    
+    //const imageData = new ImageData(imageDimensions[0], imageDimensions[1]);
+    
+    // Put the image data onto the canvas
+    const canvas = decodeImageCanvas;
+    canvas.width = imageDimensions[0];
+    canvas.height = imageDimensions[1];
+    
+    const context = canvas.getContext('2d');
+    var imageData = context.createImageData(imageDimensions[0], imageDimensions[1]);
+
+
+    let result = [];
+    for (let i = pixelData.length-canvas.width; i >= 0; i -= canvas.width) {
+        result.push(pixelData.slice(i, i+canvas.width));
+    }
+    result = result.flat();
+    
+    // RGBA
+    for (var i = 0; i < result.length; i++) {
+        var index = i * 4;
+        imageData.data[index] = result[i][0];
+        imageData.data[index + 1] = result[i][1];
+        imageData.data[index + 2] = result[i][2];
+        imageData.data[index + 3] = result[i][3];
+    }
+
+    context.putImageData(imageData, 0, 0);
+    
 }
+
+
 
 
 /////////////////
@@ -67,7 +173,7 @@ function encode() {
         case ("+x+y"):
             let result = [];
             for (let i = pixelData.length-canvas.width; i >= 0; i -= canvas.width) {
-                result.push(pixelData.slice(i, i+canvas.width))
+                result.push(pixelData.slice(i, i+canvas.width));
             }
             pixelData = result.flat();
             break;
@@ -86,7 +192,6 @@ function encode() {
     const encodeMainAsA8 = document.getElementById('encodeMainUseA8').checked;
     
     encodeOutputTextArea.value = encodeTextImage(pixelData, [canvas.width, canvas.height], compressionTolerance, encodeMainAsA8, includeAlpha);
-
 }
 
 
@@ -152,7 +257,7 @@ function encodeTextImage(pixelData, imageDimensions, compressionTolerance=0, mai
     // Concatenate everything into a single string...
     let file = [];
     file = CSKV_write(header, {magicNumber: MAGIC_NUM, appendComma: false}) + '|' + layerDataStreams.join('');
-    console.debug('finished encoding of TextImage')
+    console.debug('finished encoding of TextImage');
     return file;
 }
 
@@ -160,19 +265,13 @@ function encodeTextImage(pixelData, imageDimensions, compressionTolerance=0, mai
 
 function compressA8(datastream, dimensions, RLE=true, lossyTolerance=0) {
     // Compress generic 8 bit per channel data stream (e.g. alpha)
-    console.log('compress A8')
+    console.log('compress A8');
 
     let chunks = dataStreamToChunksA8(datastream, dimensions, lossyTolerance); // get a list of chunks
     
     if (RLE) chunks = chunkRLE(chunks, ChunkA8); // second pass for RLE
 
-    // final pass to convert chunks into strings:
-    const stringChunks = chunks.map(chunk => {
-        chunk instanceof ChunkA8;
-        return indexToTxt(chunk.indices());
-    });
-
-    return stringChunks.join('');
+    return indicesToTxt(chunks.flatMap(c => c.indices()));
 }
 
 function dataStreamToChunksA8(imageArray, dimensions, lossyTolerance=0) {
@@ -249,28 +348,22 @@ function dataStreamToChunksA8(imageArray, dimensions, lossyTolerance=0) {
 
 
 
+const RGB8_DEFAULT_VAL = [0,0,0];
+const RGB8_VOLUMES = [[[-2,-1,-1],[5,4,4],1],[[-2,3,-1],[5,4,4],1],[[-2,-5,-1],[5,4,4],1],[[-2,-5,2],[5,4,4],1],[[-2,3,2],[5,4,4],1],[[-2,-1,2],[5,4,4],1],[[-2,-5,-5],[5,4,4],1],[[-2,3,-5],[5,4,4],1],[[-2,-1,-5],[5,4,4],1],[[3,-1,-5],[5,4,4],1],[[3,3,-5],[5,4,4],1],[[3,-5,-5],[5,4,4],1],[[3,-1,2],[5,4,4],1],[[3,3,2],[5,4,4],1],[[3,-5,2],[5,4,4],1],[[3,-5,-1],[5,4,4],1],[[3,3,-1],[5,4,4],1],[[3,-1,-1],[5,4,4],1],[[8,-1,-1],[5,4,4],1],[[8,3,-1],[5,4,4],1],[[8,-5,-1],[5,4,4],1],[[8,-5,2],[5,4,4],1],[[8,3,2],[5,4,4],1],[[8,-1,2],[5,4,4],1],[[8,-5,-5],[5,4,4],1],[[8,3,-5],[5,4,4],1],[[8,-1,-5],[5,4,4],1],[[-7,-1,-5],[5,4,4],1],[[-7,3,-5],[5,4,4],1],[[-7,-5,-5],[5,4,4],1],[[-7,-1,2],[5,4,4],1],[[-7,3,2],[5,4,4],1],[[-7,-5,2],[5,4,4],1],[[-7,-5,-1],[5,4,4],1],[[-7,3,-1],[5,4,4],1],[[-7,-1,-1],[5,4,4],1],[[-12,-1,-1],[5,4,4],1],[[-12,3,-1],[5,4,4],1],[[-12,-5,-1],[5,4,4],1],[[-12,-5,2],[5,4,4],1],[[-12,3,2],[5,4,4],1],[[-12,-1,2],[5,4,4],1],[[-12,-5,-5],[5,4,4],1],[[-12,3,-5],[5,4,4],1],[[-12,-1,-5],[5,4,4],1],[[-10,7,-9],[21,20,20],2],[[-10,-25,-9],[21,20,20],2],[[-10,-9,7],[21,20,20],2],[[-10,-9,-24],[21,20,20],2],[[11,-9,-8],[21,20,20],2],[[-31,-9,-8],[21,20,20],2],[[32,-9,-8],[21,20,20],2],[[-52,-9,-8],[21,20,20],2],[[53,-9,-8],[21,20,20],2],[[-73,-9,-8],[21,20,20],2],[[11,-9,-24],[21,20,20],2],[[11,-9,7],[21,20,20],2],[[11,-25,-9],[21,20,20],2],[[11,7,-9],[21,20,20],2],[[-31,7,-9],[21,20,20],2],[[-31,-25,-9],[21,20,20],2],[[-31,-9,7],[21,20,20],2],[[-10,11,-29],[21,20,20],2]];
+
 function compressRGB8(datastream, dimensions, RLE=true, lossyTolerance=0) {
     // Compress RGB 8 bit per channel data stream
-    console.log('compress RGB8')
+    console.log('compress RGB8');
 
     let chunks = dataStreamToChunksRGB8(datastream, dimensions, lossyTolerance); // get a list of chunks
 
     if (RLE) {chunks = chunkRLE(chunks, ChunkRGB8)} // second pass for RLE
 
-    // final pass to convert chunks into strings:
-    const stringChunks = chunks.map(chunk => {
-        chunk instanceof ChunkRGB8;
-        return indexToTxt(chunk.indices());
-    });
-
-    return stringChunks.join('');
+    return indicesToTxt(chunks.flatMap(c => c.indices()));
 }
 
 function dataStreamToChunksRGB8(imageArray, dimensions, lossyTolerance=0) {
     // Convert an array of pixels into chunks
-
-    const RGB8_DEFAULT_VAL = [0,0,0]
-    const VOLUMES = [[[-2,-1,-1],[5,4,4],1],[[-2,3,-1],[5,4,4],1],[[-2,-5,-1],[5,4,4],1],[[-2,-5,2],[5,4,4],1],[[-2,3,2],[5,4,4],1],[[-2,-1,2],[5,4,4],1],[[-2,-5,-5],[5,4,4],1],[[-2,3,-5],[5,4,4],1],[[-2,-1,-5],[5,4,4],1],[[3,-1,-5],[5,4,4],1],[[3,3,-5],[5,4,4],1],[[3,-5,-5],[5,4,4],1],[[3,-1,2],[5,4,4],1],[[3,3,2],[5,4,4],1],[[3,-5,2],[5,4,4],1],[[3,-5,-1],[5,4,4],1],[[3,3,-1],[5,4,4],1],[[3,-1,-1],[5,4,4],1],[[8,-1,-1],[5,4,4],1],[[8,3,-1],[5,4,4],1],[[8,-5,-1],[5,4,4],1],[[8,-5,2],[5,4,4],1],[[8,3,2],[5,4,4],1],[[8,-1,2],[5,4,4],1],[[8,-5,-5],[5,4,4],1],[[8,3,-5],[5,4,4],1],[[8,-1,-5],[5,4,4],1],[[-7,-1,-5],[5,4,4],1],[[-7,3,-5],[5,4,4],1],[[-7,-5,-5],[5,4,4],1],[[-7,-1,2],[5,4,4],1],[[-7,3,2],[5,4,4],1],[[-7,-5,2],[5,4,4],1],[[-7,-5,-1],[5,4,4],1],[[-7,3,-1],[5,4,4],1],[[-7,-1,-1],[5,4,4],1],[[-12,-1,-1],[5,4,4],1],[[-12,3,-1],[5,4,4],1],[[-12,-5,-1],[5,4,4],1],[[-12,-5,2],[5,4,4],1],[[-12,3,2],[5,4,4],1],[[-12,-1,2],[5,4,4],1],[[-12,-5,-5],[5,4,4],1],[[-12,3,-5],[5,4,4],1],[[-12,-1,-5],[5,4,4],1],[[-10,7,-9],[21,20,20],2],[[-10,-25,-9],[21,20,20],2],[[-10,-9,7],[21,20,20],2],[[-10,-9,-24],[21,20,20],2],[[11,-9,-8],[21,20,20],2],[[-31,-9,-8],[21,20,20],2],[[32,-9,-8],[21,20,20],2],[[-52,-9,-8],[21,20,20],2],[[53,-9,-8],[21,20,20],2],[[-73,-9,-8],[21,20,20],2],[[11,-9,-24],[21,20,20],2],[[11,-9,7],[21,20,20],2],[[11,-25,-9],[21,20,20],2],[[11,7,-9],[21,20,20],2],[[-31,7,-9],[21,20,20],2],[[-31,-25,-9],[21,20,20],2],[[-31,-9,7],[21,20,20],2],[[-10,11,-29],[21,20,20],2]]
 
     function addColour(colour) {
         colPrev.unshift(colour);
@@ -354,8 +447,8 @@ function dataStreamToChunksRGB8(imageArray, dimensions, lossyTolerance=0) {
         let colDiff = [limitedCol[0] - colPrev[0][0], limitedCol[1] - colPrev[0][1], limitedCol[2] - colPrev[0][2]];
         let YUVDiff = RGBToYUV(colDiff);
 
-        for (let i = 0; i < VOLUMES.length; i++) {
-            let volume = VOLUMES[i];
+        for (let i = 0; i < RGB8_VOLUMES.length; i++) {
+            let volume = RGB8_VOLUMES[i];
             let index = colToVolIndex(YUVDiff, volume[0], volume[1]);
 
             if (index !== null) {
@@ -386,9 +479,104 @@ function dataStreamToChunksRGB8(imageArray, dimensions, lossyTolerance=0) {
 
 
 
+function decompressRGB8(stream, dimensions) {
+    function addColour(colour) {
+        imageArray.push(colour);
+        colPrev.unshift(colour);
+        colPrev.pop();
+        colTable[(colour[0] * 3 + colour[1] * 5 + colour[2] * 7) % 94] = colour;
+    }
 
+    function YUVToRGB(yuv) {
+        // Y'UV to R'G'B' (g, b-g, r-g)
+        return [yuv[2]+yuv[0], yuv[0], yuv[1]+yuv[0]];
+    }
 
+    function processChunk(chunk) {
+        switch (chunk.name[0]) {
+            case 'raw':
+                addColour(ftupToCol([chunk.name[1], chunk.data[0], chunk.data[1], chunk.data[2]]));
+                break;
+            case 'copy_prev':
+                addColour(colPrev[0]);
+                break;
+            case 'copy_vert_fwd':
+                addColour(colPrev[dimensions[0] - 2]);
+                break;
+            case 'copy_vert':
+                addColour(colPrev[dimensions[0] - 1]);
+                break;
+            case 'copy_vert_back':
+                addColour(colPrev[dimensions[0] + 0]);
+                break;
+            case 'hash_table':
+                addColour(colTable[chunk.data[0]]);
+                break;
+            case 'vol':
+                let index;
+                if (chunk.size === 1) {
+                    index = chunk.data[0];
+                } else if (chunk.size === 2) {
+                    index = 94 * chunk.data[0] + chunk.data[1];
+                }
+                const YUVDiff = volIndexToCol(index, RGB8_VOLUMES[chunk.name[1]][0], RGB8_VOLUMES[chunk.name[1]][1]);
+                const colDiff = YUVToRGB(YUVDiff);
+                addColour([colPrev[0][0] + colDiff[0], colPrev[0][1] + colDiff[1], colPrev[0][2] + colDiff[2]]);
+                break;
+            default:
+                throw new Error(`Chunk name ${chunk.name} unknown`);
+        }
+    }
 
+    stream = txtToIndices(stream);
+
+    //console.log(stream);
+    
+    const chunks = [];
+    let i = 0;
+    while (i < stream.length) {
+        const opName = ChunkRGB8.getOpName(stream[i]);
+
+        let repeat;
+        if (opName[0] === 'repeat_op') {
+            const repeatOpName = ChunkRGB8.getOpName(stream[i + 1]);
+            repeat = 2 + stream[i + 2] * ChunkRGB8.getOpSize(repeatOpName);
+        } else {
+            repeat = ChunkRGB8.getOpSize(opName);
+        }
+
+        const opData = [];
+        for (let j = 0; j < repeat; j++) {
+            i++;
+            opData.push(stream[i]);
+        }
+        chunks.push(new ChunkRGB8(opName[0], opName[1], opData));
+        
+        i++;
+    }
+
+    //console.log(chunks);
+
+    const imageArray = [];
+    const colPrev = new Array(dimensions[0] + 2).fill(RGB8_DEFAULT_VAL);
+    const colTable = new Array(CHARS.length).fill(RGB8_DEFAULT_VAL);
+    for (const chunk of chunks) {
+        if (chunk.name[0] === 'repeat_op') {
+            const opName = ChunkRGB8.getOpName(chunk.data[0]);
+            const opSize = ChunkRGB8.getOpSize(opName);
+            const repeat = chunk.data[1];
+
+            for (let i = 0; i < repeat; i++) {
+                const index = i * opSize + 2;
+                processChunk(new ChunkRGB8(opName[0], opName[1], chunk.data.slice(index, index + opSize)));
+            }
+        } else {
+            processChunk(chunk);
+        }
+    }
+    //console.debug(imageArray);
+    return imageArray;
+}
 
 
 
@@ -396,8 +584,13 @@ function dataStreamToChunksRGB8(imageArray, dimensions, lossyTolerance=0) {
 /* CHUNK CLASSES */
 ///////////////////
 
-const RGB8_OPERATIONS = [["raw",0,3],["raw",1,3],["raw",2,3],["raw",3,3],["raw",4,3],["raw",5,3],["raw",6,3],["raw",7,3],["raw",8,3],["raw",9,3],["raw",10,3],["raw",11,3],["raw",12,3],["raw",13,3],["raw",14,3],["raw",15,3],["raw",16,3],["raw",17,3],["raw",18,3],["raw",19,3],["raw",20,3],["unassigned",3,0],["copy_prev",0,0],["copy_vert_fwd",0,0],["copy_vert",0,0],["copy_vert_back",0,0],["hash_table",0,1],["repeat_op",0,null],["vol",0,1],["vol",1,1],["vol",2,1],["vol",3,1],["vol",4,1],["vol",5,1],["vol",6,1],["vol",7,1],["vol",8,1],["vol",9,1],["vol",10,1],["vol",11,1],["vol",12,1],["vol",13,1],["vol",14,1],["vol",15,1],["vol",16,1],["vol",17,1],["vol",18,1],["vol",19,1],["vol",20,1],["vol",21,1],["vol",22,1],["vol",23,1],["vol",24,1],["vol",25,1],["vol",26,1],["vol",27,1],["vol",28,1],["vol",29,1],["vol",30,1],["vol",31,1],["vol",32,1],["vol",33,1],["vol",34,1],["vol",35,1],["vol",36,1],["vol",37,1],["vol",38,1],["vol",39,1],["vol",40,1],["vol",41,1],["vol",42,1],["vol",43,1],["vol",44,1],["vol",45,2],["vol",46,2],["vol",47,2],["vol",48,2],["vol",49,2],["vol",50,2],["vol",51,2],["vol",52,2],["vol",53,2],["vol",54,2],["vol",55,2],["vol",56,2],["vol",57,2],["vol",58,2],["vol",59,2],["vol",60,2],["vol",61,2],["vol",62,2],["unassigned",0,0],["unassigned",1,0],["unassigned",2,0]]
+const RGB8_OPERATIONS = [["raw",0,3],["raw",1,3],["raw",2,3],["raw",3,3],["raw",4,3],["raw",5,3],["raw",6,3],["raw",7,3],["raw",8,3],["raw",9,3],["raw",10,3],["raw",11,3],["raw",12,3],["raw",13,3],["raw",14,3],["raw",15,3],["raw",16,3],["raw",17,3],["raw",18,3],["raw",19,3],["raw",20,3],["unassigned",3,0],["copy_prev",0,0],["copy_vert_fwd",0,0],["copy_vert",0,0],["copy_vert_back",0,0],["hash_table",0,1],["repeat_op",0,null],["vol",0,1],["vol",1,1],["vol",2,1],["vol",3,1],["vol",4,1],["vol",5,1],["vol",6,1],["vol",7,1],["vol",8,1],["vol",9,1],["vol",10,1],["vol",11,1],["vol",12,1],["vol",13,1],["vol",14,1],["vol",15,1],["vol",16,1],["vol",17,1],["vol",18,1],["vol",19,1],["vol",20,1],["vol",21,1],["vol",22,1],["vol",23,1],["vol",24,1],["vol",25,1],["vol",26,1],["vol",27,1],["vol",28,1],["vol",29,1],["vol",30,1],["vol",31,1],["vol",32,1],["vol",33,1],["vol",34,1],["vol",35,1],["vol",36,1],["vol",37,1],["vol",38,1],["vol",39,1],["vol",40,1],["vol",41,1],["vol",42,1],["vol",43,1],["vol",44,1],["vol",45,2],["vol",46,2],["vol",47,2],["vol",48,2],["vol",49,2],["vol",50,2],["vol",51,2],["vol",52,2],["vol",53,2],["vol",54,2],["vol",55,2],["vol",56,2],["vol",57,2],["vol",58,2],["vol",59,2],["vol",60,2],["vol",61,2],["vol",62,2],["unassigned",0,0],["unassigned",1,0],["unassigned",2,0]];
 const RGB8_OPERATIONS_DICT = Object.fromEntries(RGB8_OPERATIONS.map((o, i) => [[o[0], o[1]], i]));
+const RGB8_OP_INDICES = {};
+for (let i = 0; i < RGB8_OPERATIONS.length; i++) {
+    const opData = RGB8_OPERATIONS[i];
+    RGB8_OP_INDICES[[opData[0], opData[1]]] = [i, opData[2]];
+}
 
 class ChunkRGB8 {
     /* A single chunk containing operation name and data */
@@ -415,8 +608,8 @@ class ChunkRGB8 {
         this.index = RGB8_OPERATIONS_DICT[this.name];
         this.size = RGB8_OPERATIONS[this.index][2];
 
-        if (this.index === undefined) {throw new Error(`Unrecognised operation name: ${this.name}`);}
-        if (this.size !== null && op_data.length !== this.size) {throw new Error('Data does not match expected length');}
+        if (this.index === undefined) {throw new Error(`Unrecognised operation name: ${this.name}`)}
+        if (this.size !== null && op_data.length !== this.size) {throw new Error('Data does not match expected length')}
 
         this.data = op_data;
     }
@@ -428,6 +621,12 @@ class ChunkRGB8 {
     indices() {
         return [this.index, ...this.data];
     }
+
+    static getOpIndex(op_name) {return RGB8_OP_INDICES[op_name][0]} // Return the op index from a 2-tuple name
+    
+    static getOpSize(op_name) {return RGB8_OP_INDICES[op_name][1]} // Return the op size from a 2-tuple name
+    
+    static getOpName(index) {return [RGB8_OPERATIONS[index][0], RGB8_OPERATIONS[index][1]]} // Return the 2-tuple op name of an index
 }
 
 
@@ -450,8 +649,8 @@ class ChunkA8 {
         this.index = A8_OPERATIONS_DICT[this.name];
         this.size = A8_OPERATIONS[this.index][2];
 
-        if (this.index === undefined) {throw new Error(`Unrecognised operation name: ${this.name}`);}
-        if (this.size !== null && op_data.length !== this.size) {throw new Error('Data does not match expected length');}
+        if (this.index === undefined) {throw new Error(`Unrecognised operation name: ${this.name}`)}
+        if (this.size !== null && op_data.length !== this.size) {throw new Error('Data does not match expected length')}
 
         this.data = op_data;
     }
