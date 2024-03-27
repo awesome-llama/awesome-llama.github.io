@@ -43,6 +43,12 @@ decodeImageInput.addEventListener('change', function() {
 });
 
 
+
+//////////////////
+/* IMAGE FORMAT */
+//////////////////
+
+
 function decode() {
     const file = decodeInputTextArea.value; // decodeInputTextArea is the source of the data
 

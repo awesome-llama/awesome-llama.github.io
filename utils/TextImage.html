@@ -20,7 +20,9 @@
     </div>
 
     <div class="content">
-        <h2>TextImage Converter (WIP)</h2>
+        <h2>TextImage Converter</h2>
+        <p style="margin-top: 0; margin-bottom: 1em;"><a href="https://github.com/awesome-llama/TextImage/wiki" target="_blank">Documentation</a></p>
+
         <div class="tabButtons">
             <button onclick="openTab('encode')" id="encodeTab">Encode</button>
             <button onclick="openTab('decode')" id="decodeTab">Decode</button>
@@ -30,7 +32,7 @@
             <div class="groupBox">
                 <input type="file" id="encodeImageInput" accept="image/*">
                 <div style="margin-top: 5px;">
-                    <canvas id="encodeImageCanvas"></canvas>
+                    <canvas id="encodeImageCanvas" width="32px" height="32px"></canvas>
                 </div>
                 <p id="imageStats" class="imageStats"></p>
             </div>
@@ -38,23 +40,23 @@
             <div class="groupBox">
                 <div class="setting">
                     <label>Pixel order</label>
-                    <select id="pixelOrder" name="Pixel order">
+                    <select id="pixelOrder" name="Pixel order" title="The order of the pixels read from the chosen image.&#10;Note that TextImage internally stores pixels &#34;left-to-right, bottom-to-top&#34; (default option) and this can not be changed.">
                         <option value="+x+y">left-to-right scanlines, bottom-to-top</option>
                         <option value="+x-y">left-to-right scanlines, top-to-bottom</option>
                     </select>
                 </div>
                 <div class="setting">
                     <label>Compression tolerance (0 for lossless)</label>
-                    <input id="encodeTolerance" type="range" name="Tolerance" min="0" max="16" step="1" value="0" oninput="updateToleranceValue(this.value)" style="width: 200px;">
+                    <input id="encodeTolerance" type="range" name="Tolerance" min="0" max="16" step="1" value="0" oninput="updateToleranceValue(this.value)" style="width: 200px;" title="A rudimentary method of compression effectively using quantisation. Number indicates the tolerance for a colour to be compressed when finding the smallest operation that can encode it. 0 means lossless, the colour must be exact.">
                     <span id="toleranceValue">0</span>
                 </div>
                 <div class="setting">
                     <label>Encode main layer as greyscale (A8)</label>
-                    <input id="encodeMainUseA8" type="checkbox" name="main use A8" >
+                    <input id="encodeMainUseA8" type="checkbox" name="main use A8" title="Convert RGB to greyscale and encode using the A8 data stream.">
                 </div>
                 <div class="setting">
                     <label>Include alpha (if it exists)</label>
-                    <input id="encodeIncludeAlpha" type="checkbox" name="Include alpha" checked>
+                    <input id="encodeIncludeAlpha" type="checkbox" name="Include alpha" checked title="Include transparency in an alpha layer encoded using the A8 data stream.">
                 </div>
             </div>
             <div class="groupBox">
@@ -71,7 +73,7 @@
 
         <div id="decode" class="tabContent">
             <div class="groupBox">
-                <p style="margin: 0; font-size: 1em; color: red;">Warning: not fully functional, expect errors</p>
+                <p style="margin: 0; font-size: 1em; color: red;">Warning: WIP, not fully functional, expect errors</p>
                 <input type="file" id="decodeImageInput" accept="text/*">
                 <textarea id="decodeInputTextArea" class="largeTextArea" placeholder="Input TextImage here..."></textarea>
             </div>
@@ -93,7 +95,7 @@
                 </div>
                 
                 <div style="margin-top: 5px;">
-                    <canvas id="decodeImageCanvas"></canvas>
+                    <canvas id="decodeImageCanvas" width="32px" height="32px"></canvas>
                 </div>
             </div>
             

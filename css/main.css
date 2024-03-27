@@ -64,14 +64,17 @@ a:hover {
 
 h1 {
     font-size: 3em;
+    margin-block-end: 0.2em;
 }
 
 h2 {
     font-size: 2em;
+    margin-block-end: 0.2em;
 }
 
 h3 {
     font-size: 1.5em;
+    margin-block-end: 0.1em;
 }
 
 h4 {
