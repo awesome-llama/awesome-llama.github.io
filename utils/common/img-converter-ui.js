@@ -38,31 +38,34 @@ export function downloadTextArea(targetTextArea) {
     
     let blob = new Blob([textareaContent], { type: 'text/plain' });
 
-    // Create a link element and set its attributes
+    // create a link element and set its attributes
     let link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);
     link.download = 'image.txt';
 
-    // Append the link to the document and trigger a click event
+    // append the link to the document and trigger a click event
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    // is there a better way?
 }
 
 
-export function downloadImage(targetImage) {
-    
-    let blob = new Blob([targetImage], { type: 'image/png' });
+export function downloadImage(targetImageCanvas) {
+    // Download a canvas as an image
 
-    // Create a link element and set its attributes
-    let link = document.createElement('a');
-    link.href = window.URL.createObjectURL(blob);
-    link.download = 'image.png';
+    targetImageCanvas.toBlob(function(blob) {
+        // create image
+        const url = URL.createObjectURL(blob);
 
-    // Append the link to the document and trigger a click event
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    // is there a better way?
+        // create a link element and set its attributes
+        let link = document.createElement('a');
+        link.download = 'image.png';
+        link.href = url
+        
+        // append the link to the document and trigger a click event
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    })
 }
