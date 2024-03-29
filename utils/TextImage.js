@@ -43,6 +43,10 @@ decodeImageInput.addEventListener('change', function() {
 });
 
 
+function modulo(a, b) {
+    return ((a % b) + b) % b;
+}
+
 
 //////////////////
 /* IMAGE FORMAT */
@@ -98,37 +102,41 @@ function decode() {
     // Create the image with default values
     const pixelData = [];
     const pixelCount = imageDimensions[0] * imageDimensions[1]
-    //const defaultPixel = [0,0,0,255]
-    //for (let i = 0; i < pixelCount; i++) {pixelData.push({ ...defaultPixel })}
     let layer;
 
-    layer = layerObject[document.getElementById('decodeLayerToRGB').value];
-    if (layer['type'] === 'RGB8') {
-        let decompressedData = decompressRGB8(layer['data_stream'], imageDimensions);
-        //console.debug(decompressedData);
-        // add to pixel data
-        for (let i = 0; i < pixelCount; i++) {pixelData.push([decompressedData[i][0], decompressedData[i][1], decompressedData[i][2], 255])}
-    } else if (layer['type'] === 'A8') {
-        let decompressedData = decompressA8(layer['data_stream'], imageDimensions);
-        // add to pixel data
-        for (let i = 0; i < pixelCount; i++) {pixelData.push([decompressedData[i], decompressedData[i], decompressedData[i], 255])}
+    // Set image to rgb with default alpha
+    const decodeLayerToRGB = document.getElementById('decodeLayerToRGB').value;
+    if (decodeLayerToRGB in layerObject) {
+        layer = layerObject[decodeLayerToRGB];
+        if (layer['type'] === 'RGB8') {
+            let decompressedData = decompressRGB8(layer['data_stream'], imageDimensions);
+            //console.debug(decompressedData);
+            // add to pixel data
+            for (let i = 0; i < pixelCount; i++) {pixelData.push([decompressedData[i][0], decompressedData[i][1], decompressedData[i][2], 255])}
+        } else if (layer['type'] === 'A8') {
+            let decompressedData = decompressA8(layer['data_stream'], imageDimensions);
+            // add to pixel data
+            for (let i = 0; i < pixelCount; i++) {pixelData.push([decompressedData[i], decompressedData[i], decompressedData[i], 255])}
+        } else {
+            // no layer type recognised, default to black (0,0,0)
+            console.log('no data stream type valid for RGB found')
+            for (let i = 0; i < pixelCount; i++) {pixelData.push([0,0,0,255])}
+        }
     } else {
         // no layer found, default to black (0,0,0)
         for (let i = 0; i < pixelCount; i++) {pixelData.push([0,0,0,255])}
     }
     
-    //layer = layerObject[document.getElementById('decodeLayerToA').value];
-    // add a check if the layer exists
-    //if (layer['type'] === 'A8') {
-        //let decompressedData = decompressA8(layer['data_stream'], imageDimensions);
-        // add to pixel data
-        //for (let i = 0; i < pixelCount; i++) {pixelData[i][3] = decompressedData[i]}
-    //} else {
-        // no layer found, default to opaque (1.0)
-    //}
-
-    
-    //const imageData = new ImageData(imageDimensions[0], imageDimensions[1]);
+    // Add alpha to image
+    const decodeLayerToA = document.getElementById('decodeLayerToA').value;
+    if (decodeLayerToA in layerObject) {
+        layer = layerObject[decodeLayerToA];
+        if (layer['type'] === 'A8') {
+            let decompressedData = decompressA8(layer['data_stream'], imageDimensions);
+            // add to pixel data
+            for (let i = 0; i < pixelCount; i++) {pixelData[i][3] = decompressedData[i]}
+        }
+    }
     
     // Put the image data onto the canvas
     const canvas = decodeImageCanvas;
@@ -297,7 +305,6 @@ function dataStreamToChunksA8(imageArray, dimensions, lossyTolerance=0) {
         colPrev.pop();
     }
 
-    const A8_DEFAULT_VAL = 0; 
     const colPrev = new Array(dimensions[0] + 2).fill(A8_DEFAULT_VAL);
     const chunks = [];
 
@@ -329,7 +336,7 @@ function dataStreamToChunksA8(imageArray, dimensions, lossyTolerance=0) {
             continue;
         }
 
-        const diff = (((limitedCol - colPrev[0]) + 128) % 256) - 128;
+        const diff = modulo(((limitedCol - colPrev[0]) + 128) % 256) - 128; // (((limitedCol - colPrev[0]) + 128) % 256) - 128
 
         if (0 < diff && diff < 42) {
             chunks.push(new ChunkA8('inc', diff-1));
@@ -353,8 +360,92 @@ function dataStreamToChunksA8(imageArray, dimensions, lossyTolerance=0) {
 
 
 
+function decompressA8(stream, dimensions) {
+    function addVal(val) {
+        imageArray.push(val);
+        colPrev.unshift(val);
+        colPrev.pop();
+    }
 
-const RGB8_DEFAULT_VAL = [0,0,0];
+    function processChunk(chunk) {
+        //console.debug(chunk)
+        switch (chunk.name[0]) {
+            case 'raw':
+                addVal(chunk.name[1] * 94 + chunk.data[0]);
+                break;
+            case 'copy_prev':
+                addVal(colPrev[0]);
+                break;
+            case 'copy_vert_fwd':
+                addVal(colPrev[dimensions[0] - 2]);
+                break;
+            case 'copy_vert':
+                addVal(colPrev[dimensions[0] - 1]);
+                break;
+            case 'copy_vert_back':
+                addVal(colPrev[dimensions[0] + 0]);
+                break;
+            case 'inc':
+                addVal(modulo((colPrev[0] + chunk.name[1] + 1), 256)); // (colPrev[0] + chunk.name[1] + 1) % 256)
+                break;
+            case 'dec':
+                addVal(modulo((colPrev[0] - (chunk.name[1] + 1)), 256)); // (colPrev[0] - (chunk.name[1] + 1)) % 256
+                break;
+            default:
+                throw new Error(`Chunk name ${chunk.name} unknown`);
+        }
+    }
+
+    stream = txtToIndices(stream); // convert from text to list of indices
+    //console.debug(stream);
+
+    const chunks = [];
+    let i = 0;
+    while (i < stream.length) {
+        const opName = ChunkA8.getOpName(stream[i]);
+
+        let repeat;
+        if (opName[0] === 'repeat_op') {
+            const repeatOpName = ChunkA8.getOpName(stream[i + 1]); // the op that should be repeated
+            repeat = 2 + stream[i + 2] * ChunkA8.getOpSize(repeatOpName);
+        } else {
+            repeat = ChunkA8.getOpSize(opName);
+        }
+
+        const opData = [];
+        for (let j = 0; j < repeat; j++) { // add op data
+            i++;
+            opData.push(stream[i]);
+        }
+
+        chunks.push(new ChunkA8(opName[0], opName[1], opData));
+        i++;
+    }
+
+    //console.debug(chunks);
+
+    const imageArray = [];
+    const colPrev = new Array(dimensions[0] + 2).fill(A8_DEFAULT_VAL);
+
+    for (const chunk of chunks) {
+        if (chunk.name[0] === 'repeat_op') {
+            const opName = ChunkA8.getOpName(chunk.data[0]);
+            const opSize = ChunkA8.getOpSize(opName);
+            const repeat = chunk.data[1];
+
+            for (let i = 0; i < repeat; i++) {
+                const index = i * opSize + 2;
+                processChunk(new ChunkA8(opName[0], opName[1], chunk.data.slice(index, index + opSize)));
+            }
+        } else {
+            processChunk(chunk);
+        }
+    }
+
+    return imageArray;
+}
+
+
 const RGB8_VOLUMES = [[[-2,-1,-1],[5,4,4],1],[[-2,3,-1],[5,4,4],1],[[-2,-5,-1],[5,4,4],1],[[-2,-5,2],[5,4,4],1],[[-2,3,2],[5,4,4],1],[[-2,-1,2],[5,4,4],1],[[-2,-5,-5],[5,4,4],1],[[-2,3,-5],[5,4,4],1],[[-2,-1,-5],[5,4,4],1],[[3,-1,-5],[5,4,4],1],[[3,3,-5],[5,4,4],1],[[3,-5,-5],[5,4,4],1],[[3,-1,2],[5,4,4],1],[[3,3,2],[5,4,4],1],[[3,-5,2],[5,4,4],1],[[3,-5,-1],[5,4,4],1],[[3,3,-1],[5,4,4],1],[[3,-1,-1],[5,4,4],1],[[8,-1,-1],[5,4,4],1],[[8,3,-1],[5,4,4],1],[[8,-5,-1],[5,4,4],1],[[8,-5,2],[5,4,4],1],[[8,3,2],[5,4,4],1],[[8,-1,2],[5,4,4],1],[[8,-5,-5],[5,4,4],1],[[8,3,-5],[5,4,4],1],[[8,-1,-5],[5,4,4],1],[[-7,-1,-5],[5,4,4],1],[[-7,3,-5],[5,4,4],1],[[-7,-5,-5],[5,4,4],1],[[-7,-1,2],[5,4,4],1],[[-7,3,2],[5,4,4],1],[[-7,-5,2],[5,4,4],1],[[-7,-5,-1],[5,4,4],1],[[-7,3,-1],[5,4,4],1],[[-7,-1,-1],[5,4,4],1],[[-12,-1,-1],[5,4,4],1],[[-12,3,-1],[5,4,4],1],[[-12,-5,-1],[5,4,4],1],[[-12,-5,2],[5,4,4],1],[[-12,3,2],[5,4,4],1],[[-12,-1,2],[5,4,4],1],[[-12,-5,-5],[5,4,4],1],[[-12,3,-5],[5,4,4],1],[[-12,-1,-5],[5,4,4],1],[[-10,7,-9],[21,20,20],2],[[-10,-25,-9],[21,20,20],2],[[-10,-9,7],[21,20,20],2],[[-10,-9,-24],[21,20,20],2],[[11,-9,-8],[21,20,20],2],[[-31,-9,-8],[21,20,20],2],[[32,-9,-8],[21,20,20],2],[[-52,-9,-8],[21,20,20],2],[[53,-9,-8],[21,20,20],2],[[-73,-9,-8],[21,20,20],2],[[11,-9,-24],[21,20,20],2],[[11,-9,7],[21,20,20],2],[[11,-25,-9],[21,20,20],2],[[11,7,-9],[21,20,20],2],[[-31,7,-9],[21,20,20],2],[[-31,-25,-9],[21,20,20],2],[[-31,-9,7],[21,20,20],2],[[-10,11,-29],[21,20,20],2]];
 
 function compressRGB8(datastream, dimensions, RLE=true, lossyTolerance=0) {
@@ -590,6 +681,7 @@ function decompressRGB8(stream, dimensions) {
 /* CHUNK CLASSES */
 ///////////////////
 
+const RGB8_DEFAULT_VAL = [0,0,0];
 const RGB8_OPERATIONS = [["raw",0,3],["raw",1,3],["raw",2,3],["raw",3,3],["raw",4,3],["raw",5,3],["raw",6,3],["raw",7,3],["raw",8,3],["raw",9,3],["raw",10,3],["raw",11,3],["raw",12,3],["raw",13,3],["raw",14,3],["raw",15,3],["raw",16,3],["raw",17,3],["raw",18,3],["raw",19,3],["raw",20,3],["unassigned",3,0],["copy_prev",0,0],["copy_vert_fwd",0,0],["copy_vert",0,0],["copy_vert_back",0,0],["hash_table",0,1],["repeat_op",0,null],["vol",0,1],["vol",1,1],["vol",2,1],["vol",3,1],["vol",4,1],["vol",5,1],["vol",6,1],["vol",7,1],["vol",8,1],["vol",9,1],["vol",10,1],["vol",11,1],["vol",12,1],["vol",13,1],["vol",14,1],["vol",15,1],["vol",16,1],["vol",17,1],["vol",18,1],["vol",19,1],["vol",20,1],["vol",21,1],["vol",22,1],["vol",23,1],["vol",24,1],["vol",25,1],["vol",26,1],["vol",27,1],["vol",28,1],["vol",29,1],["vol",30,1],["vol",31,1],["vol",32,1],["vol",33,1],["vol",34,1],["vol",35,1],["vol",36,1],["vol",37,1],["vol",38,1],["vol",39,1],["vol",40,1],["vol",41,1],["vol",42,1],["vol",43,1],["vol",44,1],["vol",45,2],["vol",46,2],["vol",47,2],["vol",48,2],["vol",49,2],["vol",50,2],["vol",51,2],["vol",52,2],["vol",53,2],["vol",54,2],["vol",55,2],["vol",56,2],["vol",57,2],["vol",58,2],["vol",59,2],["vol",60,2],["vol",61,2],["vol",62,2],["unassigned",0,0],["unassigned",1,0],["unassigned",2,0]];
 const RGB8_OPERATIONS_DICT = Object.fromEntries(RGB8_OPERATIONS.map((o, i) => [[o[0], o[1]], i]));
 const RGB8_OP_INDICES = {};
@@ -635,9 +727,14 @@ class ChunkRGB8 {
     static getOpName(index) {return [RGB8_OPERATIONS[index][0], RGB8_OPERATIONS[index][1]]} // Return the 2-tuple op name of an index
 }
 
-
+const A8_DEFAULT_VAL = 0; 
 const A8_OPERATIONS = [["raw",0,1],["raw",1,1],["raw",2,1],["copy_prev",0,0],["copy_vert_fwd",0,0],["copy_vert",0,0],["copy_vert_back",0,0],["repeat_op",0,null],["inc",0,0],["inc",1,0],["inc",2,0],["inc",3,0],["inc",4,0],["inc",5,0],["inc",6,0],["inc",7,0],["inc",8,0],["inc",9,0],["inc",10,0],["inc",11,0],["inc",12,0],["inc",13,0],["inc",14,0],["inc",15,0],["inc",16,0],["inc",17,0],["inc",18,0],["inc",19,0],["inc",20,0],["inc",21,0],["inc",22,0],["inc",23,0],["inc",24,0],["inc",25,0],["inc",26,0],["inc",27,0],["inc",28,0],["inc",29,0],["inc",30,0],["inc",31,0],["inc",32,0],["inc",33,0],["inc",34,0],["inc",35,0],["inc",36,0],["inc",37,0],["inc",38,0],["inc",39,0],["inc",40,0],["inc",41,0],["inc",42,0],["dec",0,0],["dec",1,0],["dec",2,0],["dec",3,0],["dec",4,0],["dec",5,0],["dec",6,0],["dec",7,0],["dec",8,0],["dec",9,0],["dec",10,0],["dec",11,0],["dec",12,0],["dec",13,0],["dec",14,0],["dec",15,0],["dec",16,0],["dec",17,0],["dec",18,0],["dec",19,0],["dec",20,0],["dec",21,0],["dec",22,0],["dec",23,0],["dec",24,0],["dec",25,0],["dec",26,0],["dec",27,0],["dec",28,0],["dec",29,0],["dec",30,0],["dec",31,0],["dec",32,0],["dec",33,0],["dec",34,0],["dec",35,0],["dec",36,0],["dec",37,0],["dec",38,0],["dec",39,0],["dec",40,0],["dec",41,0],["dec",42,0]]
 const A8_OPERATIONS_DICT = Object.fromEntries(A8_OPERATIONS.map((o, i) => [[o[0], o[1]], i]));
+const A8_OP_INDICES = {};
+for (let i = 0; i < A8_OPERATIONS.length; i++) {
+    const opData = A8_OPERATIONS[i];
+    A8_OP_INDICES[[opData[0], opData[1]]] = [i, opData[2]];
+}
 
 class ChunkA8 {
     /* A single chunk containing operation name and data */
@@ -668,5 +765,11 @@ class ChunkA8 {
     indices() {
         return [this.index, ...this.data];
     }
+
+    static getOpIndex(op_name) {return A8_OP_INDICES[op_name][0]} // Return the op index from a 2-tuple name
+    
+    static getOpSize(op_name) {return A8_OP_INDICES[op_name][1]} // Return the op size from a 2-tuple name
+    
+    static getOpName(index) {return [A8_OPERATIONS[index][0], A8_OPERATIONS[index][1]]} // Return the 2-tuple op name of an index
 }
 
