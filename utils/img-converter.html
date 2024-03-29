@@ -25,44 +25,50 @@
         <br>
         You may also be interested in <a href="./TextImage">TextImage Converter</a> and <a href="https://xeltalliv.github.io/ScratchTools/Img2list/">img2list</a>.</p>
         <div id="encode" class="tabContent">
-            <div class="groupBox">
-                <input type="file" id="imageInput" accept="image/*">
-                <div style="margin-top: 5px;">
+            <div class="gridWithGap">
+                <div class="groupBox">
+                    <div class="gridWithGap">
+                    <input type="file" id="imageInput" accept="image/*">
                     <canvas id="imageCanvas"></canvas>
+                    <p id="imageStats" class="imageStats"></p>
+                    </div>
                 </div>
-                <p id="imageStats" class="imageStats"></p>
-            </div>
 
-            <div class="groupBox">
-                <div class="setting">
-                    <label>Pixel order</label>
-                    <select id="pixelOrder" name="Pixel order">
-                        <option value="+x+y">left-to-right scanlines, bottom-to-top</option>
-                        <option value="+x-y">left-to-right scanlines, top-to-bottom</option>
-                    </select>
+                <div class="groupBox">
+                    <div class="setting">
+                        <label>Pixel order</label>
+                        <select id="pixelOrder" name="Pixel order">
+                            <option value="+x+y">left-to-right scanlines, bottom-to-top</option>
+                            <option value="+x-y">left-to-right scanlines, top-to-bottom</option>
+                        </select>
+                    
+                    </div>
+                    <div class="setting">
+                        <label>Format</label>
+                        <select id="encodingFormat" name="Format">
+                            <option value="RGB list">RGB list</option>
+                            <option value="RGBA list">RGBA list</option>
+                            <option value="Combined RGB list">Combined RGB list</option>
+                            <hr>
+                            <option value="RGB JSON">RGB JSON</option>
+                            <option value="RGBA JSON">RGBA JSON</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="groupBox">
+                    <div class="gridWithGap">
+                    <div style="display: block;">
+                        <button id="convertImageToText" class="mainButtons" style="font-weight: bold;">Convert</button>
+                        <button id="copyTextArea" class="mainButtons">Copy to clipboard</button>
+                        <button id="downloadTextArea" class="mainButtons">Download</button>
+                        <button id="clearTextArea" class="mainButtons">Clear</button>
+                    </div>
+                    <textarea id="outputTextArea" class="largeTextArea" readonly></textarea>
+                </div>
+                </div>
+
                 
-                </div>
-                <div class="setting">
-                    <label>Format</label>
-                    <select id="encodingFormat" name="Format">
-                        <option value="RGB list">RGB list</option>
-                        <option value="RGBA list">RGBA list</option>
-                        <option value="Combined RGB list">Combined RGB list</option>
-                        <hr>
-                        <option value="RGB JSON">RGB JSON</option>
-                        <option value="RGBA JSON">RGBA JSON</option>
-                    </select>
-                </div>
             </div>
-            <br>
-            <div style="display: block;">
-                <button id="convertImageToText" class="mainButtons" style="font-weight: bold;">Convert</button>
-                <button id="copyTextArea" class="mainButtons">Copy to clipboard</button>
-                <button id="downloadTextArea" class="mainButtons">Download</button>
-                <button id="clearTextArea" class="mainButtons">Clear</button>
-            </div>
-
-            <textarea id="outputTextArea" class="largeTextArea" readonly></textarea>
         </div>
     </div>
     <script src="img-converter.js" type="module"></script>

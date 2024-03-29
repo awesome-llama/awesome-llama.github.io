@@ -13,7 +13,6 @@ canvas {
     min-width: 100%;
     min-height: 30px;
     max-width: 100%;
-    margin-top: 5px;
 }
 
 .optionTextArea {
@@ -37,7 +36,6 @@ select {
     border-width: 1px;
     border-color: rgba(0, 0, 0, 0.1);
     background-color: #ffffff;
-    margin-bottom: 5px;
 }
 
 .imageStats {
@@ -80,7 +78,14 @@ select {
 }
 
 .setting {
-    margin-top: 4px;
-    margin-bottom: 4px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    gap: 10px;
     align-items: center;
+}
+
+.gridWithGap {
+    display: grid;
+    gap: 5px;
 }
