@@ -174,7 +174,7 @@ function decode() {
 function encode() {
     const canvas = encodeImageCanvas;
     const context = canvas.getContext('2d', {willReadFrequently: true});
-
+    
     // Get pixel values as array
     let imageData = context.getImageData(0, 0, canvas.width, canvas.height);
     let pixelData = [];
@@ -206,6 +206,9 @@ function encode() {
     const encodeMainAsA8 = document.getElementById('encodeMainUseA8').checked;
     
     encodeOutputTextArea.value = encodeTextImage(pixelData, [canvas.width, canvas.height], compressionTolerance, encodeMainAsA8, includeAlpha);
+    
+    const encodedTextImageStats = document.getElementById('encodedTextImageStats');
+    encodedTextImageStats.innerText = `length: ${encodeOutputTextArea.value.length}, efficiency: ${Math.round(100*encodeOutputTextArea.value.length/(canvas.width*canvas.height))/100} bytes/px`
 }
 
 
@@ -226,7 +229,7 @@ function encodeTextImage(pixelData, imageDimensions, compressionTolerance=0, mai
         layers['main'] = {
             'type':'A8',
             'version':'0',
-            'data_stream':compressA8(pixelData.map(element => Math.round(0.25*element[1]+0.5*element[1]+0.25*element[1])), imageDimensions, true, compressionTolerance),
+            'data_stream':compressA8(pixelData.map(element => Math.round(0.25*element[0]+0.5*element[1]+0.25*element[2])), imageDimensions, true, compressionTolerance),
         }
     } else {
         layers['main'] = {
