@@ -1,6 +1,6 @@
 
-import { setPixelOrder, getImageAsPixelData, arrayRGBAToRGB } from './common/px-processing.js';
 import { processImagePreview, copyTextArea, downloadTextArea, clearTextArea } from './common/img-converter-ui.js';
+import { setPixelOrder, getImageAsPixelData, arrayRGBAToRGB } from './common/px-processing.js';
 
 const outputTextArea = document.getElementById('outputTextArea');
 const imageFileInput = document.getElementById('imageFileInput');

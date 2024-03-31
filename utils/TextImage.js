@@ -1,7 +1,3 @@
-/* I have very little experience with JavaScript.
-Be warned, this code is probably poorly written! 
-If you have feedback, I'd like to hear it. Alternatively, contribute code changes!
-*/
 
 import { processImagePreview, copyTextArea, downloadTextArea, clearTextArea, downloadImage } from './common/img-converter-ui.js';
 import { getImageAsPixelData, setPixelOrder, CHARS, indicesToTxt, txtToIndices, colToVolIndex, volIndexToCol, colToFtup, ftupToCol, chunkRLE, splitByLengths} from './common/px-processing.js';
@@ -288,53 +284,52 @@ function dataStreamToChunksA8(imageArray, dimensions, lossyTolerance=0) {
     const colPrev = new Array(dimensions[0] + 2).fill(A8_DEFAULT_VAL);
     const chunks = [];
 
-    for (const col of imageArray) {
-        const limitedCol = limitA(col);
+    for (let col of imageArray) {
+        col = limitA(col);
 
         // find chunk to encode with:
-        if (isSimilar(limitedCol, colPrev[0], lossyTolerance)) {
+        if (isSimilar(col, colPrev[0], lossyTolerance)) {
             chunks.push(new ChunkA8('copy_prev'));
-            addVal(limitedCol);
+            addVal(col);
             continue;
         }
 
-        if (isSimilar(limitedCol, colPrev[dimensions[0] - 2], lossyTolerance)) {
+        if (isSimilar(col, colPrev[dimensions[0] - 2], lossyTolerance)) {
             chunks.push(new ChunkA8('copy_vert_fwd'));
-            addVal(limitedCol);
+            addVal(col);
             continue;
         }
 
-        if (isSimilar(limitedCol, colPrev[dimensions[0] - 1], lossyTolerance)) {
+        if (isSimilar(col, colPrev[dimensions[0] - 1], lossyTolerance)) {
             chunks.push(new ChunkA8('copy_vert'));
-            addVal(limitedCol);
+            addVal(col);
             continue;
         }
 
-        if (isSimilar(limitedCol, colPrev[dimensions[0]], lossyTolerance)) {
+        if (isSimilar(col, colPrev[dimensions[0]], lossyTolerance)) {
             chunks.push(new ChunkA8('copy_vert_back'));
-            addVal(limitedCol);
+            addVal(col);
             continue;
         }
 
-        const diff = modulo(((limitedCol - colPrev[0]) + 128) % 256) - 128; // (((limitedCol - colPrev[0]) + 128) % 256) - 128
+        const diff = modulo(((col - colPrev[0]) + 128), 256) - 128; // (((col - colPrev[0]) + 128) % 256) - 128
 
         if (0 < diff && diff < 42) {
             chunks.push(new ChunkA8('inc', diff-1));
-            addVal(limitedCol);
+            addVal(col);
             continue;
         }
 
         if (-42 < diff && diff < 0) {
             chunks.push(new ChunkA8('dec', -1-diff));
-            addVal(limitedCol);
+            addVal(col);
             continue;
         }
 
         // raw pixel, do not compress
-        chunks.push(new ChunkA8('raw', Math.floor(limitedCol / 94), [limitedCol % 94]));
-        addVal(limitedCol);
+        chunks.push(new ChunkA8('raw', Math.floor(col / 94), [col % 94]));
+        addVal(col);
     }
-
     return chunks;
 }
 
@@ -485,35 +480,35 @@ function dataStreamToChunksRGB8(imageArray, dimensions, lossyTolerance=0) {
     let colTable = new Array(CHARS.length).fill(RGB8_DEFAULT_VAL);
     let chunks = [];
     
-    for (const col of imageArray) {
-        let limitedCol = limitRGB(col);
+    for (let col of imageArray) {
+        col = limitRGB(col);
 
         // find chunk to encode with:
-        if (isSimilar(limitedCol, colPrev[0], lossyTolerance)) {
+        if (isSimilar(col, colPrev[0], lossyTolerance)) {
             chunks.push(new ChunkRGB8('copy_prev'));
             addColour(colPrev[0]);
             continue;
         }
 
-        if (isSimilar(limitedCol, colPrev[dimensions[0] - 2], lossyTolerance)) {
+        if (isSimilar(col, colPrev[dimensions[0] - 2], lossyTolerance)) {
             chunks.push(new ChunkRGB8('copy_vert_fwd'));
             addColour(colPrev[dimensions[0] - 2]);
             continue;
         }
 
-        if (isSimilar(limitedCol, colPrev[dimensions[0] - 1], lossyTolerance)) {
+        if (isSimilar(col, colPrev[dimensions[0] - 1], lossyTolerance)) {
             chunks.push(new ChunkRGB8('copy_vert'));
             addColour(colPrev[dimensions[0] - 1]);
             continue;
         }
 
-        if (isSimilar(limitedCol, colPrev[dimensions[0] + 0], lossyTolerance)) {
+        if (isSimilar(col, colPrev[dimensions[0] + 0], lossyTolerance)) {
             chunks.push(new ChunkRGB8('copy_vert_back'));
             addColour(colPrev[dimensions[0] + 0]);
             continue;
         }
 
-        const similarIndex = similarInList(colTable, limitedCol, lossyTolerance);
+        const similarIndex = similarInList(colTable, col, lossyTolerance);
         if (similarIndex !== null) {
             chunks.push(new ChunkRGB8('hash_table', 0, [similarIndex]));
             addColour(colTable[similarIndex]);
@@ -521,7 +516,7 @@ function dataStreamToChunksRGB8(imageArray, dimensions, lossyTolerance=0) {
         }
 
         let inVolume = false;
-        let colDiff = [limitedCol[0] - colPrev[0][0], limitedCol[1] - colPrev[0][1], limitedCol[2] - colPrev[0][2]];
+        let colDiff = [col[0] - colPrev[0][0], col[1] - colPrev[0][1], col[2] - colPrev[0][2]];
         let YUVDiff = RGBToYUV(colDiff);
 
         for (let i = 0; i < RGB8_VOLUMES.length; i++) {
@@ -537,7 +532,7 @@ function dataStreamToChunksRGB8(imageArray, dimensions, lossyTolerance=0) {
                     throw new Error('Volume size disallowed (waste of space)');
                 }
 
-                addColour(limitedCol);
+                addColour(col);
                 inVolume = true;
                 break;
             }
@@ -545,9 +540,9 @@ function dataStreamToChunksRGB8(imageArray, dimensions, lossyTolerance=0) {
 
         // raw pixel, do not compress
         if (!inVolume) {
-            const ftup = colToFtup(limitedCol);
+            const ftup = colToFtup(col);
             chunks.push(new ChunkRGB8('raw', ftup[0], [...ftup.slice(1)]));
-            addColour(limitedCol);
+            addColour(col);
         }
     }
     
