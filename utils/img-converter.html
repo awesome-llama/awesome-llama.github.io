@@ -28,8 +28,9 @@
             <div class="gridWithGap">
                 <div class="groupBox">
                     <div class="gridWithGap">
-                    <input type="file" id="imageInput" accept="image/*">
-                    <canvas id="imageCanvas"></canvas>
+                    <input type="file" id="imageFileInput" accept="image/*">
+                    <img id="imagePreview" style="display: none; max-width: 100%; max-height: 300px;"> <!-- max-width: 100%; max-height: 300px;  -->
+                    <!-- <canvas id="imageCanvas"></canvas> -->
                     <p id="imageStats" class="imageStats"></p>
                     </div>
                 </div>
@@ -44,14 +45,31 @@
                     
                     </div>
                     <div class="setting">
+                        <label>Colour format</label>
+                        <select id="colourFormat" name="Format">
+                            <option value="RGB int">RGB integers</option>
+                            <option value="RGBA int">RGBA integers</option>
+                            <option value="c RGB int">combined RGB integer</option>
+                            <option value="c ARGB int">combined ARGB integer</option>
+                            <option value="c RGB hex">combined RGB hexadecimal</option>
+                            <option value="c ARGB hex">combined ARGB hexadecimal</option>
+                        </select>
+                    </div>
+                    <div class="setting">
                         <label>Format</label>
                         <select id="encodingFormat" name="Format">
-                            <option value="RGB list">RGB list</option>
-                            <option value="RGBA list">RGBA list</option>
-                            <option value="Combined RGB list">Combined RGB list</option>
-                            <hr>
-                            <option value="RGB JSON">RGB JSON</option>
-                            <option value="RGBA JSON">RGBA JSON</option>
+                            <option value="text">text</option>
+                            <option value="JSON">JSON</option>
+                        </select>
+                    </div>
+                    <div class="setting" id="textDelimiterSetting">
+                        <label>Delimiter</label>
+                        <select id="textDelimiter" name="Format">
+                            <option value="newline">newline</option>
+                            <option value="space">space</option>
+                            <option value="none">none</option>
+                            <option value="comma">comma</option>
+                            <option value="underscore">underscore</option>
                         </select>
                     </div>
                 </div>
@@ -64,6 +82,7 @@
                         <button id="clearTextArea" class="mainButtons">Clear</button>
                     </div>
                     <textarea id="outputTextArea" class="largeTextArea" readonly></textarea>
+                    <p id="encodedTextImageStats" class="imageStats"></p>
                 </div>
                 </div>
 
@@ -71,6 +90,15 @@
             </div>
         </div>
     </div>
+    <script>
+        const textDelimiter = document.getElementById('textDelimiter')
+        const textDelimiterSetting = document.getElementById('textDelimiterSetting')
+        const encodingFormat = document.getElementById('encodingFormat')
+        encodingFormat.addEventListener('change', function() {
+            if (encodingFormat.value == 'text') {textDelimiterSetting.style.display = ''} else {textDelimiterSetting.style.display = 'none'}
+        });
+
+    </script>
     <script src="img-converter.js" type="module"></script>
 </body>
 </html>

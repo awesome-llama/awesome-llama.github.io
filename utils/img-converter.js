@@ -1,80 +1,74 @@
-/* I have very little experience with JavaScript.
-Be warned, this code is probably poorly written! 
-If you have feedback, I'd like to hear it. Alternatively, contribute code changes!
-*/
 
-import { arrayRGBAToRGB } from './common/px-processing.js';
-import { processImagePreview, copyTextArea, downloadTextArea, clearTextArea } from './common/img-converter-ui.js';
+import { setPixelOrder, getImageAsPixelData, arrayRGBAToRGB } from './common/px-processing.js';
+import { processImagePreviewNew, copyTextArea, downloadTextArea, clearTextArea } from './common/img-converter-ui.js';
 
 const outputTextArea = document.getElementById('outputTextArea');
-const targetImageInput = document.getElementById('imageInput');
-const targetImageCanvas = document.getElementById('imageCanvas');
+const imageFileInput = document.getElementById('imageFileInput');
+const imagePreview = document.getElementById('imagePreview');
+const imageStats = document.getElementById('imageStats');
 
 document.getElementById('convertImageToText').addEventListener('click', convertImageToText);
 document.getElementById('copyTextArea').addEventListener('click', function() {copyTextArea(outputTextArea)});
 document.getElementById('downloadTextArea').addEventListener('click', function() {downloadTextArea(outputTextArea)});
 document.getElementById('clearTextArea').addEventListener('click', function() {clearTextArea(outputTextArea)});
 
-targetImageInput.addEventListener('change', function() {
-    processImagePreview(targetImageInput, targetImageCanvas) // Trigger when a file is selected
+imageFileInput.addEventListener('change', function() {
+    processImagePreviewNew(imageFileInput, imagePreview, imageStats); // Trigger when a file is selected
 });
+
+
+function pad(value, targetLength, padChar="0") {
+    // Add chars to the start of a string until it reaches a given length.
+    let outputVal = value.toString();
+    while (outputVal.length < targetLength) {outputVal = padChar + outputVal}
+    return outputVal;
+}
 
 
 function convertImageToText() {
     /* Image converter function - convert to various text formats (but not TextImage) */ 
-    
-    const canvas = targetImageCanvas;
-    const context = canvas.getContext('2d', {willReadFrequently: true});
+    if (imagePreview.src == '') {return null}
 
-    // Get pixel values as array
-    let imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-    let pixelData = [];
-    for (let i = 0; i < imageData.data.length; i += 4) {
-        pixelData.push([imageData.data[i], imageData.data[i+1], imageData.data[i+2], imageData.data[i+3]]);
-    }
+    let pixelData = getImageAsPixelData(imagePreview);
+    pixelData = setPixelOrder(pixelData, [imagePreview.naturalWidth, imagePreview.naturalHeight], document.getElementById('pixelOrder').value);
 
-    // Pixel ordering
-    switch (document.getElementById('pixelOrder').value) {
-        case ("+x+y"):
-            let result = [];
-            for (let i = pixelData.length-canvas.width; i >= 0; i -= canvas.width) {
-                result.push(pixelData.slice(i, i+canvas.width))
-            }
-            pixelData = result.flat();
-            break;
-        
-        case ("+x-y"):
-            break;
-        
-        default:
-            alert("Unknown pixel order");
-    }
-
-    // Choose correct encoder for pixelData
-    switch (document.getElementById('encodingFormat').value) {
-        case ("RGBA list"):
-            outputTextArea.value = pixelData.flat().join('\n');
+    // generate an array of colours using the correct colour format
+    switch (document.getElementById('colourFormat').value) { 
+        case ("RGB int"):
+            pixelData = arrayRGBAToRGB(pixelData);
             break;
 
-        case ("RGBA JSON"):
-            outputTextArea.value = JSON.stringify(pixelData, null, 0);
+        case ("RGBA int"):
+            // this is the original format
             break;
         
-        case ("RGB list"):
-            outputTextArea.value = arrayRGBAToRGB(pixelData).flat().join('\n');
+        case ("c RGB int"):
+            pixelData = pixelData.map(e => (65536*e[0] + 256*e[1] + e[2]));
             break;
         
-        case ("Combined RGB list"):
-            outputTextArea.value = arrayRGBAToRGB(pixelData).map(e => [65536*e[0] + 256*e[1] + e[2]]).flat().join('\n');
+        case ("c ARGB int"):
+            pixelData = pixelData.map(e => (16777216*e[3] + 65536*e[0] + 256*e[1] + e[2]));
             break;
             
-        case ("RGB JSON"):
-            outputTextArea.value = JSON.stringify(arrayRGBAToRGB(pixelData), null, 0);
+        case ("c RGB hex"):
+            pixelData = pixelData.map(e => pad((65536*e[0] + 256*e[1] + e[2]).toString(16), 6));
             break;
-        
-        default:
-            alert("Unknown format");
 
+        case ("c ARGB hex"):
+            pixelData = pixelData.map(e => pad((16777216*e[3] + 65536*e[0] + 256*e[1] + e[2]).toString(16), 8));
+            break;
     }
+
+    switch (encodingFormat.value) {
+        case ("JSON"):
+            outputTextArea.value = JSON.stringify(pixelData, null, 0);
+            break;
+        case ("text"):
+            const delimiters = {'newline':'\n', 'space':' ', 'none':'', 'comma':',', 'underscore':'_'};
+            outputTextArea.value = pixelData.flat().join(delimiters[document.getElementById('textDelimiter').value]);
+            break;
+    }
+
+    document.getElementById('encodedTextImageStats').innerText = `length (chars): ${outputTextArea.value.length}`;
 }
 

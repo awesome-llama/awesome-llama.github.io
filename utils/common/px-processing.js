@@ -14,15 +14,62 @@ export function arrayRGBAToRGB(pixelData) {
 }
 
 
+export function getImageAsPixelData(targetImage) {
+    // WebGL method, get RGBA image pixel data
+    // previous canvas method is wrong due to premultiplication
+    // https://stackoverflow.com/a/60564905
+
+    const canvas = document.createElement('canvas');
+    canvas.width = targetImage.naturalWidth;
+    canvas.height = targetImage.naturalHeight;
+
+    const gl = canvas.getContext("webgl2");
+
+    gl.activeTexture(gl.TEXTURE0);
+    let texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+
+    const framebuffer = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, targetImage);
+    gl.drawBuffers([gl.COLOR_ATTACHMENT0]);
+    
+    let data = new Uint8Array(targetImage.naturalWidth * targetImage.naturalHeight * 4);
+    gl.readPixels(0, 0, targetImage.naturalWidth, targetImage.naturalHeight, gl.RGBA, gl.UNSIGNED_BYTE, data);
+
+    // make arrays for each pixel
+    let pixelData = [];
+    for (let i = 0; i < data.length; i += 4) {
+        pixelData.push([data[i], data[i+1], data[i+2], data[i+3]]);
+    }
+
+    return pixelData;
+}
+
+
+export function setPixelOrder(image, dimensions, order) {
+    // Pixel ordering assuming it started as +x-y
+    switch (order) {
+        case ("+x+y"):
+            let result = [];
+            for (let i = image.length-dimensions[0]; i >= 0; i -= dimensions[0]) {
+                result.push(image.slice(i, i+dimensions[0]))
+            }
+            return result.flat();
+        
+        case ("+x-y"):
+            break;
+    }
+    return image;
+}
+    
 
 /* The following are used by TextImage */
 
 
 export const CHARS = '!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~';
-//export const CHAR_LOOKUP = {};
-//for (let i = 0; i < CHARS.length; i++) {
-//    CHAR_LOOKUP[CHARS[i]] = i;
-//}
+
 
 export function indicesToTxt(indices) {
     // Convert a list of indices into a string using the character table

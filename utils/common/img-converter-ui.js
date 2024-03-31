@@ -3,10 +3,10 @@ Be warned, this code is probably poorly written!
 If you have feedback, I'd like to hear it. Alternatively, contribute code changes!
 */
 
-export function processImagePreview(targetImageInput, targetImageCanvas) {
+export function processImagePreview(targetImageFileInput, targetImageCanvas) {
     // For displaying the image preview in a canvas
     const context = targetImageCanvas.getContext('2d', {willReadFrequently: true});
-    const file = targetImageInput.files[0];
+    const file = targetImageFileInput.files[0];
     const reader = new FileReader();
 
     reader.onload = function (e) {
@@ -22,6 +22,25 @@ export function processImagePreview(targetImageInput, targetImageCanvas) {
 
     reader.readAsDataURL(file);
 }
+
+export function processImagePreviewNew(targetImageFileInput, targetImagePreview, targetImageStats) {
+    // New version using an image element
+    const file = targetImageFileInput.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+        targetImagePreview.onload = function () {
+            const img = targetImagePreview;
+            targetImageStats.innerText = `dimensions: ${img.naturalWidth}x${img.naturalHeight}, total pixels: ${img.naturalWidth*img.naturalHeight}`;
+        }
+
+        targetImagePreview.src = e.target.result;
+        targetImagePreview.style.display = 'block';
+    };
+    
+    reader.readAsDataURL(file);
+}
+
 
 export function copyTextArea(targetTextArea) {
     navigator.clipboard.writeText(targetTextArea.value);
