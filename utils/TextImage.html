@@ -32,9 +32,9 @@
             <div class="gridWithGap">
                 <div class="groupBox">
                     <div class="gridWithGap">
-                        <input type="file" id="encodeImageInput" accept="image/*">
-                        <canvas id="encodeImageCanvas" width="32px" height="32px"></canvas>
-                        <p id="imageStats" class="imageStats"></p>
+                        <input type="file" id="encodeImageFileInput" accept="image/*">
+                        <img id="encodeImagePreview" style="display: none; max-width: 100%; max-height: 300px;">
+                        <p id="encodeImageStats" class="imageStats"></p>
                     </div>
                 </div>
 
@@ -104,8 +104,8 @@
                     </div>
                 </div>
             </div>
+            <p style="font-size: 0.8em;">Warning: Due to the decoder's use of the canvas element, pixels with transparency will be outputted slightly inaccurately.</p>
         </div>
-        <p style="font-size: 1em;">Warning: Due to this converter's implementation using the canvas element, pixels with transparency will be handled slightly inaccurately.</p>
     </div>
 
     <script src="TextImage.js" type="module"></script>

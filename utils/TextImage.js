@@ -4,13 +4,13 @@ If you have feedback, I'd like to hear it. Alternatively, contribute code change
 */
 
 import { processImagePreview, copyTextArea, downloadTextArea, clearTextArea, downloadImage } from './common/img-converter-ui.js';
-import { CHARS, indicesToTxt, txtToIndices, colToVolIndex, volIndexToCol, colToFtup, ftupToCol, chunkRLE, splitByLengths} from './common/px-processing.js';
+import { getImageAsPixelData, setPixelOrder, CHARS, indicesToTxt, txtToIndices, colToVolIndex, volIndexToCol, colToFtup, ftupToCol, chunkRLE, splitByLengths} from './common/px-processing.js';
 import { CSKV_write, CSKV_read } from './common/cskv-utils.js';
 
 
 /* ENCODE UI */
-const encodeImageInput = document.getElementById('encodeImageInput'); // choose file
-const encodeImageCanvas = document.getElementById('encodeImageCanvas'); // image preview
+const encodeImageFileInput = document.getElementById('encodeImageFileInput'); // choose file
+const encodeImagePreview = document.getElementById('encodeImagePreview'); // image preview
 const encodeOutputTextArea = document.getElementById('encodeOutputTextArea'); // output textarea
 
 document.getElementById('encodeConvertTextImage').addEventListener('click', encode);
@@ -18,10 +18,9 @@ document.getElementById('encodeCopyTextArea').addEventListener('click', function
 document.getElementById('encodeDownloadTextArea').addEventListener('click', function() {downloadTextArea(encodeOutputTextArea)});
 document.getElementById('encodeClearTextArea').addEventListener('click', function() {clearTextArea(encodeOutputTextArea)});
 
-encodeImageInput.addEventListener('change', function() {
-    processImagePreview(encodeImageInput, encodeImageCanvas) // Trigger when a file is selected
+encodeImageFileInput.addEventListener('change', function() {
+    processImagePreview(encodeImageFileInput, encodeImagePreview, document.getElementById('encodeImageStats')) // Trigger when a file is selected
 });
-
 
 /* DECODE UI */
 const decodeImageInput = document.getElementById('decodeImageInput'); // choose file
@@ -172,43 +171,21 @@ function decode() {
 /////////////////
 
 function encode() {
-    const canvas = encodeImageCanvas;
-    const context = canvas.getContext('2d', {willReadFrequently: true});
-    
-    // Get pixel values as array
-    let imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-    let pixelData = [];
-    for (let i = 0; i < imageData.data.length; i += 4) {
-        pixelData.push([imageData.data[i], imageData.data[i+1], imageData.data[i+2], imageData.data[i+3]]);
-    }
+    if (encodeImagePreview.src == '') {return null}
 
-    // Pixel ordering
-    switch (document.getElementById('pixelOrder').value) {
-        case ("+x+y"):
-            let result = [];
-            for (let i = pixelData.length-canvas.width; i >= 0; i -= canvas.width) {
-                result.push(pixelData.slice(i, i+canvas.width));
-            }
-            pixelData = result.flat();
-            break;
-        
-        case ("+x-y"):
-            break;
-        
-        default:
-            alert("Unknown pixel order");
-    }
-    
-    //encodeOutputTextArea.value = pixelData.flat().join('\n'); // testing
+    const dimensions = [encodeImagePreview.naturalWidth, encodeImagePreview.naturalHeight]
+
+    let pixelData = getImageAsPixelData(encodeImagePreview);
+    pixelData = setPixelOrder(pixelData, dimensions, document.getElementById('pixelOrder').value);
     
     const compressionTolerance = document.getElementById('encodeTolerance').value;
     const includeAlpha = document.getElementById('encodeIncludeAlpha').checked;
     const encodeMainAsA8 = document.getElementById('encodeMainUseA8').checked;
     
-    encodeOutputTextArea.value = encodeTextImage(pixelData, [canvas.width, canvas.height], compressionTolerance, encodeMainAsA8, includeAlpha);
+    encodeOutputTextArea.value = encodeTextImage(pixelData, dimensions, compressionTolerance, encodeMainAsA8, includeAlpha);
     
     const encodedTextImageStats = document.getElementById('encodedTextImageStats');
-    encodedTextImageStats.innerText = `length: ${encodeOutputTextArea.value.length}, efficiency: ${Math.round(100*encodeOutputTextArea.value.length/(canvas.width*canvas.height))/100} bytes/px`
+    encodedTextImageStats.innerText = `length: ${encodeOutputTextArea.value.length}, efficiency: ${Math.round(100*encodeOutputTextArea.value.length/(dimensions[0]*dimensions[1]))/100} bytes/px`
 }
 
 

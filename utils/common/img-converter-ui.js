@@ -1,30 +1,7 @@
-/* I have very little experience with JavaScript.
-Be warned, this code is probably poorly written! 
-If you have feedback, I'd like to hear it. Alternatively, contribute code changes!
-*/
 
-export function processImagePreview(targetImageFileInput, targetImageCanvas) {
-    // For displaying the image preview in a canvas
-    const context = targetImageCanvas.getContext('2d', {willReadFrequently: true});
-    const file = targetImageFileInput.files[0];
-    const reader = new FileReader();
 
-    reader.onload = function (e) {
-        let img = new Image();
-        img.onload = function () {
-            targetImageCanvas.width = img.width;
-            targetImageCanvas.height = img.height;
-            context.drawImage(img, 0, 0);
-            document.getElementById("imageStats").innerText = `dimensions: ${img.width}x${img.height}, total pixels: ${img.width*img.height}`;
-        };
-        img.src = e.target.result;
-    };
-
-    reader.readAsDataURL(file);
-}
-
-export function processImagePreviewNew(targetImageFileInput, targetImagePreview, targetImageStats) {
-    // New version using an image element
+export function processImagePreview(targetImageFileInput, targetImagePreview, targetImageStats) {
+    // Create an image, set image element to it
     const file = targetImageFileInput.files[0];
     const reader = new FileReader();
 

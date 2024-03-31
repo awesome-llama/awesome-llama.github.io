@@ -1,6 +1,6 @@
 
 import { setPixelOrder, getImageAsPixelData, arrayRGBAToRGB } from './common/px-processing.js';
-import { processImagePreviewNew, copyTextArea, downloadTextArea, clearTextArea } from './common/img-converter-ui.js';
+import { processImagePreview, copyTextArea, downloadTextArea, clearTextArea } from './common/img-converter-ui.js';
 
 const outputTextArea = document.getElementById('outputTextArea');
 const imageFileInput = document.getElementById('imageFileInput');
@@ -13,7 +13,7 @@ document.getElementById('downloadTextArea').addEventListener('click', function()
 document.getElementById('clearTextArea').addEventListener('click', function() {clearTextArea(outputTextArea)});
 
 imageFileInput.addEventListener('change', function() {
-    processImagePreviewNew(imageFileInput, imagePreview, imageStats); // Trigger when a file is selected
+    processImagePreview(imageFileInput, imagePreview, imageStats); // Trigger when a file is selected
 });
 
 
