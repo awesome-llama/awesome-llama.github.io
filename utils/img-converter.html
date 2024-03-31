@@ -29,8 +29,7 @@
                 <div class="groupBox">
                     <div class="gridWithGap">
                     <input type="file" id="imageFileInput" accept="image/*">
-                    <img id="imagePreview" style="display: none; max-width: 100%; max-height: 300px;"> <!-- max-width: 100%; max-height: 300px;  -->
-                    <!-- <canvas id="imageCanvas"></canvas> -->
+                    <img id="imagePreview" style="display: none; max-width: 100%; max-height: 300px;">
                     <p id="imageStats" class="imageStats"></p>
                     </div>
                 </div>
@@ -49,7 +48,7 @@
                         <select id="colourFormat" name="Format">
                             <option value="RGB int">RGB integers</option>
                             <option value="RGBA int">RGBA integers</option>
-                            <option value="c RGB int">combined RGB integer</option>
+                            <option value="c RGB int" selected>combined RGB integer</option>
                             <option value="c ARGB int">combined ARGB integer</option>
                             <option value="c RGB hex">combined RGB hexadecimal</option>
                             <option value="c ARGB hex">combined ARGB hexadecimal</option>

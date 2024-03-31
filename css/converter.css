@@ -88,4 +88,5 @@ select {
 .gridWithGap {
     display: grid;
     gap: 5px;
+    grid-template-columns: calc(100%);
 }
