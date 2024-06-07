@@ -1,9 +1,7 @@
-# awesome-llama
-# 2023
-
 from PIL import Image
 import numpy as np
 import math
+import pyperclip
 
 FILE_PATH = 'C:/Users/Atlas/Documents/Scratch/The Mast/exported regions/'
 TEX_NAMES = [
@@ -109,7 +107,7 @@ def compress_img(image_path, image_name, header=False, resize=False):
 
     src_img = Image.open(image_path)
     if resize:
-        image = src_img.resize((src_img.width//2, src_img.height//2), 1)
+        image = src_img.resize((src_img.width//3, src_img.height//3), 1)
     else:
         image = src_img
     # image.show()
@@ -230,8 +228,10 @@ def compress_img(image_path, image_name, header=False, resize=False):
 # -----------------------------------------------
 
 
-RUN = 1
+# remember to generate scannable images from text after!
+RUN = 7
 
+############
 if RUN == 1:
     # full size images
     images = []
@@ -252,4 +252,70 @@ elif RUN == 2:
     with open('compressed_textures_low.txt', 'w') as f:
         f.write(' '.join(images))
 
+elif RUN == 3:
+    # pod
+    with open('compressed_pod.txt', 'w') as f:
+        f.write(compress_img(f'{FILE_PATH}region_pod.png',
+                             'region_pod', header=False, resize=False))
+
+elif RUN == 4:
+    # debug
+    with open('beach.txt', 'w') as f:
+        f.write(compress_img(
+            'C:/Users/Atlas/Documents/Scratch/Image Format/beach.png', 'beach', header=True))
+
+elif RUN == 5:
+    # full size images FOR THE WEBSITE WITH ESCAPED CHARS
+    images = []
+    for name in TEX_NAMES:
+        images.append(compress_img(
+            f'{FILE_PATH}{name}.png', name, header=True, resize=False))
+        # break
+
+    data = ' '.join(images)
+
+    data_cleaned = []
+    for char in data:
+        if char == '"' or char == '\\':
+            data_cleaned.append('\\')
+
+        data_cleaned.append(char)
+
+    print(len(data_cleaned))
+
+    with open('compressed_textures_web.txt', 'w') as f:
+        f.write(''.join(data_cleaned) + ' data_end 0 0 0 0')
+
+elif RUN == 6:
+    # NPP REMIX
+    # full size images
+    NPPPATH = 'C:/Users/Atlas/Documents/Scratch/The Mast/NPP3D/'
+    images = []
+    for name in ['region_start', 'region_drain', 'region_shafts', 'region_nuclear']:
+        images.append(compress_img(
+            f'{NPPPATH}{name}.png', name, header=True, resize=False))
+
+    with open(f'{NPPPATH}npp_compressed_textures_full.txt', 'w') as f:
+        f.write(' '.join(images))
+
+elif RUN == 7:
+    # PLANT WALL REMIX
+    # full size images
+    NPPPATH = 'C:/Users/Atlas/Documents/Scratch/The Mast/Plant Wall/'
+    images = []
+    for name in ['region_atrium']:
+        images.append(compress_img(
+            f'{NPPPATH}{name}.png', name, header=True, resize=True))
+
+    with open(f'{NPPPATH}pw_compressed_textures_full.txt', 'w') as f:
+        f.write(' '.join(images))
+
 print(pixels_total)
+#compress_img('C:/Users/Atlas/Documents/Scratch/Image Format/beach.png')
+
+#img = compress_img(f'{FILE_PATH}region_cb.png', 'cb')
+# print(len(img))
+
+#compress_img('C:/Users/Atlas/Documents/Scratch/Image Format/test.png')
+# compress_img(f'{FILE_PATH}region_pod.png')
+#img = compress_img(f'{FILE_PATH}region_service3.png', 'region_pod')
