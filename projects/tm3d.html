@@ -34,16 +34,33 @@
     <br>
     <h2>General technical details</h2>
     <ul>
-      <li>Z-up orientation, identical to Blender. Camera faces -Z (directly down) and up/down is around the X axis as well. Camera roll is not supported as it's not needed and just a waste of performance in this use case.</li>
+      <li>Right-handed Z-up orientation (identical to Blender). Camera with no rotation faces -Z (directly down) and up/down is around the X axis. Camera roll is not supported as it's not needed and just a waste of performance in this use case.</li>
       <li>Everything is Metric/SI.</li>
       <li>Rendering uses a textured tri filler created by <a href="https://scratch.mit.edu/projects/826059940/">Bambozzle</a>. This filler uses a depth buffer. No sorting is used.</li>
       <li>A stripped-down version of the project exists as <a href="https://scratch.mit.edu/projects/861549676/">Nuclear Power Plant [3D]</a>. It is recommended you look at that first if you want to learn more or even develop your own games with it. <a href="https://awesome-llama.github.io/assets/npp3d/nuclear_power_plant.blend">You can download the Blender file for it to use as a reference.</a> Warning: Make sure you respect the object naming syntax required, older versions of Blender will not export the names correctly. Also make sure you triangulate the geometry.</li>
-      <li>The text renderer can be found here: <a href="https://scratch.mit.edu/projects/735937335/">https://scratch.mit.edu/projects/735937335/</a> I made my own because I was not satisfied with other PTEs available. None of them can render text at small sizes like mine. Many are also bloated with features I would never use.</li>
+      <li>The text renderer can be found here: <a href="https://scratch.mit.edu/projects/934459716/">https://scratch.mit.edu/projects/934459716/</a> I made my own because I was not satisfied with other PTEs available. None of them can render text at small sizes like mine. Many are also bloated with features I would never use.</li>
     </ul>
 
     <br>
+    <h2>Main loop</h2>
+    <p>At the core of the project is the main loop. A single forever loop controls the entire project apart from the audio which has its own loops to prevent interruption. This main loop sets essential variables and then broadcasts to all the other sprites to run scripts in the desired order. Note that none of these broadcasts are broadcast and wait. It's not needed as all the scripts will complete within the frame.</p>
+    
+    <br>
+    <h2>Background</h2>
+    <p>The sky is just a stamped costume that moves vertically. For the different altitudes or regions there are different backgrounds. The sun is just a 3D point very far away with a costume stamped at its location on the screen. 
+    The mast itself is rendered with pen lines. I originally tried with stamps but it was of poor quality - too much aliasing and no distortion due to perspective. The script responsible is hacked together to draw something that looks "good enough" for both vanilla Scratch and TurboWarp.</p>
+
+    <br>
+    <h2>Geometry</h2>
+    <p>When a region is loaded, all the geometry for it is placed in some lists. There is a list for the vertex coordinates, and another that was added later for storing extra data associated with each vertex, which ended up being a boolean for if it is dynamic and the subregion name as a string. Triangles are stored in a separate list and contain the 3 vertex indices, the surface normal for backface culling, and the 3 pairs of uv coordinates for each vertex. An extra item is used as a separator for aid in debugging. In total that is 10 items per triangle.
+    <br>
+    During gameplay, this geometry data is sent to the processor sprite every frame where it gets transformed and projected onto the screen. Any geometry where the camera is outside of its bounding box is skipped. Dynamic geometry is also processed and movements are made through simple vertex displacements along a single direction before the screen transforms. This type of geometry has backface culling disabled for simplicity.
+    <br>
+    Rendering is handled by a different sprite. Here z-clipping is performed using a quite large script and finally the processed triangles are rendered using Bambozzle's textured triangle filler.</p>
+
+    <br>
     <h2>Textures</h2>
-    <p>This project uses a <a href="https://scratch.mit.edu/projects/788861757/">custom text-based image format</a> developed by myself, with help from <a href="https://scratch.mit.edu/projects/693020370/">Arctenik</a>.
+    <p>This project uses <a href="https://github.com/awesome-llama/TextImage">TextImage</a> to store its textures.
     This was necessary due to the fact that the textures take up a lot more space than what is allowed to be stored in a Scratch project's <span class="code">project.json</span>, which has a limit of 5MB, including scripts, vars, and anything else necessary to run the project.
     Costumes and audio are stored separately and have their own limit of 10MB each, no limit on total count. This image format compresses 24-bit RGB images which you can read about in more detail in the linked project description.</p>
     <p>The project size limit leaves few options for storing the needed textures. Even with compression, the full-res textures do not fit. I provide a low-res version in the project that can be loaded at any time but the full-res textures must either be scanned or pasted in via a text input box.
@@ -81,15 +98,36 @@
     <p>Regions are split into rooms for improved performance. Rooms are separate objects. The default main room which is always visible will not have a subname, it will just be <span class="code">[region name]_VZ</span>. Any other room must be accompanied by a bounding box to be visible. The bounding box is calculated by the bounds of the tris of the object and can be of whatever you want. I use rectangular prisms to make visualisation easier. 
       Dynamic geometry does not need a bounding box, it will always be visible. A bounding box of size infinity is created automatically for the main room and dynamic geometry.
     </p>
-  
+
     <br>
-    <h2>Player movement</h2>
-    <p>This game uses a fixed update rate of 120Hz for player movement. This is to ensure that collisions occur correctly and are deterministic. The timer also is updated with this.
-      Each game frame, a discrete number of movement ticks are run. At 60 FPS, that would be twice. 
-      Limitations are in place just in case unexpected data is found, at most 20 ticks can occur each frame (equivalent to 6 FPS) and past that, the player will move slower.
-    </p>
-    <p>The player is the camera. There is no differentiation.</p>
-    <p>Movement occurs along the XY plane and Z axis separately. The player moves horizontally as needed and collisions occur in 2D on line segments. If the player is above a floor triangle, the camera will be set so it is exactly 1.65m above it (the eye height of the player).</p>
+    <h2>Game states</h2>
+    <p>There are a lot of values that need to be kept track of. Every elevator position, every button state. All states are stored within a list. Another list simultaneously stores the name of the state, so they are really key-value pairs. For most purposes the state is found using the item # block, which is inefficient but a compromise to keep the code readable. As the order of the states never change, an easy improvement would be to directly access the values using the correct index. The dynamic geometry is driven by some of these game states which can be interpolated within a set range. Some more complex animations make use of sinusoidal interpolation to make it much smoother, although internally it is still linear. The sinusoidal interpolation is mapped from the linear values.</p>
+
+    <br>
+    <h2>Player physics</h2>
+    <p>This game uses a fixed update rate of 120Hz for player movement. This is to ensure that collisions occur correctly and are deterministic. The timer also is updated with this. Each game frame, a discrete number of movement ticks are run. At 60 FPS, that would be twice. Limitations are in place just in case unexpected data is found, at most 20 ticks can occur each frame (equivalent to 6 FPS) and past that, the player will move slower.
+    <br><br>
+    The player is the camera. There is no differentiation.
+    <br><br>
+    Movement occurs along the XY plane and Z axis separately. The player moves horizontally as needed and collisions occur in 2D on line segments. If the player is above a floor triangle, the camera will be set so it is exactly 1.65m above it (the eye height of the player).
+    <br><br>
+    There is only 1 floor per region, which is fine as it's not that slow and it makes the collision wall generation simple. Walls are generated by finding exposed edges (edges that are not shared by 2 adjacent triangles). A line segment is added there. Walls are given a height for where their collision is effective, which is a range from 1 metre below the bottom of the wall and 1 metre above the highest point of the wall.</p>
+
+    <br>
+    <h2>Tags</h2>
+    <p>Placed in the world are what I call "tags". Tags can do 3 things, display text such as for signs, open a document to view, or run functions when triggered such as a button or entry into a new region. Text display is the simplest, it is just specified in the custom block. Document is similarly simple, just specify the document name. Functions are a bit more complicated. You can specify a game state to set using special syntax. Any other function name will trigger a different script with hard-coded functionality. The game state syntax is just to lessen the amount of code that is needed as it is a common thing that needs to be run.</p>
+
+    <br>
+    <h2>Documents</h2>
+    <p>Documents are pretty simple, just an image or set of images displayed on the screen with text. The images used in the documents were created in Blender. The keypad found in the facility region is also technically a document but programmed with additional functionality. Same as the computer terminal at the end of the game.</p>
+
+    <br>
+    <h2>Audio</h2>
+    <p>Sounds in Scratch is a pain to deal with. It's very limiting and there are major difficulties such as sound being unable to seamlessly loop and some sound blocks causing yields. This is what I ended up settling with but I am still not satisfied. The whole system is a bit rushed too. 
+    <br><br>
+    Sound emitters can be placed in the world to create looping sounds. They can be made to pan based on their screen space position which is a flawed technique. In hologram render mode the sound emitters can be viewed.
+    <br><br>
+    The player steps are simple. There are variables storing the last foot position, if the player moves a certain distance from it, place a new foot there and play a step sound. In some places, an alternate metallic step sound is played, which is controlled by hard-coded location checks.</p>
   
     <br>
     <h2>Debugging</h2>
