@@ -28,7 +28,7 @@
     <h1>My Save Code Format</h1>
     <hr>
     <p>Over many years of developing Scratch projects, I have settled on a simple-to-use and easy-to-understand save code format and now use it on pretty much everything.
-    I call it CSKV, which stands roughly for comma-separated key/values (I have not settled on a specific name). The only reserved chars are colon <span class="code">:</span> and comma <span class="code">,</span>. Escape chars are not supported.</span></p>
+    I call it CSKV, which stands roughly for comma-separated key/values (I have not settled on a specific name). The only reserved chars are colon <span class="code">:</span> and comma <span class="code">,</span>. I usually don't need escape characters so my implementation does not use them but it's quite simple to modify to account for.</span></p>
     <p>Example (with colour showing the <span class="key">key</span> and <span class="val">values</span>):</p>
     <p class="code">
         <span class="key">user</span>:<span class="val">awesome-llama</span>,<span class="key">id</span>:<span class="val">8832510</span>,<span class="key">scratchteam</span>:<span class="val">false</span>
@@ -52,17 +52,18 @@
     <p>Here is a Scratch project with the scripts I typically would use to implement the above: <a href="https://scratch.mit.edu/projects/114633511/">https://scratch.mit.edu/projects/114633511/</a></p>
 
     <a href="https://scratch.mit.edu/projects/114633511/"><img src="https://cdn2.scratch.mit.edu/get_image/project/114633511_480x360.png"></a>
+    <hr>
+    <p>If using this for a save code that saves game progress, it is apparent that the simplicity and readability also means it is easy to cheat. In my opinion, this doesn't matter as the "see inside" button exists on all Scratch projects and provides even more opportunities to cheat. I suggest if you want to stop the simplest, most opportunistic cheating, you include a checksum for the important values (e.g. currency, high score).</p>
 
     <hr>
     <p>A list of notable projects that use this system:</p>
     <ul>
-        <li><a href="https://scratch.mit.edu/projects/341589959/">Flight Simulator 737-800</a> (flight route v2)</li>
-        <li><a href="https://scratch.mit.edu/projects/552647396/">Image Editor</a> (CPD format)</li>
-        <li><a href="https://scratch.mit.edu/projects/711638071/">Mini Golf</a> (internal level data storage, cloud data logs)</li>
         <li><a href="https://scratch.mit.edu/projects/486632504/">Road Network Designer</a> (road network save codes)</li>
         <li><a href="https://scratch.mit.edu/projects/811805586/">Submersible</a> (game progress save codes)</li>
-        <li><a href="https://scratch.mit.edu/projects/737370377/">Mindustry-Inspired Tower Defense</a> (internal level data storage)</li>
+        <li><a href="https://scratch.mit.edu/projects/341589959/">Flight Simulator 737-800</a> (flight route v2)</li>
+        <li><a href="https://scratch.mit.edu/projects/711638071/">Mini Golf</a> (internal level data storage, cloud data logs)</li>
         <li><a href="https://scratch.mit.edu/projects/945312296/">TextImage</a> (image format header)</li>
+        <li><a href="https://scratch.mit.edu/projects/737370377/">Mindustry-Inspired Tower Defense</a> (internal level data storage)</li>
     </ul>
 
 </div>
