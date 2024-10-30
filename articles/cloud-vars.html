@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My opinion on cloud variables</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+</head>
+
+<body>
+<div class="navbar">
+    <div>
+      <a href="/" class="navbtn"><div class="navbtnlink">Home</div></a>
+      <a href="/articles" class="navbtn"><div class="navbtnlink">Articles</div></a>
+      <a href="/projects" class="navbtn"><div class="navbtnlink">Projects</div></a>
+      <a href="/utils" class="navbtn"><div class="navbtnlink">Utilities</div></a>
+    </div>
+  </div>
+
+  <div class="content">
+    <h1>My opinion on cloud variables</h1>
+    <hr>
+    <p>
+      <a href="https://en.scratch-wiki.info/wiki/Cloud_Data">Cloud variables</a> are a cool idea but their implementation and functinality leave a lot to be desired. I do not like using them and have tried to limit their usage on my projects. I've even removed them from many of my older projects. The gist of it is that their benefits are outweighed by being too high-maintenence.
+    </p>
+    <br>
+    <h3>Reliability</h3>
+    <p>
+      Cloud variables have a tendency of breaking or not working. User-caused breakages include backpacking scripts, remixing, and downloading/uploading the project. Breakages outside of the user's control also occur - one day they may stop storing data (but may still log their updates or remain synchronised for connected users). This has a simple fix which is to just rename them but the breakages happen so often and get annoying to deal with, especially when there are many projects to edit. There is also no clear indication whether they are broken or not and it may be days, weeks, or months until someone realises and then comments about it. This is especially bad for long-standing high scores as the discovery only happens when someone finally breaks the record. It's so bad that I've even seen a forum post from a user believing that being able to store values long-term isn't actually a feature.
+    </p>
+    <br>
+    <h3>Abuse</h3>
+    <p>
+      They are easy to abuse. The cloud data API is exposed. You do not need to "see inside" a project to edit them as with the slightest bit of programming knowledge (e.g. JavaScript, Python) or access to software such as Postman, the API can be used to set the variables to anything. With so much control, opportunities arise for inserting inappropriate content, disrupting multiplayer games, cheating high scores, resetting saves, and more. A few of these have happened on my own projects already.
+      <br>
+      There have been many requests made to the Scratch Team to secure it but there's no simple solution.
+    </p>
+    <br>
+    <h3>Usage balance</h3>
+    <p>
+      Most projects have their highest view gain when first shared. For a lot of projects, especially multiplayer ones, this is the only time they have enough views to be properly utilised. The rest of the project's lifetime it will have so few users that the cloud variables are never utilised well again. In cases of reaching the trending page, there may be too many people accessing it at once resulting in the chance that pretty much none of its lifetime has the optimal amount of concurrent users.
+    </p>
+    <br>
+    <h3>Ephemerality</h3>
+    <p>
+      I see cloud variables as not permanent. I like to make projects that remain playable for as long as possible. They are at the mercy of the Scratch Team's decisions, they may suddenly decide to shut down the servers or impose more restrictions. More restrictions has happened in the past, cloud variables used to be able to store hexadecimal numbers and a lot more than 256 digits. These limitations have broken a lot of older cloud projects. 
+    </p>
+
+
+</div>
+
+</body>
+</html>
