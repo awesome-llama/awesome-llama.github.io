@@ -39,21 +39,21 @@
     </p>
     <p>The code responsible for reading the save code will be designed to understand what data is expected for a given key. For example, <span class="code">recent_projects</span> will be expected to be a list, the length determined by the first item. <span class="code">user</span> will be expected to always be a single value.</p>
     
-    <p>I often also include a <span class="magic_num">magic number</span> at the start of the save code, like this:</p>
+    <p>I often include a <span class="magic_num">magic number</span> at the start of the save code, like this:</p>
     <p class="code">
         <span class="magic_num">account_info</span>,<span class="key">user</span>:<span class="val">awesome-llama</span>,<span class="key">id</span>:<span class="val">8832510</span>,<span class="key">scratchteam</span>:<span class="val">false</span>
     </p>
-    <p>This just helps to ensure the data comes from the right place as well as ensure I know what a save code stores.</p>
-    <p>Also, with save codes that are intended to be used by others and not just some internally-used thing, I also ensure a project version number and an approximate date is provided as keys. Username may also be useful too. The following example is from my game Submersible but trimmed down to just the first bit with the version (<span class="code">v</span> for project version, <span class="code">sv</span> for save code version) and time (<span class="code">t</span>, seconds since 2000):</p>
+    <p>This helps to ensure the data comes from the right place as well as ensure I know what a save code stores.</p>
+    <p>Also, with save codes that are intended to be used by others and not just something internally-used, I ensure a project version number is provided as a key, along with optional username and date the code was generated. The following example is from my game Submersible but trimmed down to show the first part with the version (<span class="code">v</span> for project version, <span class="code">sv</span> for save code version) and time (<span class="code">t</span>, seconds since 2000):</p>
     <p class="code">
         <span class="magic_num">SUB</span>,<span class="key">v</span>:<span class="val">1.0</span>,<span class="key">sv</span>:<span class="val">1</span>,<span class="key">t</span>:<span class="val">731066503</span>,[...]
     </p>
     <hr>
-    <p>Here is a Scratch project with the scripts I typically would use to implement the above: <a href="https://scratch.mit.edu/projects/114633511/">https://scratch.mit.edu/projects/114633511/</a></p>
+    <p>Here is a Scratch project with the scripts I typically use to implement it: <a href="https://scratch.mit.edu/projects/114633511/">https://scratch.mit.edu/projects/114633511/</a></p>
 
     <a href="https://scratch.mit.edu/projects/114633511/"><img src="https://cdn2.scratch.mit.edu/get_image/project/114633511_480x360.png"></a>
     <hr>
-    <p>If using this for a save code that saves game progress, it is apparent that the simplicity and readability also means it is easy to cheat. In my opinion, this doesn't matter as the "see inside" button exists on all Scratch projects and provides even more opportunities to cheat. I suggest if you want to stop the simplest, most opportunistic cheating, you include a checksum for the important values (e.g. currency, high score).</p>
+    <p>If using this for a save code that saves game progress, it is apparent that the simplicity and readability also means it is easy to cheat. In my opinion, this doesn't matter as the "see inside" button exists on all Scratch projects and provides many more opportunities to cheat. I suggest if you want to stop the simplest, most opportunistic cheating, you include a checksum for the important values (e.g. currency, high score).</p>
 
     <hr>
     <p>A list of notable projects that use this system:</p>
