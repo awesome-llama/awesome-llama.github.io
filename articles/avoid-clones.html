@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Avoid using clones</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+</head>
+
+<body>
+<div class="navbar">
+    <div>
+      <a href="/" class="navbtn"><div class="navbtnlink">Home</div></a>
+      <a href="/articles" class="navbtn"><div class="navbtnlink">Articles</div></a>
+      <a href="/projects" class="navbtn"><div class="navbtnlink">Projects</div></a>
+      <a href="/utils" class="navbtn"><div class="navbtnlink">Utilities</div></a>
+    </div>
+  </div>
+
+  <div class="content">
+    <h1>Avoid using clones</h1>
+    <hr>
+    <p>
+      Clones aren't very useful. They give an illusion of sophistication and you are actually shooting yourself in the foot if you use them in the most common ways.
+    </p><p>
+      The following are justifications for using clones, if these do not apply, use lists and stamps for 99% of other cases:</p>
+      <ul>
+        <li>You want to display many sprite costumes simultaneously with the same quality (higher resolution than stamps) as the original sprite, in vanilla Scratch. (TurboWarp has a high quality pen option)</li>
+        <li>You want to display something that doesn't affect with the pen layer, such as some buttons on top of an emulator.</li>
+        <li>You want to play sounds with full control over the volume and effects of each, and when to start or stop them.</li>
+        <li>You want to run ask blocks with a way to close them individually with code (rather than require the user to interact with it to close it).</li>
+      </ul>
+      <p>
+      The main problem with clones is control. You can create a clone and delete it. You can also give it unique values using variables/lists set to "for this sprite only". However, very common questions asked on the Scratch forums is how to have the clones do more... How can they interact with each other? How do you keep track of which one is which? How do you prevent exponential growth of clones due to them all sharing the same scripts?
+    </p><p>
+      If the solution requires storing data in variables and lists, suddenly you don't need clones. You can do everything in the original sprite <i>and more</i> and avoid using clones completely. Yes it requires a little additional learning to enumerate over a list using a loop and a variable counter (to access each list item) but clones also require learning. I argue that clones are a harder subject to learn given that the behaviour of local variables is not clear and debugging projects with clones are awkward, requiring insertion of blocks to make a visual or audible change to be detected. Clicking a script will not run it in the clone, only the original sprite. Reporters and variable monitors also only display what is in the original sprite.
+    </p><p>
+      Clones also have a limit of 300. The list item limit is 200000.
+    </p>
+    
+</div>
+
+</body>
+</html>
