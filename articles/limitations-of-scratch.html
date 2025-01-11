@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Limitations of Scratch</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+</head>
+
+<body>
+<div class="navbar">
+    <div>
+      <a href="/" class="navbtn"><div class="navbtnlink">Home</div></a>
+      <a href="/articles" class="navbtn"><div class="navbtnlink">Articles</div></a>
+      <a href="/projects" class="navbtn"><div class="navbtnlink">Projects</div></a>
+      <a href="/utils" class="navbtn"><div class="navbtnlink">Utilities</div></a>
+    </div>
+  </div>
+
+  <div class="content">
+    <h1>Limitations of Scratch</h1>
+    <hr>
+
+    <h3>Project (general)</h3>
+    <ul>
+      <li>Title maximum length: 100 characters</li>
+      <li>project.json uncompressed file size limit: 5MB</li>
+      <li>There is no limit on block count but due to the project.json size limit, you may encounter issues around 20000-30000 blocks.</li>
+      <li>Individual asset (costume or sound) file size limit: 10MB</li>
+      <li>There is no limit on sb3 file size.</li>
+      <li>Project framerate: approx. 30FPS</li>
+    </ul>
+
+    <h3>Sprites</h3>
+    <ul>
+      <li>Sprites are visually snapped to a grid sized with 480x360 steps on the screen.</li>
+      <!--<li>Sprites can not be moved off the screen without leaving less than 15px of its visual bounds on screen</li>-->
+      <li>Size is limited by the current costume, when scaled it must not be visually bigger than 150% the size of the stage (720x540) on both axes or smaller than 5 pixels on any axis. <a href="https://github.com/scratchfoundation/scratch-vm/blob/e5950c3/src/sprites/rendered-target.js#L376-L380">Source code</a></li>
+      <li>Maximum number of clones at one time: 300 (limit shared by all sprites)</li>
+    </ul>
+
+    <h3>Costumes/backdrops</h3>
+    <ul>
+      <li>Bitmap maximum dimensions: 960x720 (using half pixels)</li>
+    </ul>
+
+    <h3>Touching color</h3>
+    <ul>
+      <li>Precision is limited to 5 bits red, 4 bits green, 5 bits blue. (this is only 14-bit color, much less than 24-bit RGB that is displayed by Scratch)</li>
+    </ul>
+    
+    <h3>Variables and lists</h3>
+    <ul>
+      <li>Supported data types: booleans, double floats, strings</li>
+      <li>List item limit: 200000</li>
+      <li>There is no Scratch-imposed limit on item or variable character length</li>
+    </ul>
+
+    <h3>Cloud variables</h3>
+    <ul>
+      <li>10 variables per project</li>
+      <li>Setting the value of any cloud variable has a shared average rate limit of 10 times per second.</li>
+      <li>Variables may either store a floating point number (NaN and Infinity excluded) or a string containing numerical digits 0-9, up to a length of 256 characters.</li>
+      <li><a href="https://scratch.mit.edu/discuss/topic/618775/?page=1#post-6466756">Calculated from the above limits, the maximum data transfer rate is approximately 1063 bytes/sec.</a></li>
+      <li>Users with "New Scratcher" status can not set the variables (to be seen by other users).</li>
+    </ul>
+
+    <h3>Pen</h3>
+    <ul>
+      <li>Pen layer/skin resolution: 480x360</li>
+      <li>Pen minumum size: 1</li>
+      <li>Pen maximum size: 1200 (radius of 600px)</li>
+    </ul>
+
+    <h3>Sound</h3>
+    <ul>
+      <li>Volume range: 0 to 100%</li>
+      <li>Pitch effect range: -360 to 360. <a href="https://en.scratch-wiki.info/wiki/Sound_Effect#Pitch">Wiki</a></li>
+      <li>Pan effect range: -100 to 100. <a href="https://en.scratch-wiki.info/wiki/Sound_Effect#Pan_Left/Right">Wiki</a></li>
+    </ul>
+    
+</div>
+
+</body>
+</html>
