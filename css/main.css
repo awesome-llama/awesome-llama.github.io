@@ -133,6 +133,7 @@ table {
 .itemContainer h3 {
     margin-block-start: 0;
     margin-block-end: 0;
+    font-size: 1.2em;
 }
 
 .itemContainer h4 {
