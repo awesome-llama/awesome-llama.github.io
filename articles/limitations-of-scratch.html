@@ -38,6 +38,7 @@
       <!--<li>Sprites can not be moved off the screen without leaving less than 15px of its visual bounds on screen</li>-->
       <li>Size is limited by the current costume, when scaled it must not be visually bigger than 150% the size of the stage (720x540) on both axes or smaller than 5 pixels on any axis. <a href="https://github.com/scratchfoundation/scratch-vm/blob/e5950c3/src/sprites/rendered-target.js#L376-L380">Source code</a></li>
       <li>Maximum number of clones at one time: 300 (limit shared by all sprites)</li>
+      <li>Sprites can not be positioned off screen with a margin less than 15px still showing. <a href="https://github.com/scratchfoundation/scratch-render/blob/develop/src/RenderWebGL.js#L83-L88">Source code</a></li>
     </ul>
 
     <h3>Costumes/backdrops</h3>
@@ -47,12 +48,12 @@
 
     <h3>Touching color</h3>
     <ul>
-      <li>Precision is limited to 5 bits red, 4 bits green, 5 bits blue. (this is only 14-bit color, much less than 24-bit RGB that is displayed by Scratch)</li>
+      <li>Precision is limited to 5 bits red, 5 bits green, 4 bits blue. (this is only 14-bit color, much less than 24-bit RGB that is displayed by Scratch). <a href="https://github.com/scratchfoundation/scratch-render/blob/develop/src/RenderWebGL.js#L67-L81">Source code</a></li>
     </ul>
     
     <h3>Variables and lists</h3>
     <ul>
-      <li>Supported data types: booleans, double floats, strings</li>
+      <li>Supported data types: booleans, double floats, strings. <a href="https://scratch.mit.edu/projects/1048874723/">Through hacks it's possible to utilise a few other types such as arrays.</a></li>
       <li>List item limit: 200000</li>
       <li>There is no Scratch-imposed limit on item or variable character length</li>
     </ul>
@@ -68,7 +69,7 @@
 
     <h3>Pen</h3>
     <ul>
-      <li>Pen layer/skin resolution: 480x360</li>
+      <li>Pen layer/skin dimensions: 480x360</li>
       <li>Pen minumum size: 1</li>
       <li>Pen maximum size: 1200 (radius of 600px)</li>
     </ul>
