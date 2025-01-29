@@ -24,20 +24,28 @@
     <p>
       Clones may look useful at first glance but they really aren't. You are shooting yourself in the foot if you use them in the most common ways because their limitations are very easily encountered.
     </p><p>
-      The following are justifications for using clones, if these do not apply, use lists and stamps for 99% of other cases:</p>
-      <ul>
-        <li>You want to display many sprite costumes simultaneously with the same quality (higher resolution than stamps) as the original sprite, in vanilla Scratch. (note that TurboWarp has a high quality pen option)</li>
-        <li>You want to display something that doesn't affect the pen layer, such as some buttons on top of an emulator project.</li>
-        <li>You want to play sounds with full control over the volume and effects of each, and when to start or stop them.</li>
-        <li>You want to run ask blocks with a way to close them individually with code (rather than require the user to interact with it to close it).</li>
-      </ul>
-      <p>
       The main problem with clones is control. You can create a clone and delete it. You can also give it unique values using variables/lists set to "for this sprite only". However, very common questions asked on the Scratch forums is how to have the clones do more... How can they interact with each other? How do you keep track of which one is which? How do you prevent exponential growth of clones due to them all sharing the same scripts?
     </p><p>
-      If the solution requires storing data in variables and lists, suddenly you don't need clones. You can do everything in the original sprite <i>and more</i> and avoid using clones completely. Yes it requires a little additional learning to enumerate over a list using a loop and a variable counter (to access each list item) but clones also require learning. I argue that clones are a harder subject to learn given that the behaviour of local variables is not clear and debugging projects with clones are awkward, requiring insertion of blocks to make a visual or audible change to be detected. Clicking a script will not run it in the clone, only the original sprite. Reporters and variable monitors also only display what is in the original sprite.
+      If the solution requires storing data in variables and lists, suddenly you don't need clones. You can do everything in the original sprite <i>and more</i> and avoid using clones completely. Yes it requires a little additional learning to enumerate over a list using a loop and a variable counter (to access each list item) but clones also require learning. I argue that clones are a harder subject to learn given that the behaviour is unclear and debugging is awkward:</p> 
+      <ul>
+        <li>Clicking a script will not run it in the clone, only the original sprite.</li>
+        <li>Reporters and variable monitors only display what is in the original sprite.</li>
+        <li>Debugging often requires the insertion of blocks into existing scripts to make a visual or audible change.</li>
+        <li>The state of the clones can not be stored and will be lost with a click of the green flag and do not save with the project. Compare this to a list where this doesn't happen and you can save the state by exporting/importing it. Lists can also be manually edited.</li>
+        <li>Clones have a limit of 300. The list item limit is 200000. There is no clone counter or blocks to get this value.</li>
+        <li>Running scripts in clones often involves loops perpetually running within the clone and broadcasts. Neither provide good control over script run order. A broadcast can only run once per frame.</li>
+      </ul>
+        
     </p><p>
-      Clones also have a limit of 300. The list item limit is 200000.
+      The following are justifications for using clones, if these do not apply, use lists and stamps for 99% of other cases:
     </p>
+    
+      <ul>
+      <li>You want to display many sprite costumes simultaneously with the same quality as the original sprite, in vanilla Scratch. (note that TurboWarp has a high quality pen option so this issue doesn't apply to it)</li>
+      <li>You want to display something that doesn't affect the pen layer, such as some buttons on top of an emulator project.</li>
+      <li>You want to play sounds with full control over the volume and effects of each, and when to start or stop them.</li>
+      <li>You want to run ask blocks with a way to close them individually with code (rather than require the user to interact with it to close it).</li>
+    </ul>
     
 </div>
 
