@@ -26,24 +26,23 @@
     <ul>
       <li>Title maximum length: 100 characters</li>
       <li>project.json uncompressed file size limit: 5MB</li>
-      <li>There is no limit on block count but due to the project.json size limit, you may encounter issues around 20000-30000 blocks.</li>
       <li>Individual asset (costume or sound) file size limit: 10MB</li>
       <li>There is no limit on sb3 file size.</li>
+      <li>There is no limit on block count but due to the project.json size limit, expect that only 20000-30000 blocks can fit within it.</li>
       <li>Project framerate: approx. 30FPS</li>
     </ul>
 
     <h3>Sprites</h3>
     <ul>
       <li>Sprites are visually snapped to a grid sized with 480x360 steps on the screen.</li>
-      <!--<li>Sprites can not be moved off the screen without leaving less than 15px of its visual bounds on screen</li>-->
-      <li>Size is limited by the current costume, when scaled it must not be visually bigger than 150% the size of the stage (720x540) on both axes or smaller than 5 pixels on any axis. <a href="https://github.com/scratchfoundation/scratch-vm/blob/e5950c3/src/sprites/rendered-target.js#L376-L380">Source code</a></li>
+      <li>Size is limited by the current costume, when scaled it must not be visually bigger than 150% the size of the stage (720x540) on any axis or smaller than 5 pixels on any axis. <a href="https://github.com/scratchfoundation/scratch-vm/blob/e5950c3/src/sprites/rendered-target.js#L376-L381">Source code</a></li>
       <li>Maximum number of clones at one time: 300 (limit shared by all sprites)</li>
-      <li>Sprites can not be positioned off screen with a margin less than 15px still showing. <a href="https://github.com/scratchfoundation/scratch-render/blob/develop/src/RenderWebGL.js#L83-L88">Source code</a></li>
+      <li>Sprites can not be positioned off-screen with a margin less than 15px still showing. <a href="https://github.com/scratchfoundation/scratch-render/blob/develop/src/RenderWebGL.js#L83-L88">Source code</a></li>
     </ul>
 
     <h3>Costumes/backdrops</h3>
     <ul>
-      <li>Bitmap maximum dimensions: 960x720 (using half pixels)</li>
+      <li>Bitmap maximum dimensions: 960x720 (using "half pixels")</li>
     </ul>
 
     <h3>Touching color</h3>
@@ -55,7 +54,7 @@
     <ul>
       <li>Supported data types: booleans, double floats, strings. <a href="https://scratch.mit.edu/projects/1048874723/">Through hacks it's possible to utilise a few other types such as arrays.</a></li>
       <li>List item limit: 200000</li>
-      <li>There is no Scratch-imposed limit on item or variable character length</li>
+      <li>There is no Scratch-imposed limit on string character count in variables and list items.</li>
     </ul>
 
     <h3>Cloud variables</h3>
@@ -64,7 +63,7 @@
       <li>Setting the value of any cloud variable has a shared average rate limit of 10 times per second.</li>
       <li>Variables may either store a floating point number (NaN and Infinity excluded) or a string containing numerical digits 0-9, up to a length of 256 characters.</li>
       <li><a href="https://scratch.mit.edu/discuss/topic/618775/?page=1#post-6466756">Calculated from the above limits, the maximum data transfer rate is approximately 1063 bytes/sec.</a></li>
-      <li>Users with "New Scratcher" status can not set the variables (to be seen by other users).</li>
+      <li>Users with "New Scratcher" status can not set cloud variables with values that other users can see.</li>
     </ul>
 
     <h3>Pen</h3>
