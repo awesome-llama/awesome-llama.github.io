@@ -6,6 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/main.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+  <style>
+    .tagSourceCode {
+    border-radius: 0.5em;
+    padding: 0.3em;
+    font-size: 0.7em;
+    color: black;
+    background-color: rgb(254, 228, 223); 
+    }
+</style>
 </head>
 
 <body>
@@ -24,7 +33,7 @@
 
     <h3>Project (general)</h3>
     <ul>
-      <li>Title maximum length: 100 characters</li>
+      <li>Title maximum length: 100 characters.</li>
       <li>project.json uncompressed file size limit: 5MB</li>
       <li>Individual asset (costume or sound) file size limit: 10MB</li>
       <li>There is no limit on sb3 file size.</li>
@@ -35,49 +44,68 @@
     <h3>Sprites</h3>
     <ul>
       <li>Sprites are visually snapped to a grid sized with 480x360 steps on the screen.</li>
-      <li>Size is limited by the current costume, when scaled it must not be visually bigger than 150% the size of the stage (720x540) on any axis or smaller than 5 pixels on any axis. <a href="https://github.com/scratchfoundation/scratch-vm/blob/e5950c3/src/sprites/rendered-target.js#L376-L381">Source code</a></li>
-      <li>Maximum number of clones at one time: 300 (limit shared by all sprites)</li>
-      <li>Sprites can not be positioned off-screen with a margin less than 15px still showing. <a href="https://github.com/scratchfoundation/scratch-render/blob/develop/src/RenderWebGL.js#L83-L88">Source code</a></li>
+      <li>Size is limited by the current costume, when scaled it must not be visually bigger than 150% the size of the stage (720x540) on any axis or smaller than 5 pixels on any axis. <a href="https://github.com/scratchfoundation/scratch-vm/blob/e5950c3/src/sprites/rendered-target.js#L376-L381"><span class="tagSourceCode">Source code</span></a></li>
+      <li>Maximum number of clones at one time: 300 (limit shared by all sprites) <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/engine/runtime.js#L733"><span class="tagSourceCode">Source code</span></a></li>
+      <li>Sprites can not be positioned off-screen with a margin less than 15px still showing. <a href="https://github.com/scratchfoundation/scratch-render/blob/develop/src/RenderWebGL.js#L83-L88"><span class="tagSourceCode">Source code</span></a></li>
     </ul>
 
     <h3>Costumes/backdrops</h3>
     <ul>
-      <li>Bitmap maximum dimensions: 960x720 (using "half pixels")</li>
+      <li>Bitmap maximum dimensions: 960x720 (using "half pixels").</li>
     </ul>
 
-    <h3>Touching color</h3>
+    <h3>Sensing</h3>
     <ul>
-      <li>Precision is limited to 5 bits red, 5 bits green, 4 bits blue. (this is only 14-bit color, much less than 24-bit RGB that is displayed by Scratch). <a href="https://github.com/scratchfoundation/scratch-render/blob/develop/src/RenderWebGL.js#L67-L81">Source code</a></li>
+      <li>Touching color precision is limited to 5 bits red, 5 bits green, 4 bits blue. (this is only 14-bit color, much less than 24-bit RGB that is displayed by Scratch). <a href="https://github.com/scratchfoundation/scratch-render/blob/develop/src/RenderWebGL.js#L67-L81"><span class="tagSourceCode">Source code</span></a></li>
+    </ul>
+    
+    <h3>Events</h3>
+    <ul>
+      <li>Broadcasts can only run once per frame.</li>
     </ul>
     
     <h3>Variables and lists</h3>
     <ul>
       <li>Supported data types: booleans, double floats, strings. <a href="https://scratch.mit.edu/projects/1048874723/">Through hacks it's possible to utilise a few other types such as arrays.</a></li>
-      <li>List item limit: 200000</li>
+      <li>List item limit: 200000 <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/blocks/scratch3_data.js#L253"><span class="tagSourceCode">Source code</span></a></li>
       <li>There is no Scratch-imposed limit on string character count in variables and list items.</li>
     </ul>
 
     <h3>Cloud variables</h3>
     <ul>
-      <li>10 variables per project</li>
+      <li>10 variables per project.</li>
       <li>Setting the value of any cloud variable has a shared average rate limit of 10 times per second.</li>
       <li>Variables may either store a floating point number (NaN and Infinity excluded) or a string containing numerical digits 0-9, up to a length of 256 characters.</li>
       <li><a href="https://scratch.mit.edu/discuss/topic/618775/?page=1#post-6466756">Calculated from the above limits, the maximum data transfer rate is approximately 1063 bytes/sec.</a></li>
       <li>Users with "New Scratcher" status can not set cloud variables with values that other users can see.</li>
     </ul>
 
-    <h3>Pen</h3>
-    <ul>
-      <li>Pen layer/skin dimensions: 480x360</li>
-      <li>Pen minumum size: 1</li>
-      <li>Pen maximum size: 1200 (radius of 600px)</li>
-    </ul>
-
     <h3>Sound</h3>
     <ul>
-      <li>Volume range: 0 to 100%</li>
-      <li>Pitch effect range: -360 to 360. <a href="https://en.scratch-wiki.info/wiki/Sound_Effect#Pitch">Wiki</a></li>
-      <li>Pan effect range: -100 to 100. <a href="https://en.scratch-wiki.info/wiki/Sound_Effect#Pan_Left/Right">Wiki</a></li>
+      <li>Volume range: 0 to 100% <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/blocks/scratch3_sound.js#L325"><span class="tagSourceCode">Source code</span></a></li>
+      <li>Pitch effect range: -360 to 360 <a href="https://en.scratch-wiki.info/wiki/Sound_Effect#Pitch"><span class="tagSourceCode">Scratch Wiki</span></a></li>
+      <li>Pan effect range: -100 to 100 <a href="https://en.scratch-wiki.info/wiki/Sound_Effect#Pan_Left/Right"><span class="tagSourceCode">Scratch Wiki</span></a></li>
+      <li>A sound can not be played multiple times simultaneously. All clones will be limited by this too. The sound may be duplicated in the sounds editor (or added to a different sprite) if playing it simultaneously is desired.</li>
+    </ul>
+
+    <h3>Pen extension</h3>
+    <ul>
+      <li>The pen "layer" (internally called "skin") is in front of the stage but behind all sprites. <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/engine/stage-layering.js#L23"><span class="tagSourceCode">Source code</span></a></li>
+      <li>Pen layer/skin dimensions: 480x360</li>
+      <li>There is no way to erase a stroke or part of the pen layer. There is only an "erase all" block.</li>
+      <li>Pen "size" is its diameter in pixels and is limited to between 1 and 1200. <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/extensions/scratch3_pen/index.js#L101"><span class="tagSourceCode">Source code</span></a></li>
+    </ul>
+
+    <h3>Music extension</h3>
+    <ul>
+      <li>Duration in beats can only be between 0 and 100. <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/extensions/scratch3_music/index.js#L704"><span class="tagSourceCode">Source code</span></a></li>
+      <li>Tempo can only be between 20 and 500. <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/extensions/scratch3_music/index.js#L711"><span class="tagSourceCode">Source code</span></a></li>
+      <li>A maximum of 30 instrument sounds can be played simultaneously. <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/extensions/scratch3_music/index.js#L719"><span class="tagSourceCode">Source code</span></a></li>
+    </ul>
+
+    <h3>Site</h3>
+    <ul>
+      <li>Usernames can only be chosen with a length between 3 and 20 (inclusive). Characters are limited to the english alphabet (case insensitive), numbers 0-9, the underscore "_" and dash "-". Note that there are some usernames that do not fit these requirements, they were set by the Scratch Team or created before some requirements were made. You can assume that no active user has an invalid username however.</li>
     </ul>
     
 </div>

@@ -77,7 +77,7 @@
     <table>
       <tr><th>Translation</th><th>Rotation</th></tr>
       <tr><td>mass</td><td>angular mass (or "moment of inertia")</td></tr>
-      <tr><td>force</td><td>torque (or "moment of force")</td></tr>
+      <tr><td>force</td><td>torque (or "moment of force" or simply "moment")</td></tr>
       <tr><td>acceleration</td><td>angular acceleration</td></tr>
       <tr><td>velocity</td><td>angular velocity</td></tr>
       <tr><td>displacement (or "position")</td><td>angle (or "direction")</td></tr>
@@ -102,6 +102,15 @@
       <br>
       The coefficients need to be found in some way. It's more complicated because they need to account for the shape of the object and anything else not covered by the other parts of the formulas. It also varies depending on the airflow direction. You can find coefficients for airfoils <a href="https://airfoiltools.com/">online</a> but the rest may have to be guessed or found experimentally using CFD or physical models in wind tunnels.
     </p>
+    <p>
+      There are some other things to consider:
+      <ul>
+        <li><a href="https://en.wikipedia.org/wiki/Lift-induced_drag">Lift-induced drag</a></li>
+        <li><a href="https://en.wikipedia.org/wiki/Wave_drag">Wave drag</a></li>
+        <li><a href="https://en.wikipedia.org/wiki/Ground_effect_(aerodynamics)">Ground effect</a></li>
+      </ul>
+    </p>
+    
 
 </div>
 
