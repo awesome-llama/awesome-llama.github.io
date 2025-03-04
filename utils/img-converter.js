@@ -64,7 +64,7 @@ function convertImageToText() {
             outputTextArea.value = JSON.stringify(pixelData, null, 0);
             break;
         case ("text"):
-            const delimiters = {'newline':'\n', 'space':' ', 'none':'', 'comma':',', 'underscore':'_'};
+            const delimiters = {'newline':'\n', 'space':' ', 'none':'', 'comma':',', 'underscore':'_', 'semicolon':';'};
             outputTextArea.value = pixelData.flat().join(delimiters[document.getElementById('textDelimiter').value]);
             break;
     }
