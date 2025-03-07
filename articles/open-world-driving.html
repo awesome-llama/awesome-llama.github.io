@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>An open-world driving game</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+</head>
+
+<body>
+<div class="navbar">
+    <div>
+      <a href="/" class="navbtn"><div class="navbtnlink">Home</div></a>
+      <a href="/articles" class="navbtn"><div class="navbtnlink">Articles</div></a>
+      <a href="/projects" class="navbtn"><div class="navbtnlink">Projects</div></a>
+      <a href="/utils" class="navbtn"><div class="navbtnlink">Utilities</div></a>
+    </div>
+  </div>
+
+  <div class="content">
+    <h1>An open-world driving game</h1>
+    <hr>
+    <p>
+      I get a lot of comments on <a href="https://scratch.mit.edu/projects/412702440/">Car Parking Challenge</a> and <a href="https://scratch.mit.edu/projects/533265843/">Truck Driving Challenge</a> asking for a larger world or "free-roam". The levels in those games are deliberately small and it is a compromise due to Scratch's many unfortunate limitations.
+    </p>
+    
+    <h3>Asset size</h3>
+    <p>The projects are around 40-50 MB even with the small levels. This is somewhat large for a Scratch project. This leads to a few problems:</p>
+    <ul>
+      <li>The projects are slow to download. Not everyone has a fast internet connection.</li>
+      <li>Scratch is inefficient with RAM usage for costumes. This is a problem on some devices, particularly Chromebooks and those made by Apple. It seems the <a href="https://forums.macrumors.com/threads/safari-reloading-pages-which-use-significant-memory.2273020/">Safari browser has a tendency to forcefully reload</a> (resulting in many players saying the game keeps restarting or they cannot play a level).</li>
+    </ul>
+    <p><a href="https://scratch.mit.edu/projects/572001045/">Costumes with large dimensions also have a risk of not being displayed correctly</a>.</p>
+    <p>More assets will only make the problems worse. As seen in Submersible there is an added risk that the costumes fail to load resulting in the infamous "question mark glitch" (costumes that failed to load are substituted with a question mark).</p>
+    <p>An alternative to using costumes is to draw everything with pen. This comes with its own limitations, it is much slower (again preventing low-end devices from playing it) and data must account for the 5MB project.json limit and 200000 list item limit.</p>
+
+    <h3>Necessary features</h3>
+    <p>An open-world driving game needs traffic, right? This isn't easy to solve. Notice how both Car Parking Challenge and Truck Driving Challenge only have levels with a single intersection? Also, all but one level has traffic moving in straight lines. This is still an unsolved problem. <a href="https://scratch.mit.edu/projects/486632504/">Road Network Designer</a> shows some things are possible but notes that intersections aren't processed fully by the agents, there is no intersection priority. Scratch has variables and lists as ways to store data and custom blocks local to each sprite. Any complex behaviour must be implemented with them which is incredibly time-consuming. Road Network Designer is 17000 blocks.</p>
+
+    <p>What about collisions? The current games are as simple as pausing when a collision is detected and forcing the player to retry the level. This doesn't make sense for an open-world game. Vehicles should be knocked around. The collision detection needs to be performant for both traffic and static objects.</p>
+    
+    <h3>Creating the world</h3>
+    <p>Each level in the existing games took a few hours to create. It's clearly not feasible for a larger world. The problem is what will replace it? I've thought about using the background prop technique seen in Submersible, but this still requires a lot of time to create and place each object. Creating collisions and paths for traffic to follow is also still unsolved. There are no existing editors for any of this as far as I know, custom tooling is required.</p>
+</div>
+
+</body>
+</html>
