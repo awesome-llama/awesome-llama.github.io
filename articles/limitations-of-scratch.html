@@ -49,6 +49,7 @@
       <li>Maximum number of clones at one time: 300 (limit shared by all sprites) <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/engine/runtime.js#L733"><span class="tagSourceCode">Source code</span></a></li>
       <li>Sprites can not be positioned off-screen with a margin less than 15px still showing. <a href="https://github.com/scratchfoundation/scratch-render/blob/develop/src/RenderWebGL.js#L83-L88"><span class="tagSourceCode">Source code</span></a></li>
       <li>Clones do have a unique ID and there is no native way to identify or share data between them. You need to implement this yourself with variables and lists. Note that those set to "for this sprite only" will allow for values being stored that are unique to every clone/sprite, this is good for an ID.</li>
+      <li>The color effect has a minimum lightness and saturation. <a href="https://github.com/scratchfoundation/scratch-render/blob/develop/src/shaders/sprite.frag#L173-L178"><span class="tagSourceCode">Source code</span></a></li>
     </ul>
 
     <h3>Costumes/backdrops</h3>
