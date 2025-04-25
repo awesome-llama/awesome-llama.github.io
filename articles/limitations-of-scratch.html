@@ -39,6 +39,7 @@
       <li>There is no limit on sb3 file size.</li>
       <li>There is no limit on block count but due to the project.json size limit, expect that only 20000-30000 blocks can fit within it.</li>
       <li>Project framerate: approx. 30FPS</li>
+      <li>Threads have a time limit of 500ms. <a href="https://github.com/scratchfoundation/scratch-vm/blob/6aca685b6da6b1fa71e01da77238a2fdf9e7f787/src/engine/sequencer.js#L62-L64"><span class="tagSourceCode">Source code</span></a> (encountered often with custom blocks set to "run without screen refresh")</li>
     </ul>
 
     <h3>Sprites</h3>
@@ -47,21 +48,25 @@
       <li>Size is limited by the current costume, when scaled it must not be visually bigger than 150% the size of the stage (720x540) on any axis or smaller than 5 pixels on any axis. <a href="https://github.com/scratchfoundation/scratch-vm/blob/e5950c3/src/sprites/rendered-target.js#L376-L381"><span class="tagSourceCode">Source code</span></a></li>
       <li>Maximum number of clones at one time: 300 (limit shared by all sprites) <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/engine/runtime.js#L733"><span class="tagSourceCode">Source code</span></a></li>
       <li>Sprites can not be positioned off-screen with a margin less than 15px still showing. <a href="https://github.com/scratchfoundation/scratch-render/blob/develop/src/RenderWebGL.js#L83-L88"><span class="tagSourceCode">Source code</span></a></li>
+      <li>Clones do have a unique ID and there is no native way to identify or share data between them. You need to implement this yourself with variables and lists. Note that those set to "for this sprite only" will allow for values being stored that are unique to every clone/sprite, this is good for an ID.</li>
     </ul>
 
     <h3>Costumes/backdrops</h3>
     <ul>
+      <li>Accepted image file formats: PNG and JPG. Note that if an edit is made to a costume, that costume will be saved as a lossless PNG. GIFs may also be imported, each frame will be added as a costume.</li>
       <li>Bitmap maximum dimensions: 960x720 (using "half pixels").</li>
     </ul>
 
     <h3>Sensing</h3>
     <ul>
       <li>Touching color precision is limited to 5 bits red, 5 bits green, 4 bits blue. (this is only 14-bit color, much less than 24-bit RGB that is displayed by Scratch). <a href="https://github.com/scratchfoundation/scratch-render/blob/develop/src/RenderWebGL.js#L67-L81"><span class="tagSourceCode">Source code</span></a></li>
+      <li>The keys that can be detected are <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/io/keyboard.js">here</a>. Modifier keys such as shift can not be detected. Neither can backspace.</li>
     </ul>
     
     <h3>Events</h3>
     <ul>
       <li>Broadcasts can only run once per frame.</li>
+      <li>Broadcast receiver hats do not accept reporter blocks, the message selection is a field and you can only choose from the created messages.</li>
     </ul>
     
     <h3>Variables and lists</h3>
@@ -69,6 +74,13 @@
       <li>Supported data types: booleans, double floats, strings. <a href="https://scratch.mit.edu/projects/1048874723/">Through hacks it's possible to utilise a few other types such as arrays.</a></li>
       <li>List item limit: 200000 <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/blocks/scratch3_data.js#L253"><span class="tagSourceCode">Source code</span></a></li>
       <li>There is no Scratch-imposed limit on string character count in variables and list items.</li>
+      <li>Neither variables or lists can be created at runtime, they must be created manually by the user. There is no way to place a reporter block in the variable or list name. Scratch also does not have dictionaries (or other similar collections).</li>
+    </ul>
+
+    <h3>Custom blocks</h3>
+    <ul>
+      <li>Custom blocks are not shared across all sprites. There must be a definition in every sprite that needs it.</li>
+      <li>Argument reporters are only usable within its own definition and <a href="https://github.com/scratchfoundation/scratch-vm/blob/6aca685b6da6b1fa71e01da77238a2fdf9e7f787/src/blocks/scratch3_procedures.js#L63">always return 0 when run outside it</a>. This includes clicking to run.</li>
     </ul>
 
     <h3>Cloud variables</h3>
@@ -82,6 +94,7 @@
 
     <h3>Sound</h3>
     <ul>
+      <li>Accepted file formats: WAV and MP3. Note that if an edit is made to a sound, that sound will be saved as a lossless WAV. The file size of this can be significant so for audio where this matters, I recommend making edits in software other than Scratch so the file is always transferred to Scratch as MP3.</li>
       <li>Volume range: 0 to 100% <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/blocks/scratch3_sound.js#L325"><span class="tagSourceCode">Source code</span></a></li>
       <li>Pitch effect range: -360 to 360 <a href="https://en.scratch-wiki.info/wiki/Sound_Effect#Pitch"><span class="tagSourceCode">Scratch Wiki</span></a></li>
       <li>Pan effect range: -100 to 100 <a href="https://en.scratch-wiki.info/wiki/Sound_Effect#Pan_Left/Right"><span class="tagSourceCode">Scratch Wiki</span></a></li>
@@ -94,6 +107,8 @@
       <li>Pen layer/skin dimensions: 480x360</li>
       <li>There is no way to erase a stroke or part of the pen layer. There is only an "erase all" block.</li>
       <li>Pen "size" is its diameter in pixels and is limited to between 1 and 1200. <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/extensions/scratch3_pen/index.js#L101"><span class="tagSourceCode">Source code</span></a></li>
+      <li>An ARGB color value with full transparency is not possible as the way the value is handled always ignores alpha. If converted to a number (e.g. from hexadecimal), <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/util/cast.js#L100">the leading zeroes for alpha will be lost</a>. If converted from a color code such as <span class="code">#FF3000</span>, <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/util/color.js#L60-L69">alpha handling isn't implemented</a>. If setting pen color, it is suggested to either use the set pen transparency effect after setting the RGB color, or ensure that the ARGB value never uses an alpha of 0 (possibly clamp to 1).</li>
+      <li>If drawing multiple strokes with transparency, there is an unavoidable overlap where the strokes start/end. Every stroke is drawn independently of the others.</li>
     </ul>
 
     <h3>Music extension</h3>
@@ -105,7 +120,7 @@
 
     <h3>Site</h3>
     <ul>
-      <li>Usernames can only be chosen with a length between 3 and 20 (inclusive). Characters are limited to the english alphabet (case insensitive), numbers 0-9, the underscore "_" and dash "-". Note that there are some usernames that do not fit these requirements, they were set by the Scratch Team or created before some requirements were made. You can assume that no active user has an invalid username however.</li>
+      <li>Usernames can only be chosen with a length between 3 and 20 (inclusive). Characters are limited to the english alphabet (case insensitive), numbers 0-9, the underscore <span class="code">_</span> and dash <span class="code">-</span>. Note that there are some usernames that do not fit these requirements, they were set by the Scratch Team or created before some requirements were made. Most of the invalid ones are not in use, see <a href="https://scratch.mit.edu/discuss/topic/733836/">this topic of unusual usernames</a>.</li>
     </ul>
     
 </div>
