@@ -62,7 +62,7 @@
     <h2>Textures</h2>
     <p>This project uses <a href="https://github.com/awesome-llama/TextImage">TextImage</a> to store its textures.
     This was necessary due to the fact that the textures take up a lot more space than what is allowed to be stored in a Scratch project's <span class="code">project.json</span>, which has a limit of 5MB, including scripts, vars, and anything else necessary to run the project.
-    Costumes and audio are stored separately and have their own limit of 10MB each, no limit on total count. This image format compresses 24-bit RGB images which you can read about in more detail in the linked project description.</p>
+    Costumes and audio are stored separately and have their own limit of 10MB each, no limit on total count. This image format compresses 24-bit RGB images which you can read about in more detail in the above link.</p>
     <p>The project size limit leaves few options for storing the needed textures. Even with compression, the full-res textures do not fit. I provide a low-res version in the project that can be loaded at any time but the full-res textures must either be scanned or pasted in via a text input box.
     The pipeline for importing full-res textures can be seen below. Half-res textures are the exact same except there is no branch for image scanning as it doesn't need it.</p>
     <img src="/img/TM3D_texture_data_flow.png">
