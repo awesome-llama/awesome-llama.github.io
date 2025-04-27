@@ -39,7 +39,8 @@
       <li>There is no limit on sb3 file size.</li>
       <li>There is no limit on block count but due to the project.json size limit, expect that only 20000-30000 blocks can fit within it.</li>
       <li>Project framerate: approx. 30FPS</li>
-      <li>Threads have a time limit of 500ms. <a href="https://github.com/scratchfoundation/scratch-vm/blob/6aca685b6da6b1fa71e01da77238a2fdf9e7f787/src/engine/sequencer.js#L62-L64"><span class="tagSourceCode">Source code</span></a> (encountered often with custom blocks set to "run without screen refresh")</li>
+      <li>Threads have a time limit of 500ms. (encountered often with custom blocks set to "run without screen refresh") <a href="https://github.com/scratchfoundation/scratch-vm/blob/6aca685b6da6b1fa71e01da77238a2fdf9e7f787/src/engine/sequencer.js#L62-L64"><span class="tagSourceCode">Source code</span></a></li>
+      <li>The numbers (not strings) <span class="code">Infinity</span>, <span class="code">-Infinity</span>, <span class="code">NaN</span>, and <span class="code">-0</span> can not be saved. This is a limitation of JSON.</li>
     </ul>
 
     <h3>Sprites</h3>
@@ -58,10 +59,16 @@
       <li>Bitmap maximum dimensions: 960x720 (using "half pixels").</li>
     </ul>
 
+    <h3>Control</h3>
+    <ul>
+      <li>The for each loop compares the value in the repeat input every iteration. It is not stored. <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/blocks/scratch3_control.js#L94"><span class="tagSourceCode">Source code</span></a></li>
+    </ul>
+
     <h3>Sensing</h3>
     <ul>
       <li>Touching color precision is limited to 5 bits red, 5 bits green, 4 bits blue. (this is only 14-bit color, much less than 24-bit RGB that is displayed by Scratch). <a href="https://github.com/scratchfoundation/scratch-render/blob/develop/src/RenderWebGL.js#L67-L81"><span class="tagSourceCode">Source code</span></a></li>
       <li>The keys that can be detected are <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/io/keyboard.js">here</a>. Modifier keys such as shift can not be detected. Neither can backspace.</li>
+      <li>The mouse position is clamped to the edge of the screen and rounded. <a href="https://github.com/scratchfoundation/scratch-vm/blob/88e7f4f7173c99b08382778a56b2252c1141e799/src/io/mouse.js#L60-L75"><span class="tagSourceCode">Source code</span></a></li>
     </ul>
     
     <h3>Events</h3>
@@ -100,6 +107,7 @@
       <li>Pitch effect range: -360 to 360 <a href="https://en.scratch-wiki.info/wiki/Sound_Effect#Pitch"><span class="tagSourceCode">Scratch Wiki</span></a></li>
       <li>Pan effect range: -100 to 100 <a href="https://en.scratch-wiki.info/wiki/Sound_Effect#Pan_Left/Right"><span class="tagSourceCode">Scratch Wiki</span></a></li>
       <li>A sound can not be played multiple times simultaneously. All clones will be limited by this too. The sound may be duplicated in the sounds editor (or added to a different sprite) if playing it simultaneously is desired.</li>
+      <li>The set/change volume and set/change effect blocks will cause a yield. <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/blocks/scratch3_sound.js#L329-L330"><span class="tagSourceCode">Source code (volume)</span></a> <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/blocks/scratch3_sound.js#L282-L283"><span class="tagSourceCode">Source code (effect)</span></a></li>
     </ul>
 
     <h3>Pen extension</h3>
