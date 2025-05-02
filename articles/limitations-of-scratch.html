@@ -67,10 +67,10 @@
     <h3>Sensing</h3>
     <ul>
       <li>Touching color precision is limited to 5 bits red, 5 bits green, 4 bits blue. (this is only 14-bit color, much less than 24-bit RGB that is displayed by Scratch). <a href="https://github.com/scratchfoundation/scratch-render/blob/develop/src/RenderWebGL.js#L67-L81"><span class="tagSourceCode">Source code</span></a></li>
-      <li>The keys that can be detected are <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/io/keyboard.js">here</a>. Modifier keys such as shift can not be detected. Neither can backspace.</li>
+      <li>The keys that can be detected are <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/io/keyboard.js">here</a>. Special keys such as shift, control, and backspace can not be detected.</li>
+      <li>Left-click is the only mouse button that can be detected.</li>
       <li>The mouse position is clamped to the edge of the screen and rounded. <a href="https://github.com/scratchfoundation/scratch-vm/blob/88e7f4f7173c99b08382778a56b2252c1141e799/src/io/mouse.js#L60-L75"><span class="tagSourceCode">Source code</span></a></li>
       <li>Multi-touch (for touch-screens) is not supported. There is only 1 mouse pointer.</li>
-      <li>Left-click is the only button that is detected.</li>
       <li>The timer only updates once per frame. For sub-frame timing, use the "days since 2000" block.</li>
     </ul>
     
@@ -97,8 +97,8 @@
 
     <h3>Cloud variables</h3>
     <ul>
-      <li>10 variables per project.</li>
-      <li>Setting the value of any cloud variable has a shared average rate limit of 10 times per second.</li>
+      <li>10 cloud variables per project. <a href="https://github.com/scratchfoundation/scratch-vm/blob/bb48b9f4502f2aa1c8fe583b97375919895ca5e4/src/engine/runtime.js#L134"><span class="tagSourceCode">Source code</span></a></li>
+      <li>Setting the value of any cloud variable has a shared average rate limit of 10 times per second. <a href="https://github.com/scratchfoundation/scratch-gui/blob/70198c48cd616146daf2ba501fbf57ba4df60541/src/lib/cloud-provider.js#L30-L32"><span class="tagSourceCode">Source code</span></a></li>
       <li>Variables may either store a floating point number (NaN and infinity excluded) or a string containing numerical digits 0-9, up to a length of 256 characters.</li>
       <li><a href="https://scratch.mit.edu/discuss/topic/618775/?page=1#post-6466756">Calculated from the above limits, the maximum data transfer rate is approximately 1063 bytes/sec.</a></li>
       <li>Users with "New Scratcher" status can not set cloud variables with values that other users can see.</li>
@@ -120,9 +120,9 @@
     <ul>
       <li>The pen "layer" (internally called "skin") is in front of the stage but behind all sprites. <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/engine/stage-layering.js#L23"><span class="tagSourceCode">Source code</span></a></li>
       <li>Pen layer/skin dimensions: 480x360</li>
-      <li>There is no way to erase a stroke or part of the pen layer. There is only an "erase all" block.</li>
+      <li>There is no way to erase a stroke or only part of the pen layer. There is only an "erase all" block.</li>
       <li>Pen "size" is its diameter in pixels and is limited to between 1 and 1200. <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/extensions/scratch3_pen/index.js#L101"><span class="tagSourceCode">Source code</span></a></li>
-      <li>An ARGB color value with full transparency is not possible as the way the value is handled always ignores alpha. If converted to a number (e.g. from hexadecimal), <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/util/cast.js#L100">the leading zeroes for alpha will be lost</a>. If converted from a color code such as <span class="code">#FF3000</span>, <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/util/color.js#L60-L69">alpha handling isn't implemented</a>. If setting pen color, it is suggested to either use the set pen transparency effect after setting the RGB color, or ensure that the ARGB value never uses an alpha of 0 (possibly clamp to 1).</li>
+      <li>An ARGB color value with full transparency is not possible as the way the value is handled always ignores alpha. If converted to a number (e.g. from hexadecimal), <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/util/cast.js#L100">the leading zeroes for alpha will be lost</a>. If converted from a hex color code such as <span class="code">#FF3000</span>, <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/util/color.js#L60-L69">alpha handling isn't implemented</a>. If setting pen color, it is suggested to either use the set pen transparency effect after setting the RGB color or ensure the ARGB value never uses an alpha of 0 (possibly clamp to 1). Otherwise, conditionally draw pen strokes.</li>
       <li>If drawing multiple strokes with transparency, there is an unavoidable overlap where the strokes start/end. Every stroke is drawn independently of the others.</li>
     </ul>
 
