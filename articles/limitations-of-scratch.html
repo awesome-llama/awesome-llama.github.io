@@ -39,8 +39,8 @@
       <li>There is no limit on sb3 file size.</li>
       <li>There is no limit on block count but due to the project.json size limit, expect that only 20000-30000 blocks can fit within it.</li>
       <li>Project framerate: approx. 30FPS</li>
-      <li>Threads have a time limit of 500ms. (encountered often with custom blocks set to "run without screen refresh") <a href="https://github.com/scratchfoundation/scratch-vm/blob/6aca685b6da6b1fa71e01da77238a2fdf9e7f787/src/engine/sequencer.js#L62-L64"><span class="tagSourceCode">Source code</span></a></li>
-      <li>The numbers (not strings) <span class="code">Infinity</span>, <span class="code">-Infinity</span>, <span class="code">NaN</span>, and <span class="code">-0</span> can not be saved. This is a limitation of JSON.</li>
+      <li>Threads have a time limit of 500ms. (encountered most often with custom blocks set to "run without screen refresh") <a href="https://github.com/scratchfoundation/scratch-vm/blob/6aca685b6da6b1fa71e01da77238a2fdf9e7f787/src/engine/sequencer.js#L62-L64"><span class="tagSourceCode">Source code</span></a></li>
+      <li>The numbers (not strings) <span class="code">Infinity</span>, <span class="code">-Infinity</span>, <span class="code">NaN</span>, and <span class="code">-0</span> can not be saved in JSON.</li>
     </ul>
 
     <h3>Sprites</h3>
@@ -50,7 +50,7 @@
       <li>Maximum number of clones at one time: 300 (limit shared by all sprites) <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/engine/runtime.js#L733"><span class="tagSourceCode">Source code</span></a></li>
       <li>Sprites can not be positioned off-screen with a margin less than 15px still showing. <a href="https://github.com/scratchfoundation/scratch-render/blob/develop/src/RenderWebGL.js#L83-L88"><span class="tagSourceCode">Source code</span></a></li>
       <li>Clones do have a unique ID and there is no native way to identify or share data between them. You need to implement this yourself with variables and lists. Note that those set to "for this sprite only" will allow for values being stored that are unique to every clone/sprite, this is good for an ID.</li>
-      <li>The color effect has a minimum lightness and saturation. <a href="https://github.com/scratchfoundation/scratch-render/blob/develop/src/shaders/sprite.frag#L173-L178"><span class="tagSourceCode">Source code</span></a></li>
+      <li>The color effect gives the sprite a minimum lightness and saturation. <a href="https://github.com/scratchfoundation/scratch-render/blob/develop/src/shaders/sprite.frag#L173-L178"><span class="tagSourceCode">Source code</span></a></li>
     </ul>
 
     <h3>Costumes/backdrops</h3>
@@ -61,7 +61,7 @@
 
     <h3>Control</h3>
     <ul>
-      <li>The for each loop compares the value in the repeat input every iteration. It is not stored. <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/blocks/scratch3_control.js#L94"><span class="tagSourceCode">Source code</span></a></li>
+      <li>The "for each" loop compares the value in the repeat input every iteration. It is not stored. This is unlike the "repeat" loop which will repeat the number of times given initially. <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/blocks/scratch3_control.js#L94"><span class="tagSourceCode">Source code</span></a></li>
     </ul>
 
     <h3>Sensing</h3>
@@ -69,6 +69,9 @@
       <li>Touching color precision is limited to 5 bits red, 5 bits green, 4 bits blue. (this is only 14-bit color, much less than 24-bit RGB that is displayed by Scratch). <a href="https://github.com/scratchfoundation/scratch-render/blob/develop/src/RenderWebGL.js#L67-L81"><span class="tagSourceCode">Source code</span></a></li>
       <li>The keys that can be detected are <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/io/keyboard.js">here</a>. Modifier keys such as shift can not be detected. Neither can backspace.</li>
       <li>The mouse position is clamped to the edge of the screen and rounded. <a href="https://github.com/scratchfoundation/scratch-vm/blob/88e7f4f7173c99b08382778a56b2252c1141e799/src/io/mouse.js#L60-L75"><span class="tagSourceCode">Source code</span></a></li>
+      <li>Multi-touch (for touch-screens) is not supported. There is only 1 mouse pointer.</li>
+      <li>Left-click is the only button that is detected.</li>
+      <li>The timer only updates once per frame. For sub-frame timing, use the "days since 2000" block.</li>
     </ul>
     
     <h3>Events</h3>
@@ -83,19 +86,20 @@
       <li>List item limit: 200000 <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/blocks/scratch3_data.js#L253"><span class="tagSourceCode">Source code</span></a></li>
       <li>There is no Scratch-imposed limit on string character count in variables and list items.</li>
       <li>Neither variables or lists can be created at runtime, they must be created manually by the user. There is no way to place a reporter block in the variable or list name. Scratch also does not have dictionaries (or other similar collections).</li>
+      <li>Variable and list monitors are always displayed in front of everything on the screen. They are also not visible in saved thumbnails.</li>
     </ul>
 
     <h3>Custom blocks</h3>
     <ul>
       <li>Custom blocks are not shared across all sprites. There must be a definition in every sprite that needs it.</li>
-      <li>Argument reporters are only usable within its own definition and <a href="https://github.com/scratchfoundation/scratch-vm/blob/6aca685b6da6b1fa71e01da77238a2fdf9e7f787/src/blocks/scratch3_procedures.js#L63">always return 0 when run outside it</a>. This includes clicking to run.</li>
+      <li>Argument reporters are only usable within their own definition script and <a href="https://github.com/scratchfoundation/scratch-vm/blob/6aca685b6da6b1fa71e01da77238a2fdf9e7f787/src/blocks/scratch3_procedures.js#L63">always return 0 when run outside it</a>. This includes clicking to run.</li>
     </ul>
 
     <h3>Cloud variables</h3>
     <ul>
       <li>10 variables per project.</li>
       <li>Setting the value of any cloud variable has a shared average rate limit of 10 times per second.</li>
-      <li>Variables may either store a floating point number (NaN and Infinity excluded) or a string containing numerical digits 0-9, up to a length of 256 characters.</li>
+      <li>Variables may either store a floating point number (NaN and infinity excluded) or a string containing numerical digits 0-9, up to a length of 256 characters.</li>
       <li><a href="https://scratch.mit.edu/discuss/topic/618775/?page=1#post-6466756">Calculated from the above limits, the maximum data transfer rate is approximately 1063 bytes/sec.</a></li>
       <li>Users with "New Scratcher" status can not set cloud variables with values that other users can see.</li>
     </ul>
@@ -106,6 +110,8 @@
       <li>Volume range: 0 to 100% <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/blocks/scratch3_sound.js#L325"><span class="tagSourceCode">Source code</span></a></li>
       <li>Pitch effect range: -360 to 360 <a href="https://en.scratch-wiki.info/wiki/Sound_Effect#Pitch"><span class="tagSourceCode">Scratch Wiki</span></a></li>
       <li>Pan effect range: -100 to 100 <a href="https://en.scratch-wiki.info/wiki/Sound_Effect#Pan_Left/Right"><span class="tagSourceCode">Scratch Wiki</span></a></li>
+      <li>Volume and effects are controlled per sprite/clone.</li>
+      <li>Sounds played with the "play sound" block can only be stopped with the "stop all" and "stop all sounds" blocks, there is no way to stop an individual sound here. Sounds played with the "play sound until done" block can be stopped with "stop other scripts in sprite" or by deleting the clone if it was running in a clone.</li>
       <li>A sound can not be played multiple times simultaneously. All clones will be limited by this too. The sound may be duplicated in the sounds editor (or added to a different sprite) if playing it simultaneously is desired.</li>
       <li>The set/change volume and set/change effect blocks will cause a yield. <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/blocks/scratch3_sound.js#L329-L330"><span class="tagSourceCode">Source code (volume)</span></a> <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/blocks/scratch3_sound.js#L282-L283"><span class="tagSourceCode">Source code (effect)</span></a></li>
     </ul>
@@ -129,7 +135,7 @@
 
     <h3>Site</h3>
     <ul>
-      <li>Usernames can only be chosen with a length between 3 and 20 (inclusive). Characters are limited to the english alphabet (case insensitive), numbers 0-9, the underscore <span class="code">_</span> and dash <span class="code">-</span>. Note that there are some usernames that do not fit these requirements, they were set by the Scratch Team or created before some requirements were made. Most of the invalid ones are not in use, see <a href="https://scratch.mit.edu/discuss/topic/733836/">this topic of unusual usernames</a>.</li>
+      <li>Usernames can only be chosen with a length between 3 and 20 (inclusive). Characters are limited to the english alphabet (case insensitive), numbers 0-9, the underscore <span class="code">_</span> and dash <span class="code">-</span>. Note that there are some usernames that do not fit these requirements, they were set by the Scratch Team or created before some requirements were made. Most of the invalid ones are not in use, see for example <a href="https://scratch.mit.edu/discuss/topic/733836/">this topic of unusual usernames</a>.</li>
     </ul>
     
 </div>
