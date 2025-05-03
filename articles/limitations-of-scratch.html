@@ -46,17 +46,23 @@
     <h3>Sprites</h3>
     <ul>
       <li>Sprites are visually snapped to a grid sized with 480x360 steps on the screen.</li>
-      <li>Size is limited by the current costume, when scaled it must not be visually bigger than 150% the size of the stage (720x540) on any axis or smaller than 5 pixels on any axis. <a href="https://github.com/scratchfoundation/scratch-vm/blob/e5950c3/src/sprites/rendered-target.js#L376-L381"><span class="tagSourceCode">Source code</span></a></li>
+      <li>Size is limited by the current costume, when scaled it must not be visually larger than 150% the size of the stage (720x540) on any axis or smaller than 5 pixels on any axis. <a href="https://github.com/scratchfoundation/scratch-vm/blob/e5950c3/src/sprites/rendered-target.js#L376-L381"><span class="tagSourceCode">Source code</span></a></li>
       <li>Maximum number of clones at one time: 300 (limit shared by all sprites) <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/engine/runtime.js#L733"><span class="tagSourceCode">Source code</span></a></li>
       <li>Sprites can not be positioned off-screen with a margin less than 15px still showing. <a href="https://github.com/scratchfoundation/scratch-render/blob/develop/src/RenderWebGL.js#L83-L88"><span class="tagSourceCode">Source code</span></a></li>
-      <li>Clones do have a unique ID and there is no native way to identify or share data between them. You need to implement this yourself with variables and lists. Note that those set to "for this sprite only" will allow for values being stored that are unique to every clone/sprite, this is good for an ID.</li>
-      <li>The color effect gives the sprite a minimum lightness and saturation. <a href="https://github.com/scratchfoundation/scratch-render/blob/develop/src/shaders/sprite.frag#L173-L178"><span class="tagSourceCode">Source code</span></a></li>
+      <li>Clones do not have an accessible unique ID and there is no native way to identify or share data between them. You need to implement this yourself with variables and lists. Note that those set to "for this sprite only" will store values unique to every clone/sprite, useful for an ID.</li>
     </ul>
 
     <h3>Costumes/backdrops</h3>
     <ul>
       <li>Accepted image file formats: PNG and JPG. Note that if an edit is made to a costume, that costume will be saved as a lossless PNG. GIFs may also be imported, each frame will be added as a costume.</li>
       <li>Bitmap maximum dimensions: 960x720 (using "half pixels").</li>
+      <li>Vector costumes get rasterized to dimensions no more than 2048x2048. This results in very large vector costumes appearing blurry. <a href="https://github.com/scratchfoundation/scratch-render/blob/65440d48e2e18cbb878f6d8b892dd82336375944/src/SVGSkin.js#L7"><span class="tagSourceCode">Source code</span></a></li>
+    </ul>
+
+    <h3>Looks</h3>
+    <ul>
+      <li>The color effect gives the sprite a minimum lightness and saturation. <a href="https://github.com/scratchfoundation/scratch-render/blob/develop/src/shaders/sprite.frag#L173-L178"><span class="tagSourceCode">Source code</span></a></li>
+      <li>The "fisheye", "whirl", and "pixelate" effects are always relative to the center of the costume.</li>
     </ul>
 
     <h3>Control</h3>
@@ -72,6 +78,7 @@
       <li>The mouse position is clamped to the edge of the screen and rounded. <a href="https://github.com/scratchfoundation/scratch-vm/blob/88e7f4f7173c99b08382778a56b2252c1141e799/src/io/mouse.js#L60-L75"><span class="tagSourceCode">Source code</span></a></li>
       <li>Multi-touch (for touch-screens) is not supported. There is only 1 mouse pointer.</li>
       <li>The timer only updates once per frame. For sub-frame timing, use the "days since 2000" block.</li>
+      <li>For the touching color blocks, if there are more than 4000 pixels of the overlap in the touching area, the GPU will be used, which may affect performance and change its behavior. <a href="https://github.com/scratchfoundation/scratch-render/blob/65440d48e2e18cbb878f6d8b892dd82336375944/src/RenderWebGL.js#L25"><span class="tagSourceCode">Source code</span></a></li>
     </ul>
     
     <h3>Events</h3>
@@ -82,7 +89,7 @@
     
     <h3>Variables and lists</h3>
     <ul>
-      <li>Supported data types: booleans, double floats, strings. <a href="https://scratch.mit.edu/projects/1048874723/">Through hacks it's possible to utilise a few other types such as arrays.</a></li>
+      <li>Supported data types: booleans, double floats, strings. <a href="https://scratch.mit.edu/projects/1048874723/">Through hacks it's possible to utilize a few other types such as arrays.</a></li>
       <li>List item limit: 200000 <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/blocks/scratch3_data.js#L253"><span class="tagSourceCode">Source code</span></a></li>
       <li>There is no Scratch-imposed limit on string character count in variables and list items.</li>
       <li>Neither variables or lists can be created at runtime, they must be created manually by the user. There is no way to place a reporter block in the variable or list name. Scratch also does not have dictionaries (or other similar collections).</li>
@@ -106,7 +113,7 @@
 
     <h3>Sound</h3>
     <ul>
-      <li>Accepted file formats: WAV and MP3. Note that if an edit is made to a sound, that sound will be saved as a lossless WAV. The file size of this can be significant so for audio where this matters, I recommend making edits in software other than Scratch so the file is always transferred to Scratch as MP3.</li>
+      <li>Accepted file formats: WAV and MP3. Stereo audio allowed. Note that if an edit is made to a sound, that sound will be saved as a lossless mono WAV. I recommend making edits in software other than Scratch so the file is always transferred to Scratch as MP3 (where necessary).</li>
       <li>Volume range: 0 to 100% <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/blocks/scratch3_sound.js#L325"><span class="tagSourceCode">Source code</span></a></li>
       <li>Pitch effect range: -360 to 360 <a href="https://en.scratch-wiki.info/wiki/Sound_Effect#Pitch"><span class="tagSourceCode">Scratch Wiki</span></a></li>
       <li>Pan effect range: -100 to 100 <a href="https://en.scratch-wiki.info/wiki/Sound_Effect#Pan_Left/Right"><span class="tagSourceCode">Scratch Wiki</span></a></li>
@@ -118,12 +125,13 @@
 
     <h3>Pen extension</h3>
     <ul>
-      <li>The pen "layer" (internally called "skin") is in front of the stage but behind all sprites. <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/engine/stage-layering.js#L23"><span class="tagSourceCode">Source code</span></a></li>
-      <li>Pen layer/skin dimensions: 480x360</li>
+      <li>The pen layer (internally called "skin") is in front of the stage but behind all sprites. <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/engine/stage-layering.js#L23"><span class="tagSourceCode">Source code</span></a></li>
+      <li>Pen layer dimensions: 480x360</li>
       <li>There is no way to erase a stroke or only part of the pen layer. There is only an "erase all" block.</li>
       <li>Pen "size" is its diameter in pixels and is limited to between 1 and 1200. <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/extensions/scratch3_pen/index.js#L101"><span class="tagSourceCode">Source code</span></a></li>
+      <li>A Pen size of exactly 1 or 3 offset the pen position to the top-right by 0.5 steps to be "pixel-aligned". <a href="https://github.com/scratchfoundation/scratch-render/blob/65440d48e2e18cbb878f6d8b892dd82336375944/src/PenSkin.js#L170"><span class="tagSourceCode">Source code</span></a></li>
       <li>An ARGB color value with full transparency is not possible as the way the value is handled always ignores alpha. If converted to a number (e.g. from hexadecimal), <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/util/cast.js#L100">the leading zeroes for alpha will be lost</a>. If converted from a hex color code such as <span class="code">#FF3000</span>, <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/util/color.js#L60-L69">alpha handling isn't implemented</a>. If setting pen color, it is suggested to either use the set pen transparency effect after setting the RGB color or ensure the ARGB value never uses an alpha of 0 (possibly clamp to 1). Otherwise, conditionally draw pen strokes.</li>
-      <li>If drawing multiple strokes with transparency, there is an unavoidable overlap where the strokes start/end. Every stroke is drawn independently of the others.</li>
+      <li>Every pen stroke is drawn independently of others; semi-transparent pixels from anti-aliasing or a semi-transparent pen color will be drawn visibly overlapping.</li>
     </ul>
 
     <h3>Music extension</h3>
@@ -135,9 +143,12 @@
 
     <h3>Site</h3>
     <ul>
-      <li>Usernames can only be chosen with a length between 3 and 20 (inclusive). Characters are limited to the english alphabet (case insensitive), numbers 0-9, the underscore <span class="code">_</span> and dash <span class="code">-</span>. Note that there are some usernames that do not fit these requirements, they were set by the Scratch Team or created before some requirements were made. Most of the invalid ones are not in use, see for example <a href="https://scratch.mit.edu/discuss/topic/733836/">this topic of unusual usernames</a>.</li>
+      <li>Usernames can only be chosen with a length between 3 and 20 (inclusive). Characters are limited to the english alphabet (case insensitive), numbers 0-9, the underscore <span class="code">_</span> and dash <span class="code">-</span>. Note that there are some usernames that do not fit these requirements, they may have been set by the Scratch Team or created before some requirements were made. Most of the invalid ones are not in use, see for example <a href="https://scratch.mit.edu/discuss/topic/733836/">this topic of unusual usernames</a>.</li>
     </ul>
-    
+
+    <hr>
+    <p>Thanks to <a href="https://scratch.mit.edu/users/Vadik1/">Vadik1</a> and <a href="https://scratch.mit.edu/users/BamBozzle/">Bambozzle</a> for contributing some of the above items.</p>
+    <!-- /channels/1129589843698126878/1129589844637667431/1368044845352091779 -->
 </div>
 
 </body>
