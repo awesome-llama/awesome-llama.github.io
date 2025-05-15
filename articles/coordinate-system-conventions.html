@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Coordinate System Conventions</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+  <style>
+    .caption {color: rgb(112, 112, 112); font-size: 1em; line-height: 1.1em; margin-bottom: 1em; margin-top: 0;}
+  </style>
+</head>
+
+<body>
+<div class="navbar">
+    <div>
+      <a href="/" class="navbtn"><div class="navbtnlink">Home</div></a>
+      <a href="/articles" class="navbtn"><div class="navbtnlink">Articles</div></a>
+      <a href="/projects" class="navbtn"><div class="navbtnlink">Projects</div></a>
+      <a href="/utils" class="navbtn"><div class="navbtnlink">Utilities</div></a>
+    </div>
+  </div>
+
+  <div class="content">
+    <h1>Coordinate System Conventions</h1>
+    <hr>
+    <p>(in the context of computer graphics)</p>
+    <br>
+    <h2>2D</h2>
+    <p>
+      A 2D space has 2 dimensions, with perpendicular axes X and Y. This may be called a "plane". If this was drawn on piece of paper attached to the wall, X would be to the right and Y would be up. 
+    </p>
+    <a href="https://en.wikipedia.org/wiki/File:Cartesian-coordinate-system.svg" target="_blank" rel="noopener noreferrer">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Cartesian-coordinate-system.svg" style="max-width: 300px; border-radius: 10px;">
+    </a>
+    <p class="caption">Cartesian plane.</p>
+    <br>
+    <p>
+    It is reasonable to decide that an angle of 0 should start start at the "first" axis (the X axis), and increase into the "second" axis (the Y axis). This is counter-clockwise rotation and is also a mathematical convention. You may have been introduced to this with trigonometry.
+    </p>
+
+    <a href="https://commons.wikimedia.org/wiki/File:Coord_Circular.svg" target="_blank" rel="noopener noreferrer">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Coord_Circular.svg/1280px-Coord_Circular.svg.png" style="max-width: 200px; border-radius: 10px; background-color: white;">
+    </a>
+    <p class="caption">Measuring angles counter-clockwise.</p>
+    <br>
+    
+    <p>
+    One could say this is all arbitrary and we would be perfectly fine with a different system. If they are all that equal, then there is no point in using anything other than the convention everyone expects. Using something else would only cause confusion and add unnecessary conversions between your system and everyone else's.
+    </p>
+    
+    <p>Scratch-specific note: Yes, sprite rotations are clockwise bearings starting from the Y axis. The trigonometric functions are not. I think it is better to convert to Scratch bearings only when displaying, keeping the internal maths as the counter-clockwise convention.</p>
+
+    <br>
+    <h2>3D</h2>
+    <p>A 3D space has 3 dimensions, with perpendicular axes labelled X, Y, Z, in that order. They are often color-coded red, green, blue, in that order.</p>
+
+    <p>Let's define a virtual "world space", where everything is measured relative to. Within this space you could place objects of any kind, in the context of 3D computer graphics this could involve a camera, lights, terrain, and characters.</p>
+
+    <p>Most of our real-world experience exists on a horizontal plane, where our position is given in 2 coordinates (e.g. longitude and latitude), plus an elevation. It makes sense to group the two most important axes, and so we can use the first and second axes (X and Y) for this. This leaves the third (Z) axis, which can be used for elevation. There are some scenarios, such as a side-on platformer where the 2 important axes are not horizontal, in those cases using a different orientation is fine but is out of scope for this article.</p>
+    
+    <p>In mathematics, <a href="https://en.wikipedia.org/wiki/Right-hand_rule">right-handed</a> spaces are the convention. This can be fitted to our world space so that positive X is to the east, positive Y is to the north, and positive Z is elevation upwards. Again, you might say this is arbitrary and a left-handed space would work too, but again, there is no point using something else as this is not what anyone in mathematics expects. Why does mathematics matter so much? Because 3D rendering involves a lot of maths, especially concepts such as trigonometry which already use these particular conventions. Most formulas are written with this understanding and do not require any rearrangement or conversion when implemented as computer code.</p>
+
+    <a href="https://en.wikipedia.org/wiki/File:Coord_system_CA_0.svg" target="_blank" rel="noopener noreferrer">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/Coord_system_CA_0.svg" style="max-width: 300px; border-radius: 10px; background-color: white;">
+    </a>
+    <p class="caption">Right-handed 3D space. You could imagine your right thumb pointing towards X, index finger pointing towards Y, and middle finger pointing towards Z.</p>
+    <br>
+
+    <p>However, left-handed world spaces do exist. What I think has happened is that computer screens follow English text, writing rows across a page and then down. Computer screens are most often oriented in our real world so that X is to the right, and Y is downwards. We look mostly forwards/horizontally when viewing a computer screen.</p>
+
+    <p>This has then been applied to the coordinate systems in the virtual world with little to no transformation. Now the world space is defined from the screen coordinates. I think this is a backwards way of thinking. The world space is the common space that everything is supposed to be measured relative to. As such, it should be defined first. If you still want few transformations to get from world space to screen space, this is still doable. <a href="https://www.blender.org/">Blender</a> is a good example of this. The camera points towards negative z (downwards) at 0 rotation and so transforming from world space into camera space, Z remains as depth.</p>
+
+    <p>I believe that Blender has the most sensible coordinate system for 3D worlds. Blender isn't the only software which has it, many CAD tools do too, but it's free software so you can experiment with how it behaves yourself. It's advantageous to replicate in your own 3D implementations as it becomes something to compare to. For example, you could confirm that a point is transformed correctly in your implementation if Blender produces the same result.</p>
+
+
+
+</div>
+
+</body>
+</html>
