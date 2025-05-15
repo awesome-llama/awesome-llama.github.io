@@ -28,12 +28,15 @@
     <h1>My Save Code Format</h1>
     <hr>
     <p>Over many years of developing Scratch projects, I have settled on a simple-to-use and easy-to-understand save code format and now use it on pretty much everything.
-    I call it CSKV, which loosely stands for comma-separated key/values. The only reserved characters are colon <span class="code">:</span> and comma <span class="code">,</span>. I usually don't need escape characters so my simplest implementation does not use them but it can be modified to be accounted for.</span></p>
-    <p>Example (with colour showing the <span class="key">key</span> and <span class="val">values</span>):</p>
+    </p><p>
+    I call it CSKV, which loosely stands for comma-separated key/values. The only reserved characters are colon <span class="code">:</span> and comma <span class="code">,</span>. I usually don't need escape characters so my simplest implementation does not use them but it can be modified to support them.</span></p>
+
+    <p>Example (with colour highlighting the <span class="key">keys</span> and <span class="val">values</span>):</p>
     <p class="code">
         <span class="key">user</span>:<span class="val">awesome-llama</span>,<span class="key">id</span>:<span class="val">8832510</span>,<span class="key">scratchteam</span>:<span class="val">false</span>
     </p>
-    <p>But what happens if you need to store more than a single value? Lists may be stored in each key. Implementation depends on the project but the general one is to have the list items separated by commas with the first item representing <span class="len">the length of the list</span>:</p>
+    <p>This structure allows the entire save code to be written to a single Scratch list splitting into items at every colon and comma. If a colon is encountered, the item before it is expected to be a key, otherwise it is a value.</p>
+    <p>But what happens if you need to store more than a single value? Lists may be stored in each key. Implementation depends on the project but often the list items are separated by commas with the first item representing <span class="len">the length of the list</span>:</p>
     <p class="code">
         <span class="key">recent_projects</span>:<span class="len">3</span>,<span class="val">The Mast</span>,<span class="val">Submersible</span>,<span class="val">Road Network Designer</span>
     </p>
@@ -44,11 +47,11 @@
         <span class="magic_num">account_info</span>,<span class="key">user</span>:<span class="val">awesome-llama</span>,<span class="key">id</span>:<span class="val">8832510</span>,<span class="key">scratchteam</span>:<span class="val">false</span>
     </p>
     <p>This helps to indicate the purpose or source of the data and provide simple validation if user-inputted.</p>
-    <p>Also, with save codes that are intended to be used by others and not just something internally-used, I ensure a project version number is provided as a key, along with optional username and date the code was generated. The following example is from my game Submersible (<span class="code">v</span> for project version, <span class="code">sv</span> for save code version) and time (<span class="code">t</span>, seconds since 2000):</p>
+    <p>Also, with save codes that are intended to be used by others and not just something internally-used, I ensure a project version number is provided as a key, along with optional username and date the code was generated. The following example is from my game Submersible (<span class="code">v</span> for project version, <span class="code">sv</span> for save code version, and <span class="code">t</span> for time, seconds since 2000):</p>
     <p class="code">
         <span class="magic_num">SUB</span>,<span class="key">v</span>:<span class="val">1.0</span>,<span class="key">sv</span>:<span class="val">1</span>,<span class="key">t</span>:<span class="val">731066503</span>,[...]
     </p>
-    <p>The format is deliberately structured so it can be represented in a single list in Scratch (although not required). A decoder may split the save code by commas and colons into list items. If a colon is found, the item it found before it is guaranteed to be a key. A decoder may prepend an exclamation mark <span class="code">!</span> onto the key to help differentiate it from the values (note this becomes another reserved character). This is useful if reading the list with the "item # of [] in list" block as the exclamation mark helps ensure it will only find keys.</p>
+    <p>Elaborating on the implementation in Scratch: The format is deliberately structured so it can be represented in a single list (although not required). A decoder may split the save code by commas and colons into list items. If a colon is found, the item it found before it is guaranteed to be a key. A decoder may prepend an exclamation mark <span class="code">!</span> onto the key to help differentiate it from the values (note this becomes another reserved character). This is useful if reading the list with the "item # of [] in list" block as the exclamation mark helps ensure it will only find keys.</p>
     <hr>
     <p>Here is a Scratch project with the scripts I typically use to implement it: <a href="https://scratch.mit.edu/projects/114633511/">https://scratch.mit.edu/projects/114633511/</a></p>
 
