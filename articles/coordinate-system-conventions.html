@@ -28,7 +28,7 @@
     <br>
     <h2>2D</h2>
     <p>
-      A 2D space has 2 dimensions, with perpendicular axes X and Y. This may be called a "plane". If this was drawn on piece of paper attached to the wall, X would be to the right and Y would be up. 
+      A 2D space has 2 dimensions, with perpendicular axes X and Y. This may be called a "plane". If this was drawn on piece of paper attached to a wall, X would be to the right and Y would be up. 
     </p>
     <a href="https://en.wikipedia.org/wiki/File:Cartesian-coordinate-system.svg" target="_blank" rel="noopener noreferrer">
       <img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Cartesian-coordinate-system.svg" style="max-width: 300px; border-radius: 10px;">
@@ -67,7 +67,7 @@
     <p class="caption">Right-handed 3D space. You could imagine your right thumb pointing towards X, index finger pointing towards Y, and middle finger pointing towards Z.</p>
     <br>
 
-    <p>However, left-handed world spaces do exist. What I think has happened is that computer screens follow English text, writing rows across a page and then down. Computer screens are most often oriented in our real world so that X is to the right, and Y is downwards. We look mostly forwards/horizontally when viewing a computer screen.</p>
+    <p>However, left-handed and/or Y-up world spaces do exist. What I think has happened is that computer screens follow English text, writing rows across a page and then down. Computer screens are most often oriented in our real world so that X is to the right, and Y is downwards. We look mostly forwards/horizontally when viewing a computer screen.</p>
 
     <p>This has then been applied to the coordinate systems in the virtual world with little to no transformation. Now the world space is defined from the screen coordinates. I think this is a backwards way of thinking. The world space is the common space that everything is supposed to be measured relative to. As such, it should be defined first. If you still want few transformations to get from world space to screen space, this is still doable. <a href="https://www.blender.org/">Blender</a> is a good example of this. The camera points towards negative z (downwards) at 0 rotation and so transforming from world space into camera space, Z remains as depth.</p>
 

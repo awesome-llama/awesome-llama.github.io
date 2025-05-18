@@ -24,7 +24,7 @@
     <p>
       Clones may look useful at first glance but they really aren't. You are shooting yourself in the foot if you use them in the most common ways because their limitations are very easily encountered.
     </p><p>
-      The main problem with clones is control. You can create them and delete them. You can also give them unique values using variables/lists set to "for this sprite only". However, very common questions asked on the Scratch forums are how to have the clones do more... How can they interact with each other? How do you keep track of which one is which? How do you prevent exponential growth of clones due to them all sharing the same scripts?
+      The main problem with clones is control. You can create them and delete them. You can also give them unique values using variables/lists set to "for this sprite only". However, very common questions asked are how to have the clones do more... How can they interact with each other? How do you keep track of which one is which? How do you prevent exponential growth of clones due to them all sharing the same scripts?
     </p><p>
       If the solution requires storing data in variables and lists, suddenly you don't need clones. You can do everything in the original sprite <i>and more</i> and avoid using clones completely. It does require learning how to to enumerate over a list using a loop and a variable counter (to access each list item) but clones also require learning. I argue that clones are a harder subject to learn given that their behaviour is unclear and debugging is awkward:</p> 
       <ul>
@@ -32,8 +32,8 @@
         <li>Reporters and variable monitors only display what is in the original sprite.</li>
         <li>Debugging often requires the insertion of blocks into existing scripts to make a visual or audible change.</li>
         <li>The clones do not save with the project and are deleted when the green flag is pressed. Compare this to a list where this doesn't happen and you can save the state by exporting/importing it to a separate text file. Lists can also be manually edited.</li>
-        <li>Clones have a limit of 300. The list item limit is 200000. There is no clone counter or blocks to get this value.</li>
-        <li>Running scripts in clones often involves loops perpetually running within the clone and broadcasts. Neither provide good control over script run order. A broadcast can only run once per frame which is one of the few practical ways to communicate with clones.</li>
+        <li>Clones have a shared limit of 300. The list item limit is 200000 and you can have as many lists as you'd like. List items can be as long as you want.</li>
+        <li>Running scripts in clones often involves loops perpetually running within the clone and broadcasts. Neither provide clear control over script run order. Broadcasts are one of the few practical ways to communicate with clones but can only run once per frame.</li>
       </ul>
         
     </p><p>
@@ -41,9 +41,9 @@
     </p>
     
       <ul>
-      <li>You want to display many sprite costumes simultaneously with the same quality as the original sprite, in vanilla Scratch. (note that TurboWarp has a high quality pen option so this issue doesn't apply to it)</li>
-      <li>You want to display something that doesn't affect the pen layer, such as some buttons on top of an emulator project.</li>
-      <li>You want to play sounds with full control over the volume and effects of each, and when to start or stop them.</li>
+      <li>You want to display many sprite costumes simultaneously with the same quality as the original sprite, in vanilla Scratch. In this case, you may want a pool of clones that are dependent on shared variables/lists rather than storing anything of importance in the clones. Also note that TurboWarp has a high quality pen option so stamps look just as good.</li>
+      <li>You want to display something that doesn't affect a slow-to-draw pen layer, such as some buttons on top of an emulator project.</li>
+      <li>You want to play sounds with full control over the volume and effects of each, and when to start or stop them. This is significantly harder to do without clones so I see this as the most justified reason for using them.</li>
       <li>You want to run ask blocks with a way to close them individually with code (rather than require the user to interact with it to close it).</li>
     </ul>
     
