@@ -28,7 +28,7 @@
     <br>
     <h2>2D</h2>
     <p>
-      A 2D space has 2 dimensions, with perpendicular axes X and Y. This may be called a "plane". If this was drawn on piece of paper attached to a wall, X would be to the right and Y would be up. 
+      A 2D space has 2 dimensions with perpendicular axes X and Y. This may be called a "plane". If this was drawn on piece of paper attached to a wall, X would be to the right and Y would be up. 
     </p>
     <a href="https://en.wikipedia.org/wiki/File:Cartesian-coordinate-system.svg" target="_blank" rel="noopener noreferrer">
       <img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Cartesian-coordinate-system.svg" style="max-width: 300px; border-radius: 10px;">
@@ -36,7 +36,7 @@
     <p class="caption">Cartesian plane.</p>
     <br>
     <p>
-    It is reasonable to decide that an angle of 0 should start start at the "first" axis (the X axis), and increase into the "second" axis (the Y axis). This is counter-clockwise rotation and is also a mathematical convention. You may have been introduced to this with trigonometry.
+    It is reasonable to decide that an angle of 0 should start start at the "first" axis (X) and increase into the "second" axis (Y). This is counter-clockwise rotation and is a mathematical convention. You may have been introduced to this with trigonometry.
     </p>
 
     <a href="https://commons.wikimedia.org/wiki/File:Coord_Circular.svg" target="_blank" rel="noopener noreferrer">
@@ -49,15 +49,15 @@
     One could say this is all arbitrary and we would be perfectly fine with a different system. If they are all that equal, then there is no point in using anything other than the convention everyone expects. Using something else would only cause confusion and add unnecessary conversions between your system and everyone else's.
     </p>
     
-    <p>Scratch-specific note: Yes, sprite rotations are clockwise bearings starting from the Y axis. The trigonometric functions are not. I think it is better to convert to Scratch bearings only when displaying, keeping the internal maths as the counter-clockwise convention.</p>
+    <p>Scratch-specific note: Yes, sprite rotations are clockwise bearings starting from the Y axis. The trigonometric functions are not. I think it is better to keep the internal maths as the counter-clockwise convention and only convert to Scratch bearings when displaying. It's less confusing when they aren't mixed.</p>
 
     <br>
     <h2>3D</h2>
-    <p>A 3D space has 3 dimensions, with perpendicular axes labelled X, Y, Z, in that order. They are often color-coded red, green, blue, in that order.</p>
+    <p>A 3D space has 3 dimensions, with perpendicular axes labelled in the alphabetical order X, Y, and Z. They are often color-coded in the order red, green, and blue.</p>
 
-    <p>Let's define a virtual "world space", where everything is measured relative to. Within this space you could place objects of any kind, in the context of 3D computer graphics this could involve a camera, lights, terrain, and characters.</p>
+    <p>Let's define a virtual "world space", where everything is measured relative to. Within this space we could place objects of any kind, in the context of 3D computer graphics this could involve a camera, lights, terrain, and characters.</p>
 
-    <p>Most of our real-world experience exists on a horizontal plane, where our position is given in 2 coordinates (e.g. longitude and latitude), plus an elevation. It makes sense to group the two most important axes, and so we can use the first and second axes (X and Y) for this. This leaves the third (Z) axis, which can be used for elevation. There are some scenarios, such as a side-on platformer where the 2 important axes are not horizontal, in those cases using a different orientation is fine but is out of scope for this article.</p>
+    <p>Most of our real-world experience exists in a horizontal plane. We travel horizontally and gravity is vertical. A position is often given with a 2D coordinate that can be plotted on a map (e.g. longitude and latitude). It makes sense to group the two horizontal axes as the "first" and "second" axes (X and Y). This leaves the "third" (Z) axis, which can be used for elevation.</p>
     
     <p>In mathematics, <a href="https://en.wikipedia.org/wiki/Right-hand_rule">right-handed</a> spaces are the convention. This can be fitted to our world space so that positive X is to the east, positive Y is to the north, and positive Z is elevation upwards. Again, you might say this is arbitrary and a left-handed space would work too, but again, there is no point using something else as this is not what anyone in mathematics expects. Why does mathematics matter so much? Because 3D rendering involves a lot of maths, especially concepts such as trigonometry which already use these particular conventions. Most formulas are written with this understanding and do not require any rearrangement or conversion when implemented as computer code.</p>
 
@@ -69,9 +69,11 @@
 
     <p>However, left-handed and/or Y-up world spaces do exist. What I think has happened is that computer screens follow English text, writing rows across a page and then down. Computer screens are most often oriented in our real world so that X is to the right, and Y is downwards. We look mostly forwards/horizontally when viewing a computer screen.</p>
 
-    <p>This has then been applied to the coordinate systems in the virtual world with little to no transformation. Now the world space is defined from the screen coordinates. I think this is a backwards way of thinking. The world space is the common space that everything is supposed to be measured relative to. As such, it should be defined first. If you still want few transformations to get from world space to screen space, this is still doable. <a href="https://www.blender.org/">Blender</a> is a good example of this. The camera points towards negative z (downwards) at 0 rotation and so transforming from world space into camera space, Z remains as depth.</p>
+    <p>This has then been applied to the coordinate systems in the virtual 3D world with little to no transformation. Now the world space is defined from the screen coordinates. I think this is a backwards way of thinking. The world space is the common space that everything is supposed to be measured relative to. As such, it should be defined first. If you still want few transformations to get from world space to screen space, this is still doable. <a href="https://www.blender.org/">Blender</a> is a good example of this. The camera points towards world negative Z (downwards) at 0 rotation and so transforming from world space into camera space, Z remains locally as depth regardless of its rotation.</p>
 
-    <p>I believe that Blender has the most sensible coordinate system for 3D worlds. Blender isn't the only software which has it, many CAD tools do too, but it's free software so you can experiment with how it behaves yourself. It's advantageous to replicate in your own 3D implementations as it becomes something to compare to. For example, you could confirm that a point is transformed correctly in your implementation if Blender produces the same result.</p>
+    <p>I believe that Blender has the most sensible coordinate system for 3D worlds. Blender isn't the only software which has it, many CAD tools do too, but it's free software so you can experiment with how it behaves yourself. It's advantageous to replicate it in your own 3D implementations as it can be compared to when testing. For example, you could confirm that a point is transformed correctly in your implementation if Blender produces the same result.</p>
+
+    <p>There are some scenarios, such as a side-on platformer where the 2 important axes are not horizontal. In those cases using a different orientation is fine but they are not the norm, especially for 3D worlds.</p>
 
 
 
