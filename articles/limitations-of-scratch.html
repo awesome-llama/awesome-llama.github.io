@@ -84,6 +84,11 @@
       <li>The timer only updates once per frame. For sub-frame timing, use the "days since 2000" block.</li>
       <li>For the touching color blocks, if there are more than 4000 pixels of the overlap in the touching area, the GPU will be used, which may affect performance and change its behavior. <a href="https://github.com/scratchfoundation/scratch-render/blob/65440d48e2e18cbb878f6d8b892dd82336375944/src/RenderWebGL.js#L25"><span class="tagSourceCode">Source code</span></a></li>
     </ul>
+
+    <h3>Operators</h3>
+    <ul>
+      <li>The "less-than", "greater-than", and "equals" blocks first try to compare the inputs as floating point numbers. Long strings consisting entirely of numeric characters may be incorrectly compared. <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/util/cast.js#L122-L123"><span class="tagSourceCode">Source code</span></a></li>
+    </ul>
     
     <h3>Events</h3>
     <ul>
