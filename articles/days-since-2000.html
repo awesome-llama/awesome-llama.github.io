@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Uses for "Days Since 2000"</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+</head>
+
+<body>
+<div class="navbar">
+    <div>
+      <a href="/" class="navbtn"><div class="navbtnlink">Home</div></a>
+      <a href="/articles" class="navbtn"><div class="navbtnlink">Articles</div></a>
+      <a href="/projects" class="navbtn"><div class="navbtnlink">Projects</div></a>
+      <a href="/utils" class="navbtn"><div class="navbtnlink">Utilities</div></a>
+    </div>
+  </div>
+
+  <div class="content">
+    <h1>Uses for "Days Since 2000"</h1>
+    <hr>
+    <p>
+      Yes, this block is useful. This article exists to give some examples because it is commonly and incorrectly thought of as being "useless".
+    </p>
+    <pre class="blocks">
+      (days since 2000)
+    </pre>
+    <p>
+      It reports the number of days since the start of the year 2000 in UTC. The year itself that important, it's just an "epoch" we are measuring in relation to. It could be 1970 like the unix epoch or it could be any other date, though round numbers are easy to remember.
+    </p>
+    <p>The number reported by the block is actually quite precise, down to fractions of a second. You can convert it to seconds by multiplying by 86400 (the number of seconds in a day):
+    </p>
+    
+    <pre class="blocks">
+      set [seconds since 2000 v] to ((days since 2000) * (86400))
+    </pre>
+
+    <h3>As an alternative to the timer</h3>
+    
+    <pre class="blocks">
+      set [start time v] to (days since 2000) // reset timer
+
+      set [timer v] to (((days since 2000) - (start time)) * (86400)) // get elapsed time in seconds
+    </pre>
+
+    <p>
+      You can have multiple timers being reset whenever you want. Just create more variables (or even list items) storing the start times.
+    </p>
+
+
+    <h3>Sub-frame times</h3>
+
+    <p>The time reported by this block updates faster than Scratch's frame rate. This allows for more accurate times, essential for applications such as profiling performance.</p>
+    
+    <pre class="blocks">
+      set [start time v] to (days since 2000)
+      slow script::custom
+      set [elapsed time v] to (((days since 2000) - (start time)) * (86400))
+    </pre>
+    
+    <p>Another use is in preventing scripts from running too long. If you want to target a particular frame rate, slow scripts could be stopped if detected as being over a given time limit. I used this in my project <a href="https://scratch.mit.edu/projects/62182952">Procedural Sandbox</a> to ensure the user interface remains responsive even whilst rendering the scene.</p>
+
+    <pre class="blocks">
+      define example // run without screen refresh
+      repeat (10000)
+        if <(elapsed time) > [0.0333]> then // example time limit of 1/30 sec
+          stop [this script v]
+        end
+        ...
+      end
+    </pre>
+
+
+    <h3>Cloud sync</h3>
+
+    <p>This block reports roughly the same value across all devices in the world. This is useful for cloud variable applications. For example, old cloud data could be ignored if the time when sent was included with it.</p>
+
+
+    <h3>Simple date comparisons</h3>
+
+    <p>The time being a single value is very easy to compare. No need to separately handle hours/minutes/seconds or calendar days/months/years. This leads to a few use cases:</p>
+
+    <h4>Timed events</h4>
+
+    <p>An in-project event could occur or expire at a given time.</p>
+
+    <pre class="blocks">
+      set [is event active? v] to <<(days since 2000) > [9330.5]> and <(days since 2000) < [9331.5]>>
+    </pre>
+
+    <p>Of course there is the downside that you'll have to calculate the number to compare with.</p>
+
+    <h4>Simple save code tracking</h4>
+
+    <p>I personally include the time in my save code implementations as a backup or aid in tracking save versions (though should not replace an actual version numbering system).</p>
+    
+    <hr>
+
+    <h3>Bonus info</h3>
+
+    <p>According to my gathered project block statistics, I use the days since 2000 block two times more than the timer.</p>
+
+    <p>A few years ago I stated that the days since 2000 block is more accurate than the timer so recommended it based on that. My testing at the time showed the timer deviated at low framerates. Testing now however shows they are same. I don't know what happened, perhaps an update to Scratch or my computer/browser fixed it.</p>
+
+    <p><a href="https://en.scratch-wiki.info/wiki/Days_Since_2000">Scratch Wiki article</a></p>
+</div>
+
+<script src="/js/scratchblocks-v3.6.4-min.js"></script>
+<script>scratchblocks.renderMatching('pre.blocks',{style:'scratch3',languages:['en'],scale:0.82});</script>
+
+</body>
+</html>
