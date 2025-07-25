@@ -37,6 +37,7 @@
       set [seconds since 2000 v] to ((days since 2000) * (86400))
     </pre>
 
+    <br>
     <h3>As an alternative to the timer</h3>
     
     <pre class="blocks">
@@ -49,14 +50,14 @@
       You can have multiple timers being reset whenever you want. Just create more variables (or even list items) storing the start times.
     </p>
 
-
+    <br>
     <h3>Sub-frame times</h3>
 
-    <p>The time reported by this block updates faster than Scratch's frame rate. This allows for more accurate times, essential for applications such as profiling performance.</p>
+    <p>The time reported by this block updates more frequently than Scratch's frame rate. This allows for more accurate times, essential for applications such as profiling performance.</p>
     
     <pre class="blocks">
       set [start time v] to (days since 2000)
-      slow script::custom
+      ... // code you want to measure
       set [elapsed time v] to (((days since 2000) - (start time)) * (86400))
     </pre>
     
@@ -64,23 +65,19 @@
 
     <pre class="blocks">
       define example // run without screen refresh
+      set [start time v] to (days since 2000)
       repeat (10000)
-        if <(elapsed time) > [0.0333]> then // example time limit of 1/30 sec
+        if <(((days since 2000) - (start time)) * (86400)) > [0.0333]> then // example time limit of 1/30 sec
           stop [this script v]
         end
         ...
       end
     </pre>
 
+    <br>
+    <h3>Simple date/time comparisons</h3>
 
-    <h3>Cloud sync</h3>
-
-    <p>This block reports roughly the same value across all devices in the world. This is useful for cloud variable applications. For example, old cloud data could be ignored if the time when sent was included with it.</p>
-
-
-    <h3>Simple date comparisons</h3>
-
-    <p>The time being a single value is very easy to compare. No need to separately handle hours/minutes/seconds or calendar days/months/years. This leads to a few use cases:</p>
+    <p>The time being a single value is very easy to compare. No need to separately handle hours/minutes/seconds or calendar days/months/years. The time reported is roughly the same across all devices and does not consider the time zone. This leads to a few use cases:</p>
 
     <h4>Timed events</h4>
 
@@ -92,11 +89,31 @@
 
     <p>Of course there is the downside that you'll have to calculate the number to compare with.</p>
 
-    <h4>Simple save code tracking</h4>
+    <h4>Cloud sync</h3>
+
+    <p>A dynamic game world such as one with a 20-minute day/night cycle can be implemented without any need for sending this between players (all players can calculate the events happening from their own time).</p>
+
+    <pre class="blocks">
+      set [time of day v] to ((((days since 2000) * (1440)) / (20)) mod (1)) // counts from 0.0 to 1.0 every 20 mins
+    </pre>
+
+    <p>The time can be included in data packets sent through cloud variables. Old data for example could be ignored.</p>
+
+
+    <h4>Save code tracking</h4>
+
+    <p>If the time is stored in the save code, the elapsed time can be found when loaded later. Consider an idle game where you earn currency over a long time. The next time the save is loaded, the amount of currency earned over that time can be calculated. Time-based rewards such as "daily rewards" could also be implemented.</p>
 
     <p>I personally include the time in my save code implementations as a backup or aid in tracking save versions (though should not replace an actual version numbering system).</p>
     
+
+    <h4>Time zone finding</h4>
+    <p>The "current date/time" block accounts for the time zone. It is possible to calculate the user's time zone from this and days since 2000. <a href="https://scratch.mit.edu/projects/629761294/">Example</a></p>
+
+    <br>
     <hr>
+
+
 
     <h3>Bonus info</h3>
 
