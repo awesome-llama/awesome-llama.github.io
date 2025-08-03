@@ -22,32 +22,133 @@
     <h1>Avoid Clones</h1>
     <hr>
     <p>
-      Clones may look useful at first glance but they really aren't. You are shooting yourself in the foot if you use them in the most common ways because their limitations are very easily encountered.
+      Sprites can be <a href="https://en.scratch-wiki.info/wiki/Cloning">cloned</a>. These clones behave similarly to the sprite they were cloned from, leading to common uses where many of the same sprite are needed. The idea is great however have limitations that are very easily encountered.
     </p><p>
-      The main problem with clones is control. You can create them and delete them. You can also give them unique values using variables/lists set to "for this sprite only". However, very common questions asked are how to have the clones do more... How can they interact with each other? How do you keep track of which one is which? How do you prevent exponential growth of clones due to them all sharing the same scripts?
+      The main problem with clones is control. You can create them and delete them. You can also give them unique values using variables/lists set to "for this sprite only". This leads to clones often being used to store data. For example, you have a number of <a href="https://en.wikipedia.org/wiki/Non-player_character#Video_games">NPCs</a> as clones, each storing their name, position, and health. But how do you make the clones do more? How do you prevent them from running all the scripts? How can they interact with each other? How do you keep track of which one is which?
     </p><p>
-      If the solution requires storing data in variables and lists, suddenly you don't need clones. You can do everything in the original sprite <i>and more</i> and avoid using clones completely. It does require learning how to to enumerate over a list using a loop and a variable counter (to access each list item) but clones also require learning. I argue that clones are a harder subject to learn given that their behaviour is unclear and debugging is awkward:</p> 
-      <ul>
-        <li>Clicking a script will not run it in the clone, only the original sprite.</li>
-        <li>Reporters and variable monitors only display what is in the original sprite.</li>
-        <li>Debugging often requires the insertion of blocks into existing scripts to make a visual or audible change.</li>
-        <li>The clones do not save with the project and are deleted when the green flag is pressed. Compare this to a list where this doesn't happen and you can save the state by exporting/importing it to a separate text file. Lists can also be manually edited.</li>
-        <li>Clones have a shared limit of 300. The list item limit is 200000 and you can have as many lists as you'd like. List items can be as long as you want.</li>
-        <li>Running scripts in clones often involves loops perpetually running within the clone and broadcasts. Neither provide clear control over script run order. Broadcasts are one of the few practical ways to communicate with clones but can only run once per frame.</li>
-      </ul>
-        
-    </p><p>
-      The following are justifications for using clones, if these do not apply, use lists and stamps for 99% of other cases:
+      These questions do have solutions but if the solutions require storing data in <a href="https://en.scratch-wiki.info/wiki/Variable#Global_Variables">global</a> variables and lists, suddenly you don't need clones. You can do everything in the original sprite <i>and more</i>, and avoid using clones entirely. It does require learning how to to enumerate over a list but clones also require learning. I argue that clones are a harder subject to learn given that their behaviour is unclear and debugging is awkward:
     </p>
-    
-      <ul>
-      <li>You want to display many sprite costumes simultaneously with the same quality as the original sprite, in vanilla Scratch. In this case, you may want a pool of clones that are dependent on shared variables/lists rather than storing anything of importance in the clones. Also note that TurboWarp has a high quality pen option so stamps look just as good.</li>
-      <li>You want to display something that doesn't affect a slow-to-draw pen layer, such as some buttons on top of an emulator project.</li>
-      <li>You want to play sounds with full control over the volume and effects of each, and when to start or stop them. This is significantly harder to do without clones so I see this as the most justified reason for using them.</li>
-      <li>You want to run ask blocks with a way to close them individually with code (rather than require the user to interact with it to close it).</li>
+    <ul>
+      <li>Clicking a script will not run it in the clone, only the original sprite.</li>
+      <li>Reporters and variable monitors only display what is in the original sprite.</li>
+      <li>Debugging often requires the insertion of blocks into existing scripts to make a visual or audible change.</li>
+      <li>The clones do not save with the project and are deleted when the green flag is pressed. Compare this to a list where this doesn't happen and you can save the state by exporting/importing it to a separate text file. Lists can also be manually edited.</li>
+      <li>Clones have a shared limit of 300. The list item limit is 200000 and you can have as many lists as you'd like.</li>
+      <li>Running scripts in clones often involves loops perpetually running within the clone and broadcasts. Neither provide obvious control over script run order. Broadcasts are one of the few practical ways to communicate with clones but can only run once per frame.</li>
     </ul>
     
+    <p>
+      But, clones aren't useless. There are actually some things difficult to achieve without them. Here are some justifications for using clones:
+    </p>
+    <ul>
+      <li>You want to display many sprite costumes simultaneously <i>with the same quality as the original sprite in vanilla Scratch</i> (stamps can't do this). In this case, you may want a pool of clones that are dependent on shared variables/lists rather than storing anything of importance in the clones.</li>
+      <li>You want to play sounds with full control over the volume and effects of each, and when to start or stop them. Volume and effects are unique to each clone. Clones can be deleted to stop the sounds playing from them.</li>
+      <li>You want to display something that doesn't affect a slow-to-draw pen layer, such as some interactive buttons on top of an emulator project.</li>
+      <li>You want to run ask blocks with a way to close them individually with code (rather than require the user to interact with it to close it). Delete the clone the ask block was running from.</li>
+    </ul>
+    
+    <br>
+    <hr>
+    <h2>Storing many objects</h2>
+    <p>I mentioned above about enumerating over a list being easier to learn. Again using the NPC example, there are two common ways to store the data. One would be to have many lists in the form of a "spreadsheet", with each record being an NPC:</p>
+    
+    <table>
+      <tr><th>name</th><th>x</th><th>y</th><th>health</th></tr>
+      <tr><td>Alfa</td><td>155</td><td>12</td><td>80.5</td></tr>
+      <tr><td>Bravo</td><td>-120</td><td>-142</td><td>100</td></tr>
+      <tr><td>Charlie</td><td>228</td><td>91</td><td>9.25</td></tr>
+      <tr><td>Delta</td><td>-176</td><td>-167</td><td>50</td></tr>
+    </table>
+
+    <p>Creating a new NPC could look like this:</p>
+    <pre class="blocks">
+      add [Echo] to [name v]
+      add [0] to [x v]
+      add [0] to [y v]
+      add [100] to [health v]
+    </pre>
+
+    <p>Lists are indexed with numbers counting from 1. So if you wanted the health of NPC #3, you would use this:</p>
+    <pre class="blocks">
+      (item (3) of [health v] :: list) // outputs 9.25
+    </pre>
+
+    <p>If you wanted to move all NPCs to the right by 20 units, you could loop over every NPC:</p>
+    
+    <pre class="blocks">
+      define update NPCs // make this "run without screen refresh" to run instantly
+      set [i v] to [1] // variable used for counting, start at index 1
+      repeat (length of [x v] :: list) // loop over every item of the list
+      replace item (i) of [x v] with ((item (i) of [x v] :: list) + (20)) // move 20 units to the right
+      change [i v] by (1) // increase counter to go to the next item
+      end
+    </pre>
+
+    <p>The above could be expanded to perform many actions such as changing the x and y values to move towards the player, or changing the health as the NPC takes damage or heals over time.</p>
+
+    <p>Here is how you could display them with stamps:</p>
+    <pre class="blocks">
+      define render NPCs
+      set [i v] to [1]
+      repeat (length of [costume v] :: list)
+      go to x: (item (i) of [x v] :: list) y: (item (i) of [y v] :: list)
+      stamp
+      change [i v] by (1)
+      end
+    </pre>
+
+    <br>
+    <p>The alternative to a spreadsheet using many lists is to combine them all into one list, with groups of items associated with each NPC:</p>
+    <table>
+      <tr><th>NPC</th></tr>
+      <tr><td>Alfa</td></tr>
+      <tr><td>155</td></tr>
+      <tr><td>12</td></tr>
+      <tr><td>80.5</td></tr>
+      <tr><td>Bravo</td></tr>
+      <tr><td>-120</td></tr>
+      <tr><td>-142</td></tr>
+      <tr><td>100</td></tr>
+      <tr><td>Charlie</td></tr>
+      <tr><td>...</td></tr>
+    </table>
+
+    <p>Since there are 4 items per NPC, a few changes are needed:</p>
+    <pre class="blocks">
+      define render NPCs
+      set [i v] to [1]
+      repeat ((length of [NPC v] :: list) / (4)) // 4 items per NPC
+      go to x: (item ((i) + (1)) of [NPC v] :: list) y: (item ((i) + (2)) of [NPC v] :: list) // add 1 and 2 to get the correct item
+      stamp
+      change [i v] by (4) // 4 items per NPC
+      end
+    </pre>
+
+    <br>
+
+    <h2>Start and stop specific sounds</h2>
+    <p>This is annoying to achieve without clones as the alternative would be separate sprites for each sound.</p>
+
+    <pre class="blocks">
+      set [sound name v] to [ambient_factory_04] // local variable for the clone to inherit
+      create clone of [myself v]
+      set [sound name v] to []
+
+      when I start as a clone
+      play sound (sound name) until done
+      delete this clone // make sure to delete the clone after it is no longer needed
+
+
+      when I receive [stop sound ambient_factory_04 v]
+      if <(sound name) = [ambient_factory_04]> then
+      delete this clone // delete the clone so it can't continue to play the sound
+      end
+    </pre>
+
 </div>
+
+<script src="/js/scratchblocks-v3.6.4-min.js"></script>
+<script>scratchblocks.renderMatching('pre.blocks',{style:'scratch3',languages:['en'],scale:0.82});</script>
 
 </body>
 </html>
