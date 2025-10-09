@@ -144,7 +144,7 @@
       <li>There is no way to erase a stroke or only part of the pen layer. There is only an "erase all" block.</li>
       <li>Pen "size" is its diameter in pixels and is limited to between 1 and 1200. <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/extensions/scratch3_pen/index.js#L101"><span class="tagSourceCode">Source code</span></a></li>
       <li>A pen size of exactly 1 or 3 offset the pen position to the top-right by 0.5 steps to be "pixel-aligned". <a href="https://github.com/scratchfoundation/scratch-render/blob/65440d48e2e18cbb878f6d8b892dd82336375944/src/PenSkin.js#L170"><span class="tagSourceCode">Source code</span></a></li>
-      <li>An ARGB color value with full transparency is not possible as the way the value is handled always ignores alpha. If converted to a number (e.g. from hexadecimal), <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/util/cast.js#L100">the leading zeroes for alpha will be lost</a>. If converted from a hex color code such as <span class="code">#FF3000</span>, <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/util/color.js#L60-L69">alpha handling isn't implemented</a>. If setting pen color, it is suggested to either use the set pen transparency effect after setting the RGB color or ensure the ARGB value never uses an alpha of 0 (possibly clamp to 1). Otherwise, conditionally draw pen strokes.</li>
+      <li>An ARGB color value with full transparency is not possible using a hex color code such as <span class="code">#AA300044</span> because <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/util/color.js#L60-L69">alpha handling isn't implemented</a>, but if you set the color to a number (e.g. from hexadecimal: 0xAA300044), <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/util/color.js#L46">the first two hexedecimal digits are used for alpha, unless they're set to "00" (perfectly transparent), in which Scratch renders the color 100% opaque (no transparency).</a></li>
       <li>Every pen stroke is drawn independently of others; semi-transparent pixels from anti-aliasing or a semi-transparent pen color will be drawn visibly overlapping.</li>
     </ul>
 
@@ -161,7 +161,7 @@
     </ul>
 
     <hr>
-    <p>Thanks to <a href="https://scratch.mit.edu/users/Vadik1/">Vadik1</a> and <a href="https://scratch.mit.edu/users/BamBozzle/">Bambozzle</a> for contributing some of the above items.</p>
+    <p>Thanks to <a href="https://scratch.mit.edu/users/Vadik1/">Vadik1</a>, <a href="https://scratch.mit.edu/users/BamBozzle/">Bambozzle</a>, and <a href="https://scratch.mit.edu/users/ThinkingPlanely/">ThinkingPlanely</a> for contributing some of the above items.</p>
 </div>
 
 </body>
