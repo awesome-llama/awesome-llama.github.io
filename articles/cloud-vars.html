@@ -22,29 +22,30 @@
     <h1>My opinion on cloud variables</h1>
     <hr>
     <p>
-      <a href="https://en.scratch-wiki.info/wiki/Cloud_Data">Cloud variables</a> are a cool idea but their implementation and functionality leave a lot to be desired. I do not like using them and have tried to limit their usage in my projects, going as far as removing them from many older projects.
+      <a href="https://en.scratch-wiki.info/wiki/Cloud_Data">Cloud variables</a> leave a lot to be desired in terms of implementation and functionality. I do not like using them and use the sparingly. I have removed them from many older projects.
     </p>
     <br>
-    <h3>Reliability</h3>
+    <h3 id="reliability">Reliability</h3>
     <p>
-      Cloud variables have a tendency of breaking or not working. User-caused breakages include backpacking scripts, remixing, and downloading/uploading the project. I develop most projects offline which necessitates uploading the updated project to Scratch. Breakages outside the user's control also occur (think server issues) - one day they may stop storing data (but may still log their updates or remain synchronised for connected users). This has a simple fix which is to rename them but the breakages happen too often and the repair work multiplies across the number of projects and up to 10 cloud variables each. There is also no clear indication of whether they are broken or not and it may be days, weeks, or months until someone realises and then comments about it. This is especially bad for long-standing high scores as the discovery only happens when someone finally breaks the record. 
+      Cloud variables have a tendency of breaking or not working. User-caused breakages include backpacking scripts, remixing, and downloading/uploading the project. I develop most projects offline which necessitates uploading the updated project to Scratch. Breakages outside the user's control also occur (think server issues) - one day they may stop storing data (but may still log their updates or remain synchronised for connected users). This has a simple fix which is to rename them but the breakages happen too often and the repair work multiplies across the number of projects and up to 10 variables each. There is also no clear indication of whether they are broken or not and it may be days, weeks, or months until someone realises and then comments about it. This is especially bad for long-standing high scores as the discovery only happens when someone finally breaks the record. 
       <br>
-      <span style="font-size: 0.7em;">It's so bad that some believe that being able to store values long-term isn't actually a feature.</span>
+      <span style="font-size: 0.7em;">At times it's so bad that some believe that being able to store values long-term isn't actually a feature.</span>
     </p>
     <br>
-    <h3>Abuse</h3>
+    <h3 id="abuse">Abuse</h3>
     <p>
-      They are easy to abuse. The cloud data API is exposed. You do not need to "see inside" a project to edit them as with the slightest bit of programming knowledge (e.g. JavaScript, Python) or access to software such as Postman, the API can be used to set the variables to anything. With so much control, opportunities arise for inserting inappropriate content, disrupting multiplayer games, cheating high scores, resetting saves, and more. A few of these have happened on my projects.
-      <br>
+      They are easy to abuse. The cloud data API is exposed. You do not need to "see inside" a project to edit them as with the slightest bit of programming knowledge (e.g. JavaScript, Python) or access to software such as Postman, the API can be used to set the variables to anything. This enables writing inappropriate content, disrupting multiplayer games, cheating high scores, resetting saves, and more. A few of these have happened on my projects.
+    </p>
+    <p>
       There have been many requests made to the Scratch Team to secure it but there's no simple solution and they don't indicate this to be a high priority issue.
     </p>
     <br>
-    <h3>Usage balance</h3>
+    <h3 id="usage-balance">Usage balance</h3>
     <p>
       Most projects have their highest view gain when first shared. For a lot of projects, especially multiplayer ones, this is the only time they have enough views to be properly utilised. The rest of the project's lifetime will have too few users. In cases of reaching the trending page, the peak in popularity may be overwhelming, further limiting the duration with the optimal amount of concurrent users.
     </p>
     <br>
-    <h3>Ephemerality</h3>
+    <h3 id="ephemerality">Ephemerality</h3>
     <p>
       I have a desire to make projects that remain playable for as long as possible. I see cloud variables as conflicting with that. They are at the mercy of the Scratch Team's decisions who may decide to shut down the servers or impose more restrictions. In the past, cloud variables used to be able to store hexadecimal numbers and a lot more than 256 digits, but the change in limitations has broken a lot of older cloud projects. 
     </p>
