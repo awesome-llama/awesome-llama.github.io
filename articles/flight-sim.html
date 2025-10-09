@@ -23,24 +23,21 @@
     <hr>
     <h3>Introduction</h3>
     <p>
-      So you want to make a flight simulator? This article introduces a <i>commonly-used flight model</i> and the physics behind it. I wish I knew this back when I made my previous 2D flight simulator projects. Please note that this article assumes you already have a high-school level knowledge of maths and/or physics (vectors especially are important) and little bit of knowledge in aircraft already.
+      This article is written in response to the many questions I see about making flight simulator projects on Scratch. This article introduces a <i>commonly-used flight model</i> and the physics behind it. I wish I knew this when I made my 2D flight simulator projects.
     </p>
 
     <h3>Units</h3>
-    <p>Aviation is a mess of different units. Just to name a few... Altitude is in feet, distance is in nautical miles, or feet, or kilometres, depending on where it is used. Speed is in knots, air pressure can be either inches of mercury or hectopascals. Just stick to metric/SI units for the physics. The maths is way simpler if you don't have to constantly convert units. Feel free to display the values to the user in whatever units you want though.
-    <br><br>
-    I need to specify something however. While my earlier flight simulators were metric, they had annoying conversions too because of the units I chose such as km/h for speed whilst distance and altitude was in metres. Instead, make sure everything uses the base units by themselves, e.g. second, metre, kilogram. Speed should be metres/second. Acceleration should be metres/second/second. Force should be in Newtons (which is kg*m/s/s).
-    <br><br>
-    Since realising all this, my scratch projects have solely used SI units internally. 
+    <p>
+      Aviation is a mess of different units. Just to name a few... Altitude is in feet, distance is in nautical miles, or feet, or kilometres, depending on where it is used. Speed is in knots, air pressure can be either inches of mercury or hectopascals. Stick to SI units for the physics calculations. Use base units like seconds, metres, and kilograms. Speed should be metres/second. Acceleration should be metres/second/second. Force should be Newtons (which is kg*m/s/s). The maths is simpler this way. Feel free to display values to the user in any units you want.
     </p>
 
     <h3>Forces</h3>
     <p>
-      There are 4 important forces acting on an aircraft: thrust, weight, drag, and lift. 
+      The forces acting on an aircraft are often abstracted as thrust, weight, drag, and lift. 
       <br><br>
-      Thrust is the force produced by the engines or whatever is propelling the aircraft. 
-      Weight is simply the force due to gravity and always pulls towards the earth. It is proportional to the aircraft's mass.
-      Both drag and lift are related to each other. Drag is parallel to the airflow. Lift is perpendicular to the airflow. 
+      Thrust is the force that pushes the aircraft forward, produced by the engines.
+      Weight is the force due to gravity and always pulls towards the earth. It is proportional to the aircraft's mass.
+      Both drag and lift are related to each other. Drag is force parallel to the airflow. Lift is force perpendicular to the airflow. 
       <br><br>
       It's up to you to decide how simple or complex you want your flight model as you could have just 4 vectors representing everything or you could split them up to model every single surface of the aircraft, although at that stage you might no longer be able to refer to drag and lift as abstract separate things as both are related to air pressure.
       <br><br>
@@ -48,11 +45,12 @@
     </p>
     <img src="https://docs.flightsimulator.com/html/assets/images/Additional_Information/flight_model/flight_model_10.png">
     <p>
-      The model I use in Flight Simulator 737 is actually pretty similar to this too, although squished into 2 dimensions.
+      The model I use in Flight Simulator 737 is actually pretty similar to this, although squished into 2 dimensions.
     </p>
     
     <h3>Main loop</h3>
-    <p>Ideally you would be using a <a href="https://en.wikipedia.org/wiki/Video_game_programming#Game_structure">main loop</a> to constantly run the physics along with the rest of the simulator. It needs time-keeping of some kind to ensure the physics runs at the correct speed (remember that the physics is measuring time in the base unit of seconds, not cycles of a loop). You could use <a href="https://en.wikipedia.org/wiki/Delta_timing">delta-timing</a>.</p>
+    <p>
+      Ideally you would be using a <a href="https://en.wikipedia.org/wiki/Video_game_programming#Game_structure">main loop</a> to constantly run the physics along with the rest of the simulator. It needs time-keeping of some kind to ensure the physics runs at the correct speed (remember that the physics is measuring time in the base unit of seconds, not cycles of a loop). You could use <a href="https://en.wikipedia.org/wiki/Delta_timing">delta-timing</a>.</p>
 
     <h3>Physics tick</h3>
     <p>Every tick the following needs to happen...</p>
