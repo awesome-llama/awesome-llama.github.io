@@ -30,132 +30,134 @@
   <div class="content">
     <h1>Limitations of Scratch</h1>
     <hr>
+    <!--A list of limitations, useful for explaining why projects are the way they are and for informing the creation of new projects.-->
 
-    <h3>Project (general)</h3>
+    <h3 id="project">Project (general)</h3>
     <ul>
       <li>Title maximum length: 100 characters.</li>
-      <li>project.json uncompressed file size limit: 5MB</li>
-      <li>Individual asset (costume or sound) file size limit: 10MB</li>
+      <li><span class="code">project.json</span> uncompressed file size limit: 5 MB</li>
+      <li>Individual asset (costume or sound) file size limit: 10 MB</li>
       <li>There is no limit on sb3 file size.</li>
-      <li>There is no limit on block count but due to the project.json size limit, expect that only 20000-30000 blocks can fit within it.</li>
-      <li>Project framerate: 30FPS</li>
-      <li>Threads have a time limit of 500ms. (encountered most often with custom blocks set to "run without screen refresh") <a href="https://github.com/scratchfoundation/scratch-vm/blob/6aca685b6da6b1fa71e01da77238a2fdf9e7f787/src/engine/sequencer.js#L62-L64"><span class="tagSourceCode">Source code</span></a></li>
+      <li>There is no limit on block count but due to the project.json size limit, expect that 20000-30000 blocks can fit within it.</li>
+      <li>Project framerate: 30 FPS</li>
+      <li>Threads have a time limit of 500 ms. (encountered most often with custom blocks set to "run without screen refresh") <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/engine/sequencer.js#L62-L64"><span class="tagSourceCode">Source code</span></a></li>
       <li>The numbers (not strings) <span class="code">Infinity</span>, <span class="code">-Infinity</span>, <span class="code">NaN</span>, and <span class="code">-0</span> can not be saved in JSON.</li>
-      <li>Scratch is mostly not case-sensitive. Notably sprite and costume names are case-sensitive.</li>
+      <li>Scratch is mostly case-insensitive. Notably sprite and costume names are case-sensitive.</li>
+      <li>The project displays layers in the order: backdrop, video, pen, sprite. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/engine/stage-layering.js#L19-L27"><span class="tagSourceCode">Source code</span></a></li>
     </ul>
 
-    <h3>Sprites</h3>
+    <h3 id="sprites">Sprites</h3>
     <ul>
       <li>Sprites are visually snapped to a grid sized with 480x360 steps on the screen.</li>
-      <li>Size is limited by the current costume, when scaled it must not be visually larger than 150% the size of the stage (720x540) on any axis or smaller than 5 pixels on any axis. <a href="https://github.com/scratchfoundation/scratch-vm/blob/e5950c3/src/sprites/rendered-target.js#L376-L381"><span class="tagSourceCode">Source code</span></a></li>
-      <li>Maximum number of clones at one time: 300 (limit shared by all sprites) <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/engine/runtime.js#L733"><span class="tagSourceCode">Source code</span></a></li>
-      <li>Sprites can not be positioned off-screen with a margin less than 15px still showing. <a href="https://github.com/scratchfoundation/scratch-render/blob/develop/src/RenderWebGL.js#L83-L88"><span class="tagSourceCode">Source code</span></a></li>
+      <li>Size is limited by the current costume, when scaled it must not be visually larger than 150% the size of the stage (720x540) on any axis or smaller than 5 pixels on any axis. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/sprites/rendered-target.js#L373-L380"><span class="tagSourceCode">Source code</span></a></li>
+      <li>Maximum number of clones at one time: 300 (limit shared by all sprites) <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/engine/runtime.js#L734-L736"><span class="tagSourceCode">Source code</span></a></li>
+      <li>Sprites can not be positioned off-screen with a margin less than 15px still showing. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-render/src/RenderWebGL.js#L88"><span class="tagSourceCode">Source code</span></a></li>
       <li>Clones do not have an accessible unique ID and there is no native way to identify or share data between them. You need to implement this yourself with variables and lists. Note that those set to "for this sprite only" will store values unique to every clone/sprite, useful for an ID.</li>
     </ul>
 
-    <h3>Costumes/backdrops</h3>
+    <h3 id="costumes-backdrops">Costumes/backdrops</h3>
     <ul>
       <li>Accepted image file formats: PNG and JPG. Note that if an edit is made to a costume, that costume will be saved as a lossless PNG. GIFs may also be imported, each frame will be added as a costume.</li>
       <li>Bitmap maximum dimensions: 960x720 (using "half pixels").</li>
-      <li>Vector costumes get rasterized to dimensions no more than 2048x2048. This results in very large vector costumes appearing blurry. <a href="https://github.com/scratchfoundation/scratch-render/blob/65440d48e2e18cbb878f6d8b892dd82336375944/src/SVGSkin.js#L7"><span class="tagSourceCode">Source code</span></a></li>
+      <li>Vector costumes get rasterized to dimensions no more than 2048x2048. This results in very large vector costumes appearing blurry. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-render/src/SVGSkin.js#L7"><span class="tagSourceCode">Source code</span></a></li>
     </ul>
 
-    <h3>Looks</h3>
+    <h3 id="looks">Looks</h3>
     <ul>
-      <li>The color effect gives the sprite a minimum lightness and saturation. <a href="https://github.com/scratchfoundation/scratch-render/blob/develop/src/shaders/sprite.frag#L173-L178"><span class="tagSourceCode">Source code</span></a></li>
+      <li>The color effect gives the sprite a minimum lightness and saturation. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-render/src/shaders/sprite.frag#L173-L178"><span class="tagSourceCode">Source code</span></a></li>
       <li>The "fisheye", "whirl", and "pixelate" effects are always relative to the center of the costume.</li>
       <li>There is no "saturation" effect. Workarounds may involve multiple costumes or layering stamps or clones.</li>
     </ul>
 
-    <h3>Control</h3>
+    <h3 id="control">Control</h3>
     <ul>
-      <li>The "for each" loop compares the value in the repeat input every iteration. It is not stored. This is unlike the "repeat" loop which will repeat the number of times given initially. <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/blocks/scratch3_control.js#L94"><span class="tagSourceCode">Source code</span></a></li>
+      <li>The "for each" loop compares the value in the repeat input every iteration. It is not stored. This is unintuitively unlike the "repeat" loop which will repeat the number of times given initially. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/blocks/scratch3_control.js#L94"><span class="tagSourceCode">Source code</span></a></li>
       <li>"Stop all" will not immediately stop broadcasts that were just scheduled to run, they will run for 1 frame and may trigger other scripts that can run longer than that.</li>
       <li>"Stop other scripts in sprite" marks scheduled scripts to not run but will keep their order in the queue. They can still be reactivated within the same frame and will keep their order instead of being added to the end (and run last).</li>
     </ul>
 
-    <h3>Sensing</h3>
+    <h3 id="sensing">Sensing</h3>
     <ul>
-      <li>Touching color precision is limited to 5 bits red, 5 bits green, 4 bits blue. (this is only 14-bit color, much less than 24-bit RGB that is displayed by Scratch). <a href="https://github.com/scratchfoundation/scratch-render/blob/develop/src/RenderWebGL.js#L67-L81"><span class="tagSourceCode">Source code</span></a></li>
-      <li>The keys that can be detected are <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/io/keyboard.js">here</a>. Special keys such as shift, control, and backspace can not be detected.</li>
+      <li>Touching color precision is limited to 5 bits red, 5 bits green, 4 bits blue. (this is only 14-bit color, much less than 24-bit RGB that is displayed by Scratch). <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-render/src/RenderWebGL.js#L67-L81"><span class="tagSourceCode">Source code</span></a></li>
+      <li>The keys that can be detected are <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/io/keyboard.js">here</a>. Special keys such as shift, control, and backspace can not be detected.</li>
       <li>Left-click is the only mouse button that can be detected.</li>
-      <li>The mouse position is clamped to the edge of the screen and rounded. <a href="https://github.com/scratchfoundation/scratch-vm/blob/88e7f4f7173c99b08382778a56b2252c1141e799/src/io/mouse.js#L60-L75"><span class="tagSourceCode">Source code</span></a></li>
+      <li>The mouse position is clamped to the edge of the screen and rounded. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/io/mouse.js#L60-L75"><span class="tagSourceCode">Source code</span></a></li>
       <li>Multi-touch (for touch-screens) is not supported. There is only 1 mouse pointer.</li>
       <li>The timer only updates once per frame. For sub-frame timing, use the "days since 2000" block.</li>
-      <li>For the touching color blocks, if there are more than 4000 pixels of the overlap in the touching area, the GPU will be used, which may affect performance and change its behavior. <a href="https://github.com/scratchfoundation/scratch-render/blob/65440d48e2e18cbb878f6d8b892dd82336375944/src/RenderWebGL.js#L25"><span class="tagSourceCode">Source code</span></a></li>
+      <li>For the touching color blocks, the GPU will be used if there are more than 4000 pixels of the overlap in the touching area which may affect performance and change its behavior. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-render/src/RenderWebGL.js#L25"><span class="tagSourceCode">Source code</span></a></li>
     </ul>
 
-    <h3>Operators</h3>
+    <h3 id="operators">Operators</h3>
     <ul>
-      <li>The "less-than", "greater-than", and "equals" blocks first try to compare the inputs as floating point numbers. Long strings consisting entirely of numeric characters may be incorrectly compared. <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/util/cast.js#L122-L123"><span class="tagSourceCode">Source code</span></a></li>
+      <li>The "less-than", "greater-than", and "equals" blocks first try to compare the inputs as floating point numbers. Long strings consisting entirely of numeric characters may be incorrectly compared. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/util/cast.js#L122-L123"><span class="tagSourceCode">Source code</span></a></li>
     </ul>
     
-    <h3>Events</h3>
+    <h3 id="events">Events</h3>
     <ul>
       <li>Broadcasts can only run once per frame.</li>
       <li>Broadcast receiver hats do not accept reporter blocks, the message selection is a field and you can only choose from the created messages.</li>
       <!--TODO: include broadcast delay - channels/1129589843698126878/1129589844637667431/1368044845352091779 -->
     </ul>
     
-    <h3>Variables and lists</h3>
+    <h3 id="variables-lists">Variables and lists</h3>
     <ul>
       <li>Supported data types: booleans, double floats, strings. <a href="https://scratch.mit.edu/projects/1048874723/">Through hacks it's possible to utilize a few other types such as arrays.</a></li>
-      <li>List item limit: 200000 <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/blocks/scratch3_data.js#L253"><span class="tagSourceCode">Source code</span></a></li>
+      <li>List item limit: 200000 <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/blocks/scratch3_data.js#L252-L254"><span class="tagSourceCode">Source code</span></a></li>
       <li>There is no Scratch-imposed limit on string character count in variables and list items.</li>
       <li>Lists are 1-indexed. Item numbers count from 1.</li>
       <li>Neither variables or lists can be created at runtime, they must be created manually by the user. There is no way to place a reporter block in the variable or list name. Scratch also does not have dictionaries (or other similar collections).</li>
       <li>Variable and list monitors are always displayed in front of everything on the screen. They are also not visible in saved thumbnails.</li>
     </ul>
 
-    <h3>Custom blocks</h3>
+    <h3 id="custom-blocks">Custom blocks</h3>
     <ul>
       <li>Custom blocks are not shared across all sprites. There must be a definition in every sprite that needs it.</li>
-      <li>Argument reporters are only usable within their own definition script and <a href="https://github.com/scratchfoundation/scratch-vm/blob/6aca685b6da6b1fa71e01da77238a2fdf9e7f787/src/blocks/scratch3_procedures.js#L63">always return 0 when run outside it</a>. This includes clicking to run.</li>
+      <li>Argument reporters are only usable within their own definition script and <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/blocks/scratch3_procedures.js#L63">always return 0 when run outside it</a>. This includes clicking to run.</li>
       <li>There is no return statement or reporter-shaped custom blocks. The typical workaround for returning a value is to set a variable in the custom block script. The "stop this script" block can be used to return early.</li>
     </ul>
 
-    <h3>Cloud variables</h3>
+    <h3 id="cloud-variables">Cloud variables</h3>
     <ul>
-      <li>10 cloud variables per project. <a href="https://github.com/scratchfoundation/scratch-vm/blob/bb48b9f4502f2aa1c8fe583b97375919895ca5e4/src/engine/runtime.js#L134"><span class="tagSourceCode">Source code</span></a></li>
-      <li>Setting the value of any cloud variable has a shared average rate limit of 10 times per second. <a href="https://github.com/scratchfoundation/scratch-gui/blob/70198c48cd616146daf2ba501fbf57ba4df60541/src/lib/cloud-provider.js#L30-L32"><span class="tagSourceCode">Source code</span></a></li>
+      <li>10 cloud variables per project. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/engine/runtime.js#L134"><span class="tagSourceCode">Source code</span></a></li>
+      <li>Setting the value of any cloud variable has a shared average rate limit of 10 times per second. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-gui/src/lib/cloud-provider.js#L30-L32"><span class="tagSourceCode">Source code</span></a></li>
       <li>Variables may either store a floating point number (NaN and infinity excluded) or a string containing numerical digits 0-9, up to a length of 256 characters.</li>
-      <li><a href="https://scratch.mit.edu/discuss/topic/618775/?page=1#post-6466756">Calculated from the above limits, the maximum data transfer rate is approximately 1063 bytes/sec.</a></li>
+      <li>Calculated from the above limits, the maximum data transfer rate is approximately 1000 bytes/sec.</li>
       <li>Users with "New Scratcher" status can not set cloud variables with values that other users can see.</li>
     </ul>
 
-    <h3>Sound</h3>
+    <h3 id="sound">Sound</h3>
     <ul>
-      <li>Accepted file formats: WAV and MP3. Stereo audio allowed. Note that if an edit is made to a sound, that sound will be saved as a mono WAV. <a href="https://github.com/scratchfoundation/scratch-gui/blob/develop/src/lib/audio/audio-util.js#L75-L90">It may be downsampled to 22.05kHz if over the 10MB file size limit</a>. I recommend making edits in software other than Scratch so the file is always transferred to Scratch as MP3 (where necessary).</li>
-      <li>Volume range: 0 to 100% <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/blocks/scratch3_sound.js#L325"><span class="tagSourceCode">Source code</span></a></li>
+      <li>Accepted file formats: WAV and MP3. Stereo audio allowed. Note that if an edit is made to a sound, that sound will be saved as a mono WAV. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-gui/src/lib/audio/audio-util.js#L69-L90">It may be downsampled to 22.05kHz if over the 10MB file size limit</a>. I recommend making edits in software other than Scratch so the file is always transferred to Scratch as MP3 (where necessary). Other file formats may be added by editing the project externally but their support depends on the browser.</li>
+      <li>Volume range: 0 to 100% <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/blocks/scratch3_sound.js#L327"><span class="tagSourceCode">Source code</span></a></li>
       <li>Pitch effect range: -360 to 360 <a href="https://en.scratch-wiki.info/wiki/Sound_Effect#Pitch"><span class="tagSourceCode">Scratch Wiki</span></a></li>
       <li>Pan effect range: -100 to 100 <a href="https://en.scratch-wiki.info/wiki/Sound_Effect#Pan_Left/Right"><span class="tagSourceCode">Scratch Wiki</span></a></li>
       <li>Volume and effects are controlled per sprite/clone.</li>
       <li>Sounds played with the "play sound" block can only be stopped with the "stop all" and "stop all sounds" blocks, there is no way to stop an individual sound here. Sounds played with the "play sound until done" block can be stopped with "stop other scripts in sprite" or by deleting the clone if it was running in a clone.</li>
       <li>A sound can not be played multiple times simultaneously. All clones will be limited by this too. The sound may be duplicated in the sounds editor (or added to a different sprite) if playing it simultaneously is desired.</li>
-      <li>The set/change volume and set/change effect blocks will cause a yield. <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/blocks/scratch3_sound.js#L329-L330"><span class="tagSourceCode">Source code (volume)</span></a> <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/blocks/scratch3_sound.js#L282-L283"><span class="tagSourceCode">Source code (effect)</span></a></li>
+      <li>The set/change volume and set/change effect blocks will cause a yield. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/blocks/scratch3_sound.js#L331-L332"><span class="tagSourceCode">Source code (volume)</span></a> <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/blocks/scratch3_sound.js#L284-L285"><span class="tagSourceCode">Source code (effect)</span></a></li>
       <li>There may be a slight delay when the sound is first played as it gets loaded.</li>
       <li>Sounds played with "play sound until done" are not guaranteed to loop seamlessly if played again immediately in a loop.</li>
     </ul>
 
-    <h3>Pen extension</h3>
+    <h3 id="pen">Pen extension</h3>
     <ul>
-      <li>The pen layer (internally called "skin") is in front of the stage but behind all sprites. <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/engine/stage-layering.js#L23"><span class="tagSourceCode">Source code</span></a></li>
-      <li>Pen layer dimensions: 480x360</li>
+      <li>The pen layer (internally called "skin") is in front of the stage but behind all sprites. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/engine/stage-layering.js#L23"><span class="tagSourceCode">Source code</span></a></li>
+      <li>Dimensions: 480x360</li>
       <li>There is no way to erase a stroke or only part of the pen layer. There is only an "erase all" block.</li>
-      <li>Pen "size" is its diameter in pixels and is limited to between 1 and 1200. <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/extensions/scratch3_pen/index.js#L101"><span class="tagSourceCode">Source code</span></a></li>
-      <li>A pen size of exactly 1 or 3 offset the pen position to the top-right by 0.5 steps to be "pixel-aligned". <a href="https://github.com/scratchfoundation/scratch-render/blob/65440d48e2e18cbb878f6d8b892dd82336375944/src/PenSkin.js#L170"><span class="tagSourceCode">Source code</span></a></li>
-      <li>An ARGB color value with full transparency is not possible as the way the value is handled always ignores alpha. If converted to a number (e.g. from hexadecimal), <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/util/cast.js#L100">the leading zeroes for alpha will be lost</a>. If converted from a hex color code such as <span class="code">#FF3000</span>, <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/util/color.js#L60-L69">alpha handling isn't implemented</a>. If setting pen color, it is suggested to either use the set pen transparency effect after setting the RGB color or ensure the ARGB value never uses an alpha of 0 (possibly clamp to 1). Otherwise, conditionally draw pen strokes.</li>
+      <li>Pen "size" is its diameter in pixels and is limited to between 1 and 1200. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/extensions/scratch3_pen/index.js#L94-L102"><span class="tagSourceCode">Source code</span></a></li>
+      <li>A pen size of exactly 1 or 3 will offset the pen position to the top-right by 0.5 steps to be "pixel-aligned". <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-render/src/PenSkin.js#L170"><span class="tagSourceCode">Source code</span></a></li>
+      <li>An ARGB color value with full transparency is not possible as the way the value is handled always ignores alpha. If converted to a number (e.g. from hexadecimal), <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/util/cast.js#L100">the leading zeroes for alpha will be lost</a>. If converted from a hex color code such as <span class="code">#FF3000</span>, <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/util/color.js#L60-L69">alpha handling isn't implemented</a>. If setting pen color, it is suggested to either use the set pen transparency effect after setting the RGB color or ensure the ARGB value never uses an alpha of 0 (possibly clamp to 1). Otherwise, conditionally draw pen strokes.</li>
       <li>Every pen stroke is drawn independently of others; semi-transparent pixels from anti-aliasing or a semi-transparent pen color will be drawn visibly overlapping.</li>
     </ul>
 
-    <h3>Music extension</h3>
+    <h3 id="music">Music extension</h3>
     <ul>
-      <li>Duration in beats can only be between 0 and 100. <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/extensions/scratch3_music/index.js#L704"><span class="tagSourceCode">Source code</span></a></li>
-      <li>Tempo can only be between 20 and 500. <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/extensions/scratch3_music/index.js#L711"><span class="tagSourceCode">Source code</span></a></li>
-      <li>A maximum of 30 instrument sounds can be played simultaneously. <a href="https://github.com/scratchfoundation/scratch-vm/blob/develop/src/extensions/scratch3_music/index.js#L719"><span class="tagSourceCode">Source code</span></a></li>
+      <li>Duration in beats can only be between 0 and 100. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/extensions/scratch3_music/index.js#L703-L705"><span class="tagSourceCode">Source code</span></a></li>
+      <li>Tempo can only be between 20 and 500. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/extensions/scratch3_music/index.js#L711-L713"><span class="tagSourceCode">Source code</span></a></li>
+      <li>A maximum of 30 instrument sounds can be played simultaneously. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/extensions/scratch3_music/index.js#L719-L721"><span class="tagSourceCode">Source code</span></a></li>
     </ul>
 
-    <h3>Site</h3>
+    <h3 id="site">Site</h3>
     <ul>
       <li>Usernames can only be chosen with a length between 3 and 20 (inclusive). Characters are limited to the english alphabet (case insensitive), numbers 0-9, the underscore <span class="code">_</span> and dash <span class="code">-</span>. Note that there are some usernames that do not fit these requirements, they may have been set by the Scratch Team or created before some requirements were made. Most of the invalid ones are not in use, see for example <a href="https://scratch.mit.edu/discuss/topic/733836/">this topic of unusual usernames</a>. Generally, users can not change their username.</li>
     </ul>
