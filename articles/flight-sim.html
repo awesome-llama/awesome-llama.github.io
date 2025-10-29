@@ -21,17 +21,17 @@
   <div class="content">
     <h1>Flight Simulator Guide</h1>
     <hr>
-    <h3>Introduction</h3>
+    <h3 id="introduction">Introduction</h3>
     <p>
       This article is written in response to the many questions I see about making flight simulator projects on Scratch. This article introduces a <i>commonly-used flight model</i> and the physics behind it. I wish I knew this when I made my 2D flight simulator projects.
     </p>
 
-    <h3>Units</h3>
+    <h3 id="units">Units</h3>
     <p>
       Aviation is a mess of different units. Just to name a few... Altitude is in feet, distance is in nautical miles, or feet, or kilometres, depending on where it is used. Speed is in knots, air pressure can be either inches of mercury or hectopascals. Stick to SI units for the physics calculations. Use base units like seconds, metres, and kilograms. Speed should be metres/second. Acceleration should be metres/second/second. Force should be Newtons (which is kg*m/s/s). The maths is simpler this way. Feel free to display values to the user in any units you want.
     </p>
 
-    <h3>Forces</h3>
+    <h3 id="forces">Forces</h3>
     <p>
       The forces acting on an aircraft are often abstracted as thrust, weight, drag, and lift. 
       <br><br>
@@ -48,7 +48,7 @@
       The model I use in Flight Simulator 737 is actually pretty similar to this, although squished into 2 dimensions.
     </p>
     
-    <h3>Main loop</h3>
+    <h3 id="main-loop">Main loop</h3>
     <p>
       Ideally you would be using a <a href="https://en.wikipedia.org/wiki/Video_game_programming#Game_structure">main loop</a> to constantly run the physics along with the rest of the simulator. It needs time-keeping of some kind to ensure the physics runs at the correct speed (remember that the physics is measuring time in the base unit of seconds, not cycles of a loop). You could use <a href="https://en.wikipedia.org/wiki/Delta_timing">delta-timing</a>.</p>
 
@@ -82,7 +82,7 @@
     </table>
     <p>It can be confusing as there are a bunch of words which refer to the same concept. The above table is not exhaustive, there are many more!</p>
     
-    <h3>Lift and Drag</h3>
+    <h3 id="lift-and-drag">Lift and Drag</h3>
     <p>
       <img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/bec439cc0c6fe54210261ced30d3d9ac5c6a222b">
       <br>
