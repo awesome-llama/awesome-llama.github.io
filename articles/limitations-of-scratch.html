@@ -89,7 +89,7 @@
 
     <h3 id="operators">Operators</h3>
     <ul>
-      <li>The "less-than", "greater-than", and "equals" blocks first try to compare the inputs as floating point numbers. Long strings consisting entirely of numeric characters may be incorrectly compared. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/util/cast.js#L122-L123"><span class="tagSourceCode">Source code</span></a></li>
+      <li>The "less-than", "greater-than", and "equals" blocks compare the inputs as floating point numbers if they can be casted. Long strings consisting of numeric characters may be compared in an unexpected way due to the numbers they are casted to (such as Infinity). This is also a problem with list "contains" and "item # of" blocks. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/util/cast.js#L122-L123"><span class="tagSourceCode">Source code</span></a></li>
     </ul>
     
     <h3 id="events">Events</h3>
