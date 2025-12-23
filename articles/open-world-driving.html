@@ -25,22 +25,22 @@
       I get a lot of comments on <a href="https://scratch.mit.edu/projects/412702440/">Car Parking Challenge</a> and <a href="https://scratch.mit.edu/projects/533265843/">Truck Driving Challenge</a> asking for more levels, a larger world, or "free-roam". The levels in those games are deliberately small and it is a compromise due to Scratch's many unfortunate limitations.
     </p>
     
-    <h3>Asset size & count</h3>
-    <p>The projects are around 40-50 MB even with the small levels. This is somewhat large for a Scratch project. Not everyone has a fast internet connection and for many it is notably slow to download. <span style="font-size: 0.7em;">I'm just the messenger, don't shoot me!</span></p>
+    <h3 id="assets">Asset size & count</h3>
+    <p>Despite the small and few levels, the projects are around 40-50 MB. This is somewhat large for a Scratch project. Not everyone has a fast internet connection and for many it is notably slow to download.</p>
     
     <p>Scratch is inefficient with RAM usage for costumes. This is a problem on some devices, particularly Chromebooks and those made by Apple. It seems the <a href="https://forums.macrumors.com/threads/safari-reloading-pages-which-use-significant-memory.2273020/">Safari browser has a common tendency to forcefully reload</a> (resulting in many players saying the game keeps restarting). <span style="font-size: 0.7em;">What a pain this was to figure out. I didn't know for years. I always received vague comments like "doesn't work" or "can't play level 5".</span></p>
     
     <p><a href="https://scratch.mit.edu/projects/572001045/">Costumes with large dimensions also have a risk of not being displayed correctly</a>.</p>
 
-    <p>As seen in Submersible, there is an added risk that the costumes fail to load resulting in the infamous <a href="https://en.scratch-wiki.info/wiki/Question_Mark_Glitch">"question mark glitch"</a> (costumes that failed to load are substituted with a question mark). The risk appears to be proportional to the number of assets.</p>
-    <p>An alternative to using costumes is to draw everything with pen. This comes with its own limitations, it is much slower (again preventing low-end devices from playing it) and data must account for the 5MB project.json limit and 200000 list item limit.</p>
+    <p>There is a risk that the costumes fail to load resulting in the infamous <a href="https://en.scratch-wiki.info/wiki/Question_Mark_Glitch">"question mark glitch"</a> (costumes that failed to load are substituted with a question mark). The risk appears related to the number of assets as this was a significant problem with Submersible, having over 1000.</p>
+    <p>Drawing with pen is an alternative to using costumes. This comes with its own limitations — it is much slower (again preventing low-end devices from playing it) and data must account for the 5MB project.json limit and 200000 list item limit.</p>
 
-    <h3>Necessary features</h3>
+    <h3 id="features">Necessary features</h3>
     <p>An open-world driving game needs traffic, right? This isn't easy to solve. Both Car Parking Challenge and Truck Driving Challenge only have levels with a single intersection. Additionally, all but one level has traffic moving in straight lines. This is still an unsolved problem. <a href="https://scratch.mit.edu/projects/486632504/">Road Network Designer</a> shows some things are possible but notes that intersections aren't processed fully by the agents — there is no intersection priority. Scratch has variables and lists as ways to store data, and custom blocks local to each sprite. Scratch lacks conveniences that other programming languages come with. As a result, Road Network Designer is 17000 blocks and I expect an open-world driving game to be similarly difficult and time-consuming to develop.</p>
 
     <p>What about collisions? The current games simply pause when a collision is detected, requiring the player to retry the level. This doesn't make sense for an open-world game. Vehicles should be knocked around and deflect off barriers. The collision detection needs to be performant for moving traffic and all the static objects.</p>
     
-    <h3>Creating the world</h3>
+    <h3 id="creating">Creating the world</h3>
     <p>Each level in the existing games took a few hours to create. It's clearly not feasible for a larger world. The problem is: What will replace it? I've thought about using the background prop technique seen in Submersible, but this still requires a lot of time to create and place each object. This also doesn't solve creating collision geometry or paths for traffic to follow. There are no existing editors for any of this as far as I know, custom tooling is required. If anyone knows of useful tools, please let me know.</p>
 </div>
 
