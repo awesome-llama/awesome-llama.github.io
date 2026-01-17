@@ -36,7 +36,7 @@
     <p class="caption">Cartesian plane.</p>
     <br>
     <p>
-    It is reasonable to decide that an angle of 0 should start start at the "first" axis (X) and increase into the "second" axis (Y). This is counter-clockwise rotation and is a mathematical convention. You may have been introduced to this with trigonometry.
+    It is reasonable to decide that an angle of 0 should start start at the "first" axis (X) and increase into the "second" axis (Y). This may be called "counter-clockwise" rotation and is a mathematical convention. You may have been introduced to this with trigonometry.
     </p>
 
     <a href="https://commons.wikimedia.org/wiki/File:Coord_Circular.svg" target="_blank" rel="noopener noreferrer">
@@ -69,7 +69,7 @@
 
     <p>However, left-handed and/or Y-up world spaces do exist. What I think has happened is that computer screens follow English text, writing rows across a page and then down. Computer screens are most often oriented in our real world so that X is to the right, and Y is downwards. We look mostly forwards/horizontally when viewing a computer screen.</p>
 
-    <p>This has then been applied to the coordinate systems in the virtual 3D world with little to no transformation. Now the world space is defined from the screen coordinates. I think this is a backwards way of thinking. The world space is the common space that everything is supposed to be measured relative to. As such, it should be defined first. If you still want few transformations to get from world space to screen space, this is still doable. <a href="https://www.blender.org/">Blender</a> is a good example of this. The camera points towards world negative Z (downwards) at 0 rotation and so transforming from world space into camera space, Z remains locally as depth regardless of its rotation.</p>
+    <p>This has been applied to the coordinate systems in the virtual 3D world with little to no transformation. Now the world space is defined from the screen coordinates. I think this is a backwards way of thinking. For 3D, the world space should be the common space that everything is measured relative to. As such, it should be defined first. If you still want few transformations to get from world space to screen space, this is still doable. <a href="https://www.blender.org/">Blender</a> is a good example of this. The camera points towards world negative Z (downwards) at 0 rotation and so transforming from world space into camera space, Z remains locally as depth regardless of its rotation.</p>
 
     <p>I believe that Blender has the most sensible coordinate system for 3D worlds. Blender isn't the only software which has it, many CAD tools do too, but it's free software so you can experiment with how it behaves yourself. It's advantageous to replicate it in your own 3D implementations as it can be compared to when testing. For example, you could confirm that a point is transformed correctly in your implementation if Blender produces the same result.</p>
 
