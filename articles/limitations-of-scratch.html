@@ -134,8 +134,9 @@
       <li>Pan effect range: -100 to 100 <a href="https://en.scratch-wiki.info/wiki/Sound_Effect#Pan_Left/Right"><span class="tagSourceCode">Scratch Wiki</span></a></li>
       <li>Volume and effects are controlled per sprite/clone.</li>
       <li>Sounds played with the "play sound" block can only be stopped with the "stop all" and "stop all sounds" blocks, there is no way to stop an individual sound here. Sounds played with the "play sound until done" block can be stopped with "stop other scripts in sprite" or by deleting the clone if it was running in a clone.</li>
-      <li>A sound can not be played multiple times simultaneously. All clones will be limited by this too. The sound may be duplicated in the sounds editor (or added to a different sprite) if playing it simultaneously is desired.</li>
+      <li>A sound can not be played multiple times simultaneously. Clones share the original sprite's sound file. The sound may be duplicated in the sounds editor (or added to a different sprite) if playing it simultaneously is desired.</li>
       <li>The set/change volume and set/change effect blocks will cause a yield. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/blocks/scratch3_sound.js#L331-L332"><span class="tagSourceCode">Source code (volume)</span></a> <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/blocks/scratch3_sound.js#L284-L285"><span class="tagSourceCode">Source code (effect)</span></a></li>
+      <li>The first time the sound is played will have it briefly play at full volume. This is unavoidable. Other than ignoring it, the best way I found is to edit a short fade-in at the start of the audio file.</li>
       <li>There may be a slight delay when the sound is first played as it gets loaded.</li>
       <li>Sounds played with "play sound until done" are not guaranteed to loop seamlessly if played again immediately in a loop.</li>
     </ul>
