@@ -57,8 +57,9 @@
 
     <h3 id="costumes-backdrops">Costumes/backdrops</h3>
     <ul>
-      <li>Accepted image file formats: PNG and JPG. Note that if an edit is made to a costume, that costume will be saved as a lossless PNG. GIFs may also be imported, each frame will be added as a costume.</li>
+      <li>Accepted image file formats: PNG and JPG. Note that if an edit is made to a costume, that costume will be saved as a lossless PNG. GIFs may also be imported; each frame will be added as a costume.</li>
       <li>Bitmap maximum dimensions: 960x720 (using "half pixels").</li>
+      <li>Images uploaded to the project via the editor will get reencoded. This will remove some metadata and critically will convert the file to a PNG, possibly poorly-compressed. JPG files will confusingly retain their file extension.</li> <!--channels/837024174865776680/1147654296926687242/1527847193715671161-->
       <li>Vector costumes get rasterized to dimensions no more than 2048x2048. This results in very large vector costumes appearing blurry. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-render/src/SVGSkin.js#L7"><span class="tagSourceCode">Source code</span></a></li>
     </ul>
 
@@ -79,7 +80,7 @@
     <h3 id="sensing">Sensing</h3>
     <ul>
       <li>Touching color precision is limited to 5 bits red, 5 bits green, 4 bits blue. (this is only 14-bit color, much less than 24-bit RGB that is displayed by Scratch). <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-render/src/RenderWebGL.js#L67-L81"><span class="tagSourceCode">Source code</span></a></li>
-      <li>The keys that can be detected are <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/io/keyboard.js">here</a>. Special keys such as shift, control, and backspace can not be detected.</li>
+      <li>The keys that can be detected are <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/io/keyboard.js">here</a>. Special keys such as shift, control, and backspace can not be detected. The mouse scroll wheel will trigger up/down arrow key hats but not the boolean reporters.</li>
       <li>Left-click is the only mouse button that can be detected.</li>
       <li>The mouse position is clamped to the edge of the screen and rounded. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/io/mouse.js#L60-L75"><span class="tagSourceCode">Source code</span></a></li>
       <li>Multi-touch (for touch-screens) is not supported. There is only 1 mouse pointer.</li>
@@ -149,6 +150,7 @@
       <li>Pen "size" is its diameter in pixels and is limited to between 1 and 1200. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/extensions/scratch3_pen/index.js#L94-L102"><span class="tagSourceCode">Source code</span></a></li>
       <li>A pen size of exactly 1 or 3 will offset the pen position to the top-right by 0.5 steps to be "pixel-aligned". <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-render/src/PenSkin.js#L170"><span class="tagSourceCode">Source code</span></a></li>
       <li>An ARGB color value with full transparency is not possible as the way the value is handled always ignores alpha. If converted to a number (e.g. from hexadecimal), <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/util/cast.js#L100">the leading zeroes for alpha will be lost</a>. If converted from a hex color code such as <span class="code">#FF3000</span>, <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/util/color.js#L60-L69">alpha handling isn't implemented</a>. If setting pen color, it is suggested to either use the set pen transparency effect after setting the RGB color or ensure the ARGB value never uses an alpha of 0 (possibly clamp to 1). Otherwise, conditionally draw pen strokes.</li>
+      <li>The "set pen color" block can't set all RGB colors. For example, <span class="code">0f0f0f</span> becomes <span class="code">0e0e0e</span>. It is still possible to draw such colors using stamps or using the other blocks to set the pen color.</li>
       <li>Every pen stroke is drawn independently of others; semi-transparent pixels from anti-aliasing or a semi-transparent pen color will be drawn visibly overlapping.</li>
     </ul>
 
