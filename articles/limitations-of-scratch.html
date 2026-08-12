@@ -59,7 +59,7 @@
     <ul>
       <li>There are two kinds of images supported - bitmap (raster) and vector. Images internally can only be stored as PNG, JPG, and SVG.</li>
       <li>Adding an image via the project editor will cause it to be sanitized/reencoded.
-        <ul>
+        <ul style="font-size: 1em;"><!--This is not the best solution to scaling-->
           <li>The editor supports bitmap images with dimensions up to 960x720. Images that are 480x360 or smaller will be sized so that each pixel aligns to sprite positions and the pen layer. Images larger than that will be scaled 50% without loss of detail. The size is controlled by <span class="code">bitmapResolution</span> internally (either <span class="code">1</span> or <span class="code">2</span>).</li>
           <li>JPG, BMP, or GIF files will be converted to PNG. Some image metadata will be lost. Each frame of a GIF will be added as a separate PNG costume.</li><!-- PNG tEXt chunks remain intact. --><!-- webp and other formats are not supported -->
           <li>Files encoded as PNG may be poorly compressed.</li><!--channels/837024174865776680/1147654296926687242/1527847193715671161-->
