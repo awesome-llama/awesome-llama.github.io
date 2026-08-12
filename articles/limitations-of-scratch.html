@@ -50,17 +50,26 @@
     <ul>
       <li>Sprites are visually snapped to a grid sized with 480x360 steps on the screen.</li>
       <li>Size is limited by the current costume, when scaled it must not be visually larger than 150% the size of the stage (720x540) on any axis or smaller than 5 pixels on any axis. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/sprites/rendered-target.js#L373-L380"><span class="tagSourceCode">Source code</span></a></li>
-      <li>Maximum number of clones at one time: 300 (limit shared by all sprites) <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/engine/runtime.js#L734-L736"><span class="tagSourceCode">Source code</span></a></li>
+      <li>The maximum number of clones that can exist at one time is 300. This limit is shared by all sprites. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/engine/runtime.js#L734-L736"><span class="tagSourceCode">Source code</span></a></li>
       <li>Sprites can not be positioned off-screen with a margin less than 15px still showing. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-render/src/RenderWebGL.js#L88"><span class="tagSourceCode">Source code</span></a></li>
       <li>Clones do not have an accessible unique ID and there is no native way to identify or share data between them. You need to implement this yourself with variables and lists. Note that those set to "for this sprite only" will store values unique to every clone/sprite, useful for an ID.</li>
     </ul>
 
     <h3 id="costumes-backdrops">Costumes/backdrops</h3>
     <ul>
-      <li>Accepted image file formats: PNG and JPG. Note that if an edit is made to a costume, that costume will be saved as a lossless PNG. GIFs may also be imported; each frame will be added as a costume.</li>
-      <li>Bitmap maximum dimensions: 960x720 (using "half pixels").</li>
-      <li>Images uploaded to the project via the editor will get reencoded. This will remove some metadata and critically will convert the file to a PNG, possibly poorly-compressed. JPG files will confusingly retain their file extension.</li> <!--channels/837024174865776680/1147654296926687242/1527847193715671161-->
-      <li>Vector costumes get rasterized to dimensions no more than 2048x2048. This results in very large vector costumes appearing blurry. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-render/src/SVGSkin.js#L7"><span class="tagSourceCode">Source code</span></a></li>
+      <li>There are two kinds of images supported - bitmap (raster) and vector. Images internally can only be stored as PNG, JPG, and SVG.</li>
+      <li>Adding an image via the project editor will cause it to be sanitized/reencoded.
+        <ul>
+          <li>The editor supports bitmap images with dimensions up to 960x720. Images that are 480x360 or smaller will be sized so that each pixel aligns to sprite positions and the pen layer. Images larger than that will be scaled 50% without loss of detail. The size is controlled by <span class="code">bitmapResolution</span> internally (either <span class="code">1</span> or <span class="code">2</span>).</li>
+          <li>JPG, BMP, or GIF files will be converted to PNG. Some image metadata will be lost. Each frame of a GIF will be added as a separate PNG costume.</li><!-- PNG tEXt chunks remain intact. --><!-- webp and other formats are not supported -->
+          <li>Files encoded as PNG may be poorly compressed.</li><!--channels/837024174865776680/1147654296926687242/1527847193715671161-->
+          <li>Some features of SVG are removed. Embedded images using data URIs are OK. <a href="https://github.com/scratchfoundation/scratch-editor/blob/8b5e75a4caf0498c327a3059e0d4370d83c4555d/packages/scratch-svg-renderer/src/sanitize-svg.js"><span class="tagSourceCode">Source code</span></a></li>
+          <li>Do not trust the file extension of an image processed by Scratch as it may be different to the file contents. If you need to know the file type, <a href="https://en.wikipedia.org/wiki/File_format#Magic_number">look at its contents</a> or use a file reader capable of detecting it.</li>
+          <li>If an edit is made to a bitmap costume, that costume will be saved as a PNG.</li>
+          <li>If you want to avoid the editor's conversion (such as to import a better-compressed PNG or a JPG), you have to add/edit it outside of the editor.</li>
+        </ul>
+      </li>
+      <li>Vector costumes get rasterized in the project player to dimensions no more than 2048x2048. This results in very large vector costumes appearing blurry. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-render/src/SVGSkin.js#L7"><span class="tagSourceCode">Source code</span></a></li>
     </ul>
 
     <h3 id="looks">Looks</h3>
@@ -76,6 +85,7 @@
       <li>The "for each" loop compares the value in the repeat input every iteration. It is not stored. This is unintuitively unlike the "repeat" loop which will repeat the number of times given initially. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/blocks/scratch3_control.js#L94"><span class="tagSourceCode">Source code</span></a></li>
       <li>"Stop all" will not immediately stop broadcasts that were just scheduled to run, they will run for 1 frame and may trigger other scripts that can run longer than that.</li>
       <li>"Stop other scripts in sprite" marks scheduled scripts to not run but will keep their order in the queue. They can still be reactivated within the same frame and will keep their order instead of being added to the end (and run last).</li>
+      <li>The "wait () seconds" block will only wait a whole number of frames which may deviate significantly at small numbers. A wait of 0 seconds will instead be 1 frame.</li>
     </ul>
 
     <h3 id="sensing">Sensing</h3>
@@ -92,7 +102,7 @@
 
     <h3 id="operators">Operators</h3>
     <ul>
-      <li>The "less-than", "greater-than", and "equals" blocks compare the inputs as floating point numbers if they can be casted. Long strings consisting of numeric characters may be compared in an unexpected way due to the numbers they are casted to (such as Infinity). This is also a problem with list "contains" and "item # of" blocks. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/util/cast.js#L122-L123"><span class="tagSourceCode">Source code</span></a></li>
+      <li>The "less-than", "greater-than", and "equals" blocks compare the inputs as floating point numbers if they can be casted. Long strings consisting of numeric characters may be compared in an unexpected way due to the numbers they are casted to (such as <span class="code">Infinity</span>). This is also a problem with list "contains" and "item # of" blocks. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/util/cast.js#L122-L123"><span class="tagSourceCode">Source code</span></a></li>
     </ul>
     
     <h3 id="events">Events</h3>
@@ -104,13 +114,13 @@
     
     <h3 id="variables-lists">Variables and lists</h3>
     <ul>
-      <li>Supported data types: booleans, double floats, strings. <a href="https://scratch.mit.edu/projects/1048874723/">Through hacks it's possible to utilize a few other types such as arrays.</a></li>
+      <li>Supported data types: booleans, <a href="https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-ecmascript-language-types-number-type">IEEE-754 double floats</a>, strings. <a href="https://scratch.mit.edu/projects/1048874723/">Through hacks it's possible to utilize a few other types such as arrays.</a></li>
       <li>List item limit: 200000 <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/blocks/scratch3_data.js#L252-L254"><span class="tagSourceCode">Source code</span></a></li>
       <li>There is no Scratch-imposed limit on string character count in variables and list items.</li>
       <li>Lists are 1-indexed. Item numbers count from 1.</li>
-      <li>Neither variables or lists can be created at runtime, they must be created manually by the user. There is no way to place a reporter block in the variable or list name. Scratch also does not have dictionaries (or other similar collections).</li>
-      <li>Variable and list monitors are always displayed in front of everything on the screen. They are also not visible in saved thumbnails.</li>
-      <!-- data loss importing lists -->
+      <li>Variables and lists can not be created at runtime; they must be created manually by the user. There is no way to place a reporter block in the variable or list name. Scratch also does not have dictionaries (or other similar collections).</li>
+      <li>Variable and list monitors are always displayed in front of everything on the screen. They are also not included in project thumbnails.</li>
+      <!-- TODO: data loss importing lists -->
     </ul>
 
     <h3 id="custom-blocks">Custom blocks</h3>
@@ -118,6 +128,7 @@
       <li>Custom blocks are not shared across all sprites. There must be a definition in every sprite that needs it.</li>
       <li>Argument reporters are only usable within their own definition script and <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/blocks/scratch3_procedures.js#L63">always return 0 when run outside it</a>. This includes clicking to run.</li>
       <li>There is no return statement or reporter-shaped custom blocks. The typical workaround for returning a value is to set a variable in the custom block script. The "stop this script" block can be used to return early.</li>
+      <!-- TODO: default bool arg value -->
     </ul>
 
     <h3 id="cloud-variables">Cloud variables</h3>
