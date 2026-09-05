@@ -43,8 +43,9 @@
     <ul>
       <li>You want to display many sprite costumes simultaneously <i>with the same quality as the original sprite in vanilla Scratch</i> (stamps can't do this). In this case, you may want a pool of clones that are dependent on shared variables/lists rather than storing anything of importance in the clones.</li>
       <li>You want to play sounds with full control over the volume and effects of each, and when to start or stop them. Volume and effects are unique to each clone. Clones can be deleted to stop the sounds playing from them.</li>
-      <li>You want to display something that doesn't affect a slow-to-draw pen layer, such as some interactive buttons on top of an emulator project.</li>
+      <li>You want to display something dynamic that doesn't affect a slow-to-draw pen layer, such as some interactive buttons on top of an emulator project.</li>
       <li>You want to run ask blocks with a way to close them individually with code (rather than require the user to interact with it to close it). Delete the clone the ask block was running from.</li>
+      <!--You want to reset a list containing lots of values, such as a render buffer.-->
     </ul>
     
     <br>
@@ -98,7 +99,7 @@
     </pre>
 
     <br>
-    <p>The alternative to a spreadsheet using many lists is to combine them all into one list, with groups of items associated with each NPC:</p>
+    <p>Alternatively, it is possible to store the spreadsheet in a single list, with groups of items associated with each NPC:</p>
     <table>
       <tr><th>NPC</th></tr>
       <tr><td>Alfa</td></tr>

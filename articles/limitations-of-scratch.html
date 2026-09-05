@@ -83,7 +83,7 @@
     <ul>
       <li>The "repeat" loop evaluates the input every iteration, although it only uses the initial result in determining the number of times to loop. <a href="https://scratch.mit.edu/projects/1364404688"><span class="tagSourceCode">Example project</span></a></li>
       <li>The "for each" loop compares the value in the repeat input every iteration. It is not stored. This is unintuitively unlike the "repeat" loop which will repeat the number of times given initially. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/blocks/scratch3_control.js#L94"><span class="tagSourceCode">Source code</span></a></li>
-      <li>"Stop all" will not immediately stop broadcasts that were just scheduled to run, they will run for 1 frame and may trigger other scripts that can run longer than that.</li>
+      <li>"Stop all" will not immediately stop broadcasts that were just scheduled to run; they will run for 1 frame and may trigger other scripts that can run longer than that.</li>
       <li>"Stop other scripts in sprite" marks scheduled scripts to not run but will keep their order in the queue. They can still be reactivated within the same frame and will keep their order instead of being added to the end (and run last).</li>
       <li>The "wait () seconds" block will only wait a whole number of frames which may deviate significantly at small numbers. A wait of 0 seconds will instead be 1 frame.</li>
     </ul>
@@ -95,7 +95,7 @@
       <li>The mouse position is clamped to the edge of the screen and rounded. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-vm/src/io/mouse.js#L60-L75"><span class="tagSourceCode">Source code</span></a></li>
       <li>Multi-touch (for touch-screens) is not supported. There is only 1 mouse pointer.</li>
       <li>The timer only updates once per frame. For sub-frame timing, use the "days since 2000" block.</li>
-      <!--<li>The touching sprite block result differs with screen size.</li>--><!-- channels/558340604627648539/558341218262843402/1527138668630904874 -->
+      <li>The "touching sprite" block differs with screen size.</li><!-- channels/558340604627648539/558341218262843402/1527138668630904874 -->
       <li>Touching color precision is limited to 5 bits red, 5 bits green, 4 bits blue. (this is only 14-bit color, much less than 24-bit RGB that is displayed by Scratch). <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-render/src/RenderWebGL.js#L67-L81"><span class="tagSourceCode">Source code</span></a></li>
       <li>For the touching color blocks, the GPU will be used if there are more than 4000 pixels of the overlap in the touching area which may affect performance and change its behavior. <a href="https://github.com/scratchfoundation/scratch-editor/blob/726fefa5bca3ff3e447c5bcb845150c628a81e7c/packages/scratch-render/src/RenderWebGL.js#L25"><span class="tagSourceCode">Source code</span></a></li>
     </ul>
@@ -107,8 +107,8 @@
     
     <h3 id="events">Events</h3>
     <ul>
-      <li>Broadcasts can only run once per frame.</li>
-      <li>Broadcast receiver hats do not accept reporter blocks, the message selection is a field and you can only choose from the created messages.</li>
+      <li>Broadcast receiver hats can only run once per frame. They are also scheduled to run after the currently-scheduled scripts, so are not immediate in the way custom blocks run.</li>
+      <li>Broadcast hats do not accept reporter blocks; the message selection is a field and you can only choose from the created messages.</li>
       <!--TODO: include broadcast delay - channels/1129589843698126878/1129589844637667431/1368044845352091779 -->
     </ul>
     
@@ -120,7 +120,7 @@
       <li>Lists are 1-indexed. Item numbers count from 1.</li>
       <li>Variables and lists can not be created at runtime; they must be created manually by the user. There is no way to place a reporter block in the variable or list name. Scratch also does not have dictionaries (or other similar collections).</li>
       <li>Variable and list monitors are always displayed in front of everything on the screen. They are also not included in project thumbnails.</li>
-      <!-- TODO: data loss importing lists -->
+      <li>List data can be imported from files by right-clicking the monitor. They will be parsed as CSV. Be aware that a line starting with double quotes (<span class="code">"</span>) will cause the data following it to be parsed as a single item, including newlines. Double quotes also act as the escape character. <a href="https://github.com/scratchfoundation/scratch-editor/blob/d4eb4878970a4958020946018669c8e5d255e5fc/packages/scratch-gui/src/lib/import-csv.js"><span class="tagSourceCode">Source code</span></a></li>
     </ul>
 
     <h3 id="custom-blocks">Custom blocks</h3>
